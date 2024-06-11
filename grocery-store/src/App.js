@@ -1,5 +1,7 @@
 import logo from './logo.svg';
 import './App.css';
+import {BrowserRouter as Router} from'react-router-dom';
+import DatabaseCRUD from './Components/DatabaseCRUD';
 
 function App() {
   return (
@@ -18,6 +20,10 @@ function App() {
           Learn React
         </a>
       </header>
+      <div>
+        <h3>Database CRUD</h3>
+        <DatabaseCRUD />
+      </div>
     </div>
   );
 }

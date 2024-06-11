@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-function DemoApp() {
+function DatabaseCRUD() {
     const [products, setProducts] = useState(false);
 
     useEffect(() => {
@@ -39,6 +39,10 @@ function DemoApp() {
             });
     }
 
+    function updateProduct() {
+        return null
+    }
+
     function deleteProduct() {
         let id = prompt('Enter product id: ');
 
@@ -76,10 +80,12 @@ function DemoApp() {
         <div>
             {products ? content : 'There is no product data available'}
             <br />
+            <button onClick={updateProduct}>Update product</button>
+            <br />
             <button onClick={createProduct}>Add product</button>
             <br />
             <button onClick={deleteProduct}>Delete product</button>
         </div>
     );
 }
-export default DemoApp;
+export default DatabaseCRUD;
