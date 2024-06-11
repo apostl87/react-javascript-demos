@@ -27,7 +27,7 @@ const getProducts = () => {
 const createProductFull = (body) => {
   return new Promise(function (resolve, reject) {
     const { product, productionCountry, color, usageFrequency, salesCountry, sizeLength, sizeWidth, sizeHeight, price } = body
-    pool.query('INSERT INTO prodcuts (Product, ProductionCountry, Color, UsageFrequency,SalesCountry, SizeLength, SizeWidth, SizeHeight, Price) VALUES ($1, $2) RETURNING *', [product, productionCountry, color, usageFrequency, salesCountry, sizeLength, sizeWidth, sizeHeight, price], (error, results) => {
+    pool.query('INSERT INTO products (product, productioncountry, color, usagefrequency, salescountry, sizelength, sizewidth, sizeheight, price) VALUES ($1, $2) RETURNING *', [product, productionCountry, color, usageFrequency, salesCountry, sizeLength, sizeWidth, sizeHeight, price], (error, results) => {
       if (error) {
         reject(error)
       }
@@ -38,7 +38,7 @@ const createProductFull = (body) => {
 const createProduct = (body) => {
   return new Promise(function (resolve, reject) {
     const { product, productionCountry, color, salesCountry, price } = body
-    pool.query('INSERT INTO prodcuts (Product, ProductionCountry, Color, SalesCountry Price) VALUES ($1, $2) RETURNING *', [product, productionCountry, color, usageFrequency, salesCountry, sizeLength, sizeWidth, sizeHeight, price], (error, results) => {
+    pool.query('INSERT INTO prodcuts (product, productioncountry, color, salescountry, price) VALUES ($1, $2) RETURNING *', [product, productionCountry, color, usageFrequency, salesCountry, sizeLength, sizeWidth, sizeHeight, price], (error, results) => {
       if (error) {
         reject(error)
       }
