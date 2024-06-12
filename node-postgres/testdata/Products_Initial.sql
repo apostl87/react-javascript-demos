@@ -1,5 +1,5 @@
 /*script generated for free with OnlineDataGenerator available at: https://www.onlinedatagenerator.com */
-CREATE TABLE PRODUCTS(ID BIGINT,Product VARCHAR(500),ProductionCountry VARCHAR(500),Color VARCHAR(500),UsageFrequency VARCHAR(500),SalesCountry VARCHAR(500),SizeLength FLOAT,SizeWidth FLOAT,SizeHeight FLOAT,Price VARCHAR(500));
+CREATE TABLE PRODUCTS(ID BIGINT,Product VARCHAR(500),ProductionCountry VARCHAR(500),Color VARCHAR(500),UsageFrequency VARCHAR(500),weight_kg VARCHAR(500),SizeLength FLOAT,SizeWidth FLOAT,SizeHeight FLOAT,Price VARCHAR(500));
 
 INSERT INTO PRODUCTS VALUES('1','Nonalcoholic beverages','Chile','#b2aea7','','Hungary',486008646.51,984526555.91,-599726652.40,'LBP996,103,064');
 INSERT INTO PRODUCTS VALUES('2','Snack foods','Norway','#6f46b5','','Macedonia',91105266.75,652779823.57,-432031419.34,'ALL511,705,040');

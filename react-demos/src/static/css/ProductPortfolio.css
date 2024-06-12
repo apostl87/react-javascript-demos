@@ -1,0 +1,137 @@
+.product-management {
+    font-family: Arial, sans-serif;
+    padding: 20px;
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+h3 {
+    text-align: center;
+    color: #333;
+}
+
+.product-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    justify-content: center;
+}
+
+.product-item {
+    background: #f9f9f9;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    padding: 15px;
+    width: 400px;
+    flex: auto;
+    /* Adjust width as needed */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    display: flex;
+    /* Use flexbox to align image and text side by side */
+    gap: 15px;
+    /* Space between image and text */
+}
+
+.product-image {
+    width: 100px;
+    /* Adjust width as needed */
+    height: 200px;
+    border-radius: 5px;
+}
+
+.product-details {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    text-align: left;
+    flex-wrap: nowrap;
+}
+
+.product-details-row {
+    display: flex;
+}
+
+.product-details-row strong {
+    flex: 0 1 auto;
+    vertical-align: bottom;
+}
+
+.product-details-row input {
+    margin: 0 5px;
+    flex: 1 0 auto;
+    min-height: 15px;
+}
+
+.product-details-row select {
+    margin: 0 5px;
+    flex: 1 0 auto;
+    min-height: 27px;
+    max-width: 200px;
+}
+
+.product-item p {
+    margin: 5px 0;
+    width: 100%;
+}
+
+.button-group {
+    display: flex;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+button {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    background-color: #007bff;
+    color: white;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    vertical-align: bottom;
+}
+
+button:hover {
+    background-color: #0056b3;
+}
+
+.button-disabled {
+    background-color: #808080;
+}
+
+.button-disabled:hover {
+    background-color: #808080;
+}
+
+.pagination {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+.pagination button {
+    margin: 0 5px;
+    padding: 5px 10px;
+    border: 1px solid #ddd;
+    border-radius: 3px;
+    background-color: #f9f9f9;
+    color: #333;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.pagination button:hover {
+    background-color: #e0e0e0;
+}
+
+.link-simple {
+    color: #0e72ca;
+    font-weight: bold;
+}
+
+.color-show {
+    display: 'inline-block';
+    min-width: 30px;
+    min-height: 10px;
+    margin: 0 5px;
+}
