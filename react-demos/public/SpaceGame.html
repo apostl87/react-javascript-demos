@@ -100,7 +100,7 @@
             // Board texture and Game over text
             ctx.fillStyle = '#bfbfd2';
             ctx.fillRect(canvas.width / 2 - 300, canvas.height / 2 - 150, 600, 250);
-            ctx.font = "24px Arial";
+            ctx.font = "30px Arial";
             ctx.fillStyle = '#000000';
             ctx.fillText("Game over", canvas.width / 2, canvas.height / 2 - 75);
 
@@ -119,7 +119,7 @@
             ctx.strokeStyle = '#000000';
             ctx.stroke();
             ctx.closePath();
-            ctx.font = '24px Arial';
+            ctx.font = '30px Arial';
             ctx.fillStyle = '#ffffff';
             ctx.textAlign = 'center';
             ctx.textBaseline = 'middle';
@@ -129,10 +129,10 @@
         function drawScoreboard() {
             ctxSb.fillStyle = '#ffffff';
             ctxSb.fillRect(0, 0, scoreboard.width, scoreboard.height);
-            ctxSb.font = "24px Arial";
+            ctxSb.font = "30px Arial";
             ctxSb.fillStyle = '#000000';
             ctxSb.textAlign = 'center';
-            let str = "Score: " + String(score) + "      Missed: " + String(missed)
+            let str = "Score: " + String(score) + "      Missed intruders: " + String(missed)
             ctxSb.fillText(str, scoreboard.width / 2, scoreboard.height / 2);
 
             requestAnimationFrame(drawScoreboard);
