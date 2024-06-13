@@ -14,6 +14,25 @@ const getProducts = () => {
   })
 }
 
+const updateProduct = (id, body) => {
+  return new Promise(function (resolve, reject) {
+    const { product_name, color, weight, price_currency, price, country_id, image_url} = body;
+    console.log(body)
+    console.log(weight)
+
+    pool.query(
+      'UPDATE products SET product_name = $1, color = $2, weight_kg = $3, price = $4, country_id_production = $5, image_url = $6 WHERE id = $7 RETURNING *',
+      [product_name, color, weight, price, country_id, image_url, id],
+      (error, results) => {
+        if (error) {
+          reject(error);
+        }
+        resolve(`Product modified with ID: ${results.rows[0].id}`);
+      }
+    );
+  });
+};
+
 const createProductFull = (body) => {
   return new Promise(function (resolve, reject) {
     const { product, productioncountry, color, usagefrequency, weight_kg, sizelength, sizewidth, sizeheight, price, image_url } = body
@@ -37,24 +56,6 @@ const createProduct = (body) => {
     })
   })
 }
-
-const updateProduct = (id, body) => {
-  return new Promise(function (resolve, reject) {
-    //const { product, productionCountry, color, usageFrequency, weight_kg, sizeLength, sizeWidth, sizeHeight, price, imageUrl } = body;
-    const { product, color, weight_kg, price_currency, price, country_id, image_url} = body;
-
-    pool.query(
-      'UPDATE products SET product_name = $1, color = $2, weight_kg = $3, price = $4, country_id_production = $5, image_url = $6 WHERE id = $7 RETURNING *',
-      [product, color, weight_kg, price, country_id, image_url, id],
-      (error, results) => {
-        if (error) {
-          reject(error);
-        }
-        resolve(`Product modified with ID: ${results.rows[0].id}`);
-      }
-    );
-  });
-};
 
 const deleteProduct = (productId) => {
   return new Promise(function (resolve, reject) {

@@ -1,11 +1,14 @@
 {
-  "name": "grocery-store",
+  "name": "react-demos",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@nextui-org/react": "^2.4.1",
     "@testing-library/jest-dom": "^5.17.0",
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",
+    "flowbite-react": "^0.9.0",
+    "framer-motion": "^11.2.10",
     "jquery": "^3.7.1",
     "react": "^18.3.1",
     "react-bootstrap": "^2.10.2",
@@ -19,10 +22,13 @@
     "react-tooltip": "^5.26.4",
     "rsuite": "^5.64.0",
     "spectrum-colorpicker": "^1.8.1",
+    "tailwindcss": "^3.4.4",
     "web-vitals": "^2.1.4"
   },
   "scripts": {
-    "start": "react-scripts start",
+    "buildcss": "npx tailwindcss -i ./src/static/css/index.css -o ./src/static/css/output.css",
+    "watchcss": "npx tailwindcss -i ./src/static/css/index.css -o ./src/static/css/output.css -w",
+    "start": "npm run buildcss && react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"

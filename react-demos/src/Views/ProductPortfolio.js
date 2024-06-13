@@ -43,7 +43,7 @@ function ProductPortfolioEditable() {
                 image_url: data.image_url,
                 price_currency: data.price_currency,
                 price: data.price,
-                weight_kg: data.weight_kg,
+                weight: data.weight_kg,
                 country_id: data.country_id,
                 country_name: data.country_name,
             };
@@ -52,6 +52,7 @@ function ProductPortfolioEditable() {
     }
 
     function updateProduct(id) {
+        console.log(editedProduct)
         fetch(`http://localhost:3001/products/${id}`, {
             method: 'PUT',
             headers: {
@@ -86,7 +87,13 @@ function ProductPortfolioEditable() {
         return (
             <>
                 <select id="country_id" name="country_id" onChange={handleInputChange}>
-                    {countries.map((country, idx) => { return <option key={idx} value={country.country_id}>{country.country_name}</option> })}
+                    {countries.map((country, idx) => {
+                        if (editedProduct.country_id == country.country_id) {
+                            return (<option key={idx} value={country.country_id} selected>{country.country_name}</option>);
+                        } else {
+                            return (<option key={idx} value={country.country_id}>{country.country_name}</option>);
+                        }
+                    })}
                 </select>
             </>
         )
@@ -123,7 +130,7 @@ function ProductPortfolioEditable() {
     }
     function handleInputChange(e) {
         let { name, value } = e.target;
-        if (name == 'weight_kg') {
+        if (name == 'weight') {
             value = sanitizeNumeric(name, value, 1);
         }
         if (name == 'price') {
@@ -132,7 +139,24 @@ function ProductPortfolioEditable() {
         setEditedProduct({ ...editedProduct, [name]: value });
     }
     function handleSaveClick(id) {
-        updateProduct(id);
+        let empty_var = null
+        if (!editedProduct.product_name) {
+            empty_var = 'Product Name'
+        } else if (!editedProduct.weight) {
+            empty_var = 'Weight'
+        } else if (!editedProduct.price) {
+            empty_var = 'Price'
+        }
+        if (empty_var) {
+            setTooltipState([empty_var.replace(" ", "_").toLowerCase(), empty_var + " cannot be empty"]);
+            // Show tooltip for two seconds
+            setIsOpen(true);
+            setTimeout(() => {
+                setIsOpen(false)
+            }, 2000);
+        } else {
+            updateProduct(id);
+        }
     }
     function sanitizeNumeric(name, value, precision) {
         let regex = /^([0-9]+)(\.)([0-9]*)$/;
@@ -145,7 +169,7 @@ function ProductPortfolioEditable() {
                 setIsOpen(true);
                 setTimeout(() => {
                     setIsOpen(false)
-                }, 2000);
+                }, 5000);
             }
 
             value = value.replace(/[^\d\.]/g, '');
@@ -190,20 +214,17 @@ function ProductPortfolioEditable() {
         return a.filter(x => x > 0 && x <= Npages)
     }
 
-    // Pagination display behavior
-
-
     return (
-        <div className="product-portfolio">
-            <h3>Editable product portfolio</h3>
+        <div className='p-5'>
+            <h3 className='p-2'>Editable product portfolio</h3>
             {products.length > 0 ? (
                 <div className="product-list">
                     {currentProducts.map((product) => (
                         <div key={product.id} className="product-item">
-                            <img src={product.image_url} alt={product.product} className="product-image" />
+                            <img src={product.image_url} alt={product.product_name} className="product-image" />
                             <div className="product-details">
                                 {editingProductId === product.id ? (
-                                    <div>
+                                    <div className=''>
                                         <p>
                                             <strong>Product Number:</strong> {product.id}
                                         </p>
@@ -219,13 +240,15 @@ function ProductPortfolioEditable() {
 
                                         <p className='product-details-row'>
                                             <strong>Color:</strong>
+                                            &nbsp;&nbsp;Choose
                                             <input type="color" value={editedProduct.color} name='color' id="colorPicker" onChange={() => colorPicked()} />
+                                            Code
                                             {inputField('text', 'color', editedProduct.color)}
                                         </p>
 
                                         <p className='product-details-row'>
                                             <strong>Weight:</strong>
-                                            {inputField('text', 'weight_kg', editedProduct.weight_kg)}
+                                            {inputField('text', 'weight', editedProduct.weight)}
                                             <label>{WEIGHT_UNIT}</label>
                                         </p>
 
@@ -238,7 +261,7 @@ function ProductPortfolioEditable() {
                                         <button onClick={() => handleSaveClick(product.id)}>Save</button>
                                     </div>
                                 ) : (
-                                    <>
+                                    <div className='gap-y-20'>
                                         <p><strong>Product Number:</strong> {product.id}</p>
                                         <p><strong>Product Name:</strong> {product.product_name}</p>
                                         <p><strong>Production Country:</strong> {product.country_name}</p>
@@ -246,13 +269,13 @@ function ProductPortfolioEditable() {
                                             <span className='color-show' style={{ display: 'inline-block', backgroundColor: product.color }}></span>
                                             {product.color}
                                         </p>
-                                        <p><strong>Weight:</strong> {product.weight_kg ? product.weight_kg : 0} {WEIGHT_UNIT}</p>
-                                        <p><strong>Price:</strong> {product.price} {product.price_currency}</p>
+                                        <p><strong>Weight:</strong> {product.weight ? product.weight : '-'} {WEIGHT_UNIT}</p>
+                                        <p><strong>Price:</strong> {product.price ? product.price : '-'} {product.price_currency}</p>
                                         <div className="button-group">
                                             <button onClick={() => handleEditClick(product)}>Edit</button>
                                             <button onClick={() => deleteProduct} className='button-disabled'>Delete</button>
                                         </div>
-                                    </>
+                                    </div>
                                 )}
                             </div>
                         </div>
@@ -277,7 +300,8 @@ function ProductPortfolioEditable() {
                         return (<button key={idx} onClick={() => paginate(idx)}>
                             {idx}
                         </button>)
-                    }})}
+                    }
+                })}
             </div>
 
             <Tooltip
