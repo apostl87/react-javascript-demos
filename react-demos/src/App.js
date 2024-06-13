@@ -1,23 +1,24 @@
 import './static/css/App.css';
-import { BrowserRouter as Router, Link, Routes, Route} from 'react-router-dom';
-import DatabaseCRUD from './Views/old_dbcrud';
+import { BrowserRouter as Router, Link, Routes, Route } from 'react-router-dom';
 import ProductPortfolio from './Views/ProductPortfolio';
 import NavigationBar from './Components/NavigationBar';
 
 function App() {
   return (
-    <Router>
-        <NavigationBar />
-      <div className="App">
-
+    <div className="App">
+      <Router>
+        <div className="App-Header">
+          <NavigationBar />
+        </div>
         <div>
           <Routes>
             <Route exact path='/productportfolio' element={<ProductPortfolio />} />
-            <Route exact path='/' element={<DatabaseCRUD />} />
+            <Route exact path='/' element={null} />
           </Routes>
         </div>
-      </div>
-    </Router >
+
+      </Router >
+    </div>
   );
 }
 

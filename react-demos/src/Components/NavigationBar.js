@@ -1,6 +1,5 @@
 import logo from '../logo.svg';
 import React from 'react';
-import Link from'react-router-dom';
 import { Navbar, Nav } from 'rsuite';
 import CogIcon from '@rsuite/icons/legacy/Cog';
 import PinedIcon from '@rsuite/icons/Pined';
@@ -8,8 +7,8 @@ import PinedIcon from '@rsuite/icons/Pined';
 function NavigationBar() {
     return (
         <nav>
-            <img src={logo} className="App-logo" alt="logo" />
             <Navbar>
+            <span align='left'><img align='left' src={logo} className="App-logo" alt="logo" /></span>
                 <Nav>
                     <Nav.Item icon={<PinedIcon />}>Home</Nav.Item>
                     <Nav.Item href="/productportfolio">Example Product Portfolio</Nav.Item>

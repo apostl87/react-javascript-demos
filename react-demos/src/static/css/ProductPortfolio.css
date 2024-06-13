@@ -1,4 +1,4 @@
-.product-management {
+.product-portfolio {
     font-family: Arial, sans-serif;
     padding: 20px;
     max-width: 1400px;
@@ -120,6 +120,11 @@ button:hover {
     transition: background-color 0.3s;
 }
 
+button.pagination-active {
+    background-color: #007bff;
+    color: white;
+}
+
 .pagination button:hover {
     background-color: #e0e0e0;
 }
@@ -134,4 +139,9 @@ button:hover {
     min-width: 30px;
     min-height: 10px;
     margin: 0 5px;
+}
+
+.margin-top-20 {
+    margin-top: 20px;
+    margin-bottom: 0;
 }

@@ -38,7 +38,7 @@ function ProductPortfolioEditable() {
         const filteredData = data.map(data => {
             return {
                 id: data.id,
-                product: data.product_name,
+                product_name: data.product_name,
                 color: data.color,
                 image_url: data.image_url,
                 price_currency: data.price_currency,
@@ -52,7 +52,6 @@ function ProductPortfolioEditable() {
     }
 
     function updateProduct(id) {
-        console.log(JSON.stringify(editedProduct));
         fetch(`http://localhost:3001/products/${id}`, {
             method: 'PUT',
             headers: {
@@ -85,11 +84,11 @@ function ProductPortfolioEditable() {
     // Functions for editing a product
     function selectCountry(countries) {
         return (
-        <>
-            <select id="country_id" name="country_id" onChange={handleInputChange}>
-                {countries.map((country, idx) => { return <option key={idx} value={country.country_id}>{country.country_name}</option>})}
-            </select>
-        </>
+            <>
+                <select id="country_id" name="country_id" onChange={handleInputChange}>
+                    {countries.map((country, idx) => { return <option key={idx} value={country.country_id}>{country.country_name}</option> })}
+                </select>
+            </>
         )
     }
 
@@ -175,13 +174,27 @@ function ProductPortfolioEditable() {
     }
 
     // Pagination
-    const indexOfLastProduct = currentPage * productsPerPage;
+    useEffect(() => {
+        console.log(products.length)
+    })
+    const indexOfLastProduct = Math.min(currentPage * productsPerPage, products.length);
     const indexOfFirstProduct = indexOfLastProduct - productsPerPage;
     const currentProducts = products.slice(indexOfFirstProduct, indexOfLastProduct);
-    const paginate = (pageNumber) => setCurrentPage(pageNumber);
+    const paginate = (pageNumber) => {
+        setCurrentPage(pageNumber);
+    }
+    const paginationDisplayArray = () => {
+        let Npages = Math.ceil(products.length / productsPerPage)
+        let s = new Set([Npages, currentPage + 20, currentPage + 10, currentPage + 2, currentPage + 1, currentPage, currentPage - 1, currentPage - 2, currentPage - 10, currentPage - 20, 1])
+        let a = Array.from(s).sort((a, b) => (a - b));
+        return a.filter(x => x > 0 && x <= Npages)
+    }
+
+    // Pagination display behavior
+
 
     return (
-        <div className="product-management">
+        <div className="product-portfolio">
 
             <h3>Edit products</h3>
             {products.length > 0 ? (
@@ -192,9 +205,12 @@ function ProductPortfolioEditable() {
                             <div className="product-details">
                                 {editingProductId === product.id ? (
                                     <div>
+                                        <p>
+                                            <strong>Product Number:</strong> {product.id}
+                                        </p>
                                         <p className='product-details-row'>
                                             <strong>Product Name:</strong>
-                                            {inputField('text', 'product', editedProduct.product)}
+                                            {inputField('text', 'product_name', editedProduct.product_name)}
                                         </p>
 
                                         <p className='product-details-row'>
@@ -224,10 +240,11 @@ function ProductPortfolioEditable() {
                                     </div>
                                 ) : (
                                     <>
-                                        <p><strong>Product Name:</strong> {product.product}</p>
+                                        <p><strong>Product Number:</strong> {product.id}</p>
+                                        <p><strong>Product Name:</strong> {product.product_name}</p>
                                         <p><strong>Production Country:</strong> {product.country_name}</p>
                                         <p><strong>Color:</strong>
-                                            <span className='color-show' style={{display: 'inline-block', backgroundColor: product.color}}></span>
+                                            <span className='color-show' style={{ display: 'inline-block', backgroundColor: product.color }}></span>
                                             {product.color}
                                         </p>
                                         <p><strong>Weight:</strong> {product.weight_kg ? product.weight_kg : 0} {WEIGHT_UNIT}</p>
@@ -246,14 +263,22 @@ function ProductPortfolioEditable() {
                 <p>There is no product data available</p>
             )}
 
-            <button onClick={createProduct} className='button-disabled'>Add new Product</button>
-
             <div className="pagination">
-                {Array.from({ length: Math.ceil(products.length / productsPerPage) }, (_, index) => (
+                {/* {Array.from({ length: Math.ceil(products.length / productsPerPage) }, (_, index) => (
                     <button key={index + 1} onClick={() => paginate(index + 1)}>
                         {index + 1}
                     </button>
-                ))}
+                ))} */}
+                {paginationDisplayArray().map(idx => {
+                    if (idx == currentPage) {
+                        return (<button key={idx} onClick={() => paginate(idx)} className='pagination-active'>
+                            Page {idx}
+                        </button>)
+                    } else {
+                        return (<button key={idx} onClick={() => paginate(idx)}>
+                            {idx}
+                        </button>)
+                    }})}
             </div>
 
             <Tooltip
@@ -261,6 +286,9 @@ function ProductPortfolioEditable() {
                 content={tooltipState[1]}
                 isOpen={isOpen}
             />
+            <div className='margin-top-20'>
+                <button onClick={createProduct} className='button-disabled'>Add new Product</button>
+            </div>
         </div>
     );
 }
