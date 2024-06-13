@@ -85,17 +85,11 @@ function ProductPortfolioEditable() {
     // Functions for editing a product
     function selectCountry(countries) {
         return (
-            <>
-                <select id="country_id" name="country_id" onChange={handleInputChange}>
-                    {countries.map((country, idx) => {
-                        if (editedProduct.country_id == country.country_id) {
-                            return (<option key={idx} value={country.country_id} selected>{country.country_name}</option>);
-                        } else {
-                            return (<option key={idx} value={country.country_id}>{country.country_name}</option>);
-                        }
-                    })}
-                </select>
-            </>
+            <select id="country_id" name="country_id" onChange={handleInputChange} value={editedProduct.country_id}>
+                {countries.map((country, idx) => {
+                    return (<option key={idx} value={country.country_id}>{country.country_name}</option>)
+                })}
+            </select>
         )
     }
 
@@ -216,64 +210,78 @@ function ProductPortfolioEditable() {
 
     return (
         <div className='p-5'>
-            <h3 className='p-2'>Editable product portfolio</h3>
+            <h3 className='p-2'>Product Portfolio</h3>
             {products.length > 0 ? (
                 <div className="product-list">
                     {currentProducts.map((product) => (
                         <div key={product.id} className="product-item">
-                            <img src={product.image_url} alt={product.product_name} className="product-image" />
-                            <div className="product-details">
+                            <div className='w-full flex flex-shrink'>
                                 {editingProductId === product.id ? (
-                                    <div className=''>
-                                        <p>
-                                            <strong>Product Number:</strong> {product.id}
-                                        </p>
-                                        <p className='product-details-row'>
-                                            <strong>Product Name:</strong>
-                                            {inputField('text', 'product_name', editedProduct.product_name)}
-                                        </p>
+                                    <div className='w-full flex flex-shrink gap-1'>
+                                        <div className='flex-shrink'>
+                                            <img src={product.image_url} alt={product.product_name} className="product-image" />
+                                        </div>
+                                        <div className='flex flex-col flex-grow'>
+                                            <div align='left' className='float-left w-full'>
+                                                <p className='product-details-row'>
+                                                    <strong>Product Number:</strong> {product.id}
+                                                </p>
+                                                <p className='product-details-row'>
+                                                    <strong>Product Name:</strong>
+                                                    {inputField('text', 'product_name', editedProduct.product_name)}
+                                                </p>
 
-                                        <p className='product-details-row'>
-                                            <strong>Production Country:</strong>
-                                            {selectCountry(countries)}
-                                        </p>
+                                                <p className='product-details-row'>
+                                                    <strong>Production&nbsp;Country:</strong>
+                                                    {selectCountry(countries)}
+                                                </p>
 
-                                        <p className='product-details-row'>
-                                            <strong>Color:</strong>
-                                            &nbsp;&nbsp;Choose
-                                            <input type="color" value={editedProduct.color} name='color' id="colorPicker" onChange={() => colorPicked()} />
-                                            Code
-                                            {inputField('text', 'color', editedProduct.color)}
-                                        </p>
+                                                <p className='product-details-row'>
+                                                    <strong>Color:</strong>
+                                                    &nbsp;&nbsp;Choose
+                                                    <input type="color" value={editedProduct.color} name='color' id="colorPicker" onChange={() => colorPicked()} />
+                                                    Code
+                                                    {inputField('text', 'color', editedProduct.color)}
+                                                </p>
 
-                                        <p className='product-details-row'>
-                                            <strong>Weight:</strong>
-                                            {inputField('text', 'weight', editedProduct.weight)}
-                                            <label>{WEIGHT_UNIT}</label>
-                                        </p>
+                                                <p className='product-details-row'>
+                                                    <strong>Weight:</strong>
+                                                    {inputField('text', 'weight', editedProduct.weight)}
+                                                    <label>{WEIGHT_UNIT}</label>
+                                                </p>
 
-                                        <p className='product-details-row'>
-                                            <strong>Price:</strong>
-                                            {inputField('text', 'price', editedProduct.price)}
-                                            <label>{editedProduct.price_currency}</label>
-                                        </p>
-
-                                        <button onClick={() => handleSaveClick(product.id)}>Save</button>
+                                                <p className='product-details-row'>
+                                                    <strong>Price:</strong>
+                                                    {inputField('text', 'price', editedProduct.price)}
+                                                    <label>{editedProduct.price_currency}</label>
+                                                </p>
+                                            </div>
+                                            <div>
+                                                <button onClick={() => handleSaveClick(product.id)} className='bg-sky-800 py-1 mt-2 float-right'>Save</button>
+                                            </div>
+                                        </div>
                                     </div>
                                 ) : (
-                                    <div className='gap-y-20'>
-                                        <p><strong>Product Number:</strong> {product.id}</p>
-                                        <p><strong>Product Name:</strong> {product.product_name}</p>
-                                        <p><strong>Production Country:</strong> {product.country_name}</p>
-                                        <p><strong>Color:</strong>
-                                            <span className='color-show' style={{ display: 'inline-block', backgroundColor: product.color }}></span>
-                                            {product.color}
-                                        </p>
-                                        <p><strong>Weight:</strong> {product.weight ? product.weight : '-'} {WEIGHT_UNIT}</p>
-                                        <p><strong>Price:</strong> {product.price ? product.price : '-'} {product.price_currency}</p>
-                                        <div className="button-group">
-                                            <button onClick={() => handleEditClick(product)}>Edit</button>
-                                            <button onClick={() => deleteProduct} className='button-disabled'>Delete</button>
+                                    <div className='w-full flex flex-shrink gap-1'>
+                                        <div className=''>
+                                            <img src={product.image_url} alt={product.product_name} className="product-image" />
+                                        </div>
+                                        <div className='flex flex-col flex-grow'>
+                                            <div align='left' className='float-left w-full'>
+                                                <p><strong>Product Number:</strong> {product.id}</p>
+                                                <p><strong>Product Name:</strong> {product.product_name}</p>
+                                                <p><strong>Production&nbsp;Country:</strong> {product.country_name}</p>
+                                                <p><strong>Color:</strong>
+                                                    <span className='color-show' style={{ display: 'inline-block', backgroundColor: product.color }}></span>
+                                                    {product.color}
+                                                </p>
+                                                <p><strong>Weight:</strong> {product.weight ? product.weight : '-'} {WEIGHT_UNIT}</p>
+                                                <p><strong>Price:</strong> {product.price ? product.price : '-'} {product.price_currency}</p>
+                                            </div>
+                                            <div className="flex flex-row-reverse gap-1">
+                                                <button onClick={() => handleEditClick(product)} className='bg-sky-600 mt-2 py-1 float-right float-end'>Edit</button>
+                                                <button onClick={() => deleteProduct} className='mt-2 py-1 bg-gray-400 hover:bg-gray-400 float-right float-end' disabled>Delete</button>
+                                            </div>
                                         </div>
                                     </div>
                                 )}
@@ -310,7 +318,7 @@ function ProductPortfolioEditable() {
                 isOpen={isOpen}
             />
             <div className='margin-top-20'>
-                <button onClick={createProduct} className='button-disabled'>Add new Product</button>
+                <button onClick={createProduct} className='bg-gray-400 hover:bg-gray-400' disabled>Add new Product</button>
             </div>
         </div>
     );

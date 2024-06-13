@@ -21,6 +21,8 @@
         let drawmode = 'run';
         let canvas;
         let ctx;
+        let scaleX;
+        let scaleY;
         let bgImage = new Image();
         let rocket;
         let score = 0;
@@ -29,12 +31,7 @@
         let ufos = [];
         let shots = [];
 
-        let RestartButtonRect = {
-            x: 225,
-            y: 225,
-            width: 150,
-            height: 50,
-        };
+        let RestartButtonRect = {}
 
         document.addEventListener('keydown', (e) => {
             if (['ArrowUp', 'KeyW'].includes(e.code))
@@ -100,37 +97,52 @@
         }
 
         function drawMenu() {
-            ctx.fillStyle = '#aaaaaa';
+            // Board texture and Game over text
+            ctx.fillStyle = '#bfbfd2';
+            ctx.fillRect(canvas.width / 2 - 300, canvas.height / 2 - 150, 600, 250);
+            ctx.font = "24px Arial";
+            ctx.fillStyle = '#000000';
+            ctx.fillText("Game over", canvas.width / 2, canvas.height / 2 - 75);
+
+            // Restart Button
+            RestartButtonRect = {
+                x: 450,
+                y: 340,
+                width: 300,
+                height: 55,
+            };
             ctx.beginPath();
-            ctx.rect(canvas.width / 2 - 100, canvas.height / 2 - 30, 200, 125);
+            ctx.rect(RestartButtonRect.x, RestartButtonRect.y, RestartButtonRect.width, RestartButtonRect.height);
+            ctx.fillStyle = 'rgba(80,111,80,1)';
             ctx.fill();
             ctx.lineWidth = 2;
             ctx.strokeStyle = '#000000';
             ctx.stroke();
             ctx.closePath();
-            ctx.font = "24px Arial";
-            ctx.fillStyle = '#000000';
-            ctx.fillText("Game over", canvas.width / 2, canvas.height / 2);
-            drawRestartButton(RestartButtonRect);
+            ctx.font = '24px Arial';
+            ctx.fillStyle = '#ffffff';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillText('Start new game', canvas.width / 2, canvas.height / 2 + 20);
         }
 
         function drawScoreboard() {
             ctxSb.fillStyle = '#ffffff';
             ctxSb.fillRect(0, 0, scoreboard.width, scoreboard.height);
-            ctxSb.font = "16px Arial";
+            ctxSb.font = "24px Arial";
             ctxSb.fillStyle = '#000000';
             ctxSb.textAlign = 'center';
             let str = "Score: " + String(score) + "      Missed: " + String(missed)
             ctxSb.fillText(str, scoreboard.width / 2, scoreboard.height / 2);
-            
+
             requestAnimationFrame(drawScoreboard);
         }
 
         function getMousePos(canvas, event) {
-            let RestartButtonRect = canvas.getBoundingClientRect();
+            let BoundingClientRect = canvas.getBoundingClientRect();
             return {
-                x: event.clientX - RestartButtonRect.left,
-                y: event.clientY - RestartButtonRect.top,
+                x: (event.clientX - BoundingClientRect.left) * scaleX,
+                y: (event.clientY - BoundingClientRect.top) * scaleY,
             };
         }
 
@@ -151,26 +163,9 @@
             }
         }
 
-        // Question code
-        function drawRestartButton(RestartButtonRect, lWidth, fillColor, lineColor) {
-            ctx.beginPath();
-            ctx.rect(RestartButtonRect.x, RestartButtonRect.y, RestartButtonRect.width, RestartButtonRect.height);
-            ctx.fillStyle = 'rgba(80,166,80,1)';
-            ctx.fill();
-            ctx.lineWidth = 2;
-            ctx.strokeStyle = '#000000';
-            ctx.stroke();
-            ctx.closePath();
-            ctx.font = '16pt Arial';
-            ctx.fillStyle = '#000000';
-            ctx.textAlign = 'center';
-            ctx.textBaseline = 'middle';
-            ctx.fillText('Restart', canvas.width / 2, canvas.height / 2 + 50);
-        }
-
         function moveLeft(ufo) {
             if (!ufo.hit) {
-                ufo.x -= 3;
+                ufo.x -= 6;
             }
             if (ufo.x < - ufo.width) {
                 idx = ufos.indexOf(ufo);
@@ -180,7 +175,7 @@
         }
 
         function moveRight(shot) {
-            shot.x += 15
+            shot.x += 30
             if (shot.x > canvas.width) {
                 idx = shots.indexOf(shot);
                 shots.splice(idx, 1);
@@ -190,16 +185,16 @@
         function update() {
             if (KEY_UP) {
                 if (rocket.y >= 0)
-                    rocket.y -= 5
+                    rocket.y -= 10
             }
             if (KEY_DOWN) {
                 if (rocket.y + rocket.height <= canvas.height)
-                    rocket.y += 5
+                    rocket.y += 10
             }
             if (KEY_LEFT)
-                if (rocket.x >= 0) rocket.x -= 5;
+                if (rocket.x >= 0) rocket.x -= 10;
             if (KEY_RIGHT)
-                if (rocket.x + rocket.width <= canvas.width) rocket.x += 5;
+                if (rocket.x + rocket.width <= canvas.width) rocket.x += 10;
 
             ufos.forEach(moveLeft)
             shots.forEach(moveRight)
@@ -208,7 +203,7 @@
         function createUfo() {
             let h = 50
             let ufo = {
-                x: 600,
+                x: canvas.width,
                 y: Math.floor(Math.random() * (canvas.height - h)),
                 width: 80,
                 height: h,
@@ -282,6 +277,8 @@
         function startGame() {
             canvas = document.getElementById('canvas');
             ctx = canvas.getContext('2d');
+            scaleX = canvas.width / canvas.offsetWidth;
+            scaleY = canvas.height / canvas.offsetHeight;
             initRocket();
             loadImages();
             loop1 = setInterval(update, 1000 / 30);
@@ -308,8 +305,10 @@
 </head>
 
 <body onload="startGame()">
-    <canvas id="canvas" width="600" height="400"></canvas>
-    <canvas id="scoreboard" width="600" height="30"></canvas>
+    <canvas id="canvas" width="1200" height="700" style='width: 600px; height: 350px;'>
+    </canvas>
+    <canvas id="scoreboard" width="1200" height="60" style='width: 600px; height: 30px;'>
+    </canvas>
 </body>
 
 </html>

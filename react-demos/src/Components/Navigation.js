@@ -16,12 +16,12 @@ export default function NavigationNext() {
   ];
 
   return (
-    <Navbar onMenuOpenChange={setIsMenuOpen} className="bg-gray-700 text-white h-12 mt-1">
+    <Navbar onMenuOpenChange={setIsMenuOpen} className="bg-gray-950 text-white h-12 mt-1">
 
       <NavbarContent>
         <NavbarMenuToggle
           aria-label={isMenuOpen ? "Close menu" : "Open menu"}
-          className="sm:hidden bg-gray-900 h-11 mt-3"
+          className="sm:hidden bg-gray-900 hover:bg-gray-600 h-11 mt-3"
         />
         <NavbarBrand>
           <img src={icon} className="mt-2 w-7 animate-spin-slow" />

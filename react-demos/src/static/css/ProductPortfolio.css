@@ -18,25 +18,24 @@ h3 {
 }
 
 .product-item {
-    background: #f9f9f9;
+    background: #e9e9e9;
     border: 1px solid #ddd;
     border-radius: 5px;
     padding: 15px;
     width: 400px;
-    flex: auto;
-    /* Adjust width as needed */
+    flex: 1 1 auto;
+    min-width: 400px;
+    height: auto;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     display: flex;
-    /* Use flexbox to align image and text side by side */
     gap: 15px;
-    /* Space between image and text */
 }
 
 .product-image {
     width: 100px;
-    /* Adjust width as needed */
-    height: 200px;
+    height: 175px;
     border-radius: 5px;
+    flex: 1 1 auto;
 }
 
 .product-details {
@@ -49,6 +48,7 @@ h3 {
 
 .product-details-row {
     display: flex;
+    flex-wrap: nowrap;
 }
 
 .product-details-row strong {
@@ -58,7 +58,7 @@ h3 {
 
 .product-details-row input {
     margin: 0 5px;
-    flex: 1 0 auto;
+    flex: 1 1 auto;
     min-height: 15px;
     max-height: 22px;
     font-size: small;
@@ -67,10 +67,9 @@ h3 {
 
 .product-details-row select {
     margin: 0 5px;
-    flex: 1 0 auto;
+    flex: 1 1 auto;
     min-height: 15px;
     max-height: 22px;
-    max-width: 200px;
     font-size: small;
     padding: 0 2px 0 5px;
 }
