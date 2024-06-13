@@ -195,8 +195,7 @@ function ProductPortfolioEditable() {
 
     return (
         <div className="product-portfolio">
-
-            <h3>Edit products</h3>
+            <h3>Editable product portfolio</h3>
             {products.length > 0 ? (
                 <div className="product-list">
                     {currentProducts.map((product) => (

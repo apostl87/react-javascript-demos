@@ -9,10 +9,12 @@ function NavigationBar() {
         <nav>
             <Navbar>
             <span align='left'><img align='left' src={logo} className="App-logo" alt="logo" /></span>
-                <Nav>
+                <Navbar.Body>
+                    <Nav>
                     <Nav.Item icon={<PinedIcon />}>Home</Nav.Item>
                     <Nav.Item href="/productportfolio">Example Product Portfolio</Nav.Item>
-                    <Nav.Menu title="About">
+                    <Nav.Item href="/spacegame">Example JS Spacegame</Nav.Item>
+                    <Nav.Item><Nav.Menu title="About">
                         <Nav.Item>Company</Nav.Item>
                         <Nav.Item>Team</Nav.Item>
                         <Nav.Menu title="Contact">
@@ -20,10 +22,9 @@ function NavigationBar() {
                             <Nav.Item>Via telephone</Nav.Item>
                         </Nav.Menu>
                     </Nav.Menu>
+                    </Nav.Item>
                 </Nav>
-                <Nav pullRight>
-                    <Nav.Item icon={<CogIcon />}>Settings</Nav.Item>
-                </Nav>
+                </Navbar.Body>
             </Navbar>
         </nav>
     );
