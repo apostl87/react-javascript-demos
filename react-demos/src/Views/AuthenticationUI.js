@@ -19,11 +19,11 @@ export default function AuthenticationUI() {
                         Login
                     </NavbarItem>
                 </Link>
-                <Link href="" className="text-black hover:text-gray-300 hover:no-underline">
+                {/* <Link href="" className="text-black hover:text-gray-300 hover:no-underline">
                     <NavbarItem className="lg:flex bg-gray-400 hover:bg-gray-600 pt-0 pb-0 pl-2 pr-2 rounded-md">
                         Sign Up
                     </NavbarItem>
-                </Link>
+                </Link> */}
             </NavbarContent>)
     } else if (!isLoading && user) {
         return (
