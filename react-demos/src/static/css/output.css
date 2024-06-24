@@ -1841,6 +1841,10 @@ input[type="range"]::-ms-fill-lower {
   width: 0.875rem;
 }
 
+.w-32 {
+  width: 8rem;
+}
+
 .w-36 {
   width: 9rem;
 }

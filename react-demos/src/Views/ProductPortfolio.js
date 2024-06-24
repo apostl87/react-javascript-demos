@@ -52,7 +52,7 @@ function ProductPortfolioEditable() {
     }
 
     function updateProduct(id) {
-        console.log(editedProduct)
+        //console.log(editedProduct)
         fetch(`http://localhost:3001/products/${id}`, {
             method: 'PUT',
             headers: {
@@ -192,9 +192,9 @@ function ProductPortfolioEditable() {
     }
 
     // Pagination
-    useEffect(() => {
-        console.log(products.length)
-    })
+    // useEffect(() => {
+    //     console.log(products.length)
+    // })
     const indexOfLastProduct = Math.min(currentPage * productsPerPage, products.length);
     const indexOfFirstProduct = indexOfLastProduct - productsPerPage;
     const currentProducts = products.slice(indexOfFirstProduct, indexOfLastProduct);

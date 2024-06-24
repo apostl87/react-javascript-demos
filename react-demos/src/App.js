@@ -4,11 +4,12 @@ import Navigation from './Components/Navigation';
 import ProductPortfolio from './Views/ProductPortfolio';
 import Home from './Views/Home';
 import SpaceGame from './Views/SpaceGame';
+import Profile from './Views/Profile';
 
 function App() {
   return (
     <div className="App">
-      <Router>
+
         <div className="App-Header">
           <Navigation />
         </div>
@@ -19,9 +20,9 @@ function App() {
             <Route exact path='/' element={<Home />} />
             <Route exact path='/about' element={null} />
             <Route exact path='/contact' element={null} />
+            <Route exact path='/profile' element={<Profile />} />
           </Routes>
         </div>
-      </Router >
     </div>
   );
 }

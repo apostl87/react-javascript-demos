@@ -2,13 +2,11 @@ import React from "react";
 import { useLocation } from "react-router-dom";
 import { Navbar, NavbarBrand, NavbarContent, NavbarItem, NavbarMenuToggle, NavbarMenu, NavbarMenuItem, Link, Button } from "@nextui-org/react";
 import icon from './Icon_Brand_small.png';
-import { useAuth0 } from "@auth0/auth0-react";
+import AuthenticationUI from "../Views/AuthenticationUI";
 
 export default function NavigationNext() {
   const [isMenuOpen, setIsMenuOpen] = React.useState(false);
   const location = useLocation();
-  const { loginWithRedirect, logout, user, isLoading } = useAuth0();
-  console.log(user)
 
   const menuItems = [
     "Home",
@@ -52,40 +50,9 @@ export default function NavigationNext() {
       <div className="w-32"></div>
 
       {/* Auth section */}
-      {!isLoading && !user && (
-        <NavbarContent justify="end" className="text-white pt-3 gap-1">
-          <Link onClick={loginWithRedirect} href="#" className="text-black hover:text-gray-300 hover:no-underline">
-            <NavbarItem className="lg:flex bg-white hover:bg-gray-600 pt-0 pb-0 pl-2 pr-2 rounded-md">
-              Login
-            </NavbarItem>
-          </Link>
-          <Link href="#" className="text-black hover:text-gray-300 hover:no-underline">
-            <NavbarItem className="lg:flex bg-gray-400 hover:bg-gray-600 pt-0 pb-0 pl-2 pr-2 rounded-md">
-              Sign Up
-            </NavbarItem>
-          </Link>
-        </NavbarContent>
-      )}
-      {!isLoading && user && (
-        <NavbarContent justify="end" className="text-white pt-3 gap-1">
-          <div className="text-xxs">(logged in as {user.name})</div>
-          <Link onClick={logout} href="#" className="text-black hover:text-gray-300 hover:no-underline">
-            <NavbarItem className="lg:flex bg-white hover:bg-gray-600 pt-0 pb-0 pl-2 pr-2 rounded-md">
-              Logout
-            </NavbarItem>
-          </Link>
-        </NavbarContent>
-      )}
-      {isLoading && (
-        <NavbarContent justify="end" className="text-white pt-3 gap-1">
-          <Link href="#" className="text-black hover:text-gray-300 hover:no-underline">
-            <NavbarItem className="lg:flex bg-gray-200 pt-0 pb-0 pl-2 pr-2 rounded-md disabled">
-              Loading ...
-            </NavbarItem>
-          </Link>
-        </NavbarContent>
-      )}
+      <AuthenticationUI />
 
+      {/* Collapsable menu for mobile devices and small-width-screens */}
       <NavbarMenu className="top-13">
         {menuItems.map((item, index) => (
           <NavbarMenuItem key={`${item}-${index}`}>
