@@ -14,7 +14,12 @@ export default function AuthenticationUI() {
     if (!isLoading && !user) {
         return (
             <NavbarContent justify="end" className="text-white pt-3 gap-1">
-                <Link onClick={loginWithRedirect} href="" className="text-black hover:text-gray-300 hover:no-underline">
+                <Link onClick={() => loginWithRedirect({
+                      appState: {
+                        returnTo: window.location.pathname
+                      }
+                    })}
+                    href="" className="text-black hover:text-gray-300 hover:no-underline">
                     <NavbarItem className="lg:flex bg-white hover:bg-gray-600 pt-0 pb-0 pl-2 pr-2 rounded-md">
                         Login
                     </NavbarItem>

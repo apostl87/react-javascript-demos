@@ -9,7 +9,6 @@ import Profile from './Views/Profile';
 function App() {
   return (
     <div className="App">
-
         <div className="App-Header">
           <Navigation />
         </div>
