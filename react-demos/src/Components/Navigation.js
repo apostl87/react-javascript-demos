@@ -12,7 +12,6 @@ export default function NavigationNext() {
     "Home",
     "Product Portfolio Example",
     "Space Game Example",
-    "About",
     "Contact",
   ];
 

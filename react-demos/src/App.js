@@ -6,6 +6,7 @@ import ProductPortfolio from './Views/ProductPortfolio';
 import Home from './Views/Home';
 import SpaceGame from './Views/SpaceGame';
 import Profile from './Views/Profile';
+import Contact from './Views/Contact';
 
 function App() {
   return (
@@ -15,12 +16,11 @@ function App() {
         </div>
         <div>
           <Routes>
-            <Route exact path='/productportfolioexample' element={<ProductPortfolio />} />
-            <Route exact path='/spacegameexample' element={<SpaceGame />} />
             <Route exact path='/' element={<Home />} />
             <Route exact path='/home' element={<Home />} />
-            <Route exact path='/about' element={null} />
-            <Route exact path='/contact' element={null} />
+            <Route exact path='/productportfolioexample' element={<ProductPortfolio />} />
+            <Route exact path='/spacegameexample' element={<SpaceGame />} />
+            <Route exact path='/contact' element={<Contact />} />
             <Route exact path='/profile' element={<Profile />} />
             <Route path='*' element={<NotFound />} />
           </Routes>
