@@ -7,7 +7,6 @@ import Home from './Views/Home';
 import SpaceGame from './Views/SpaceGame';
 import Profile from './Views/Profile';
 import Contact from './Views/Contact';
-import Navbar from './Components/Navbar';
 
 function App() {
   return (
