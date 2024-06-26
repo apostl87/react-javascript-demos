@@ -1,16 +1,13 @@
-import React from "react";
+import { React, useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import { Navbar, NavbarBrand, NavbarContent, NavbarItem, NavbarMenuToggle, NavbarMenu, NavbarMenuItem, Link, Button } from "@nextui-org/react";
 import icon from './Icon_Brand_small.png';
 import AuthenticationUI from "../Views/AuthenticationUI";
-import '../static/css/NavbarItemCustom.css';
 import NavbarItemCustom from "./NavbarItem";
-import NavbarMenuItemCustom from "./NavbarMenuItem";
+import NavmenuItemCustom from "./NavmenuItem";
 
 export default function NavigationNext() {
-  const [isMenuOpen, setIsMenuOpen] = React.useState(false);
-
-  const location = useLocation();
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const menuItems = [
     { label: "Home", to: "home" },
@@ -40,7 +37,7 @@ export default function NavigationNext() {
       <NavbarContent className="hidden sm:flex gap-2 text-white pt-3" justify="center">
         {menuItems.map((item, index) => {
           return (
-            <NavbarItemCustom label={item.label} to={item.to} subMenu={item.subMenu} />
+            <NavbarItemCustom key={index} label={item.label} to={item.to} subMenu={item.subMenu} />
           );
         })}
       </NavbarContent>
@@ -51,13 +48,14 @@ export default function NavigationNext() {
       <AuthenticationUI />
 
       {/* Collapsable menu for mobile devices and small-width-screens */}
-      <NavbarMenu className="top-13">
+      <NavbarMenu className="top-13 gap-1">
         {menuItems.map((item, index) => {
           return (
-            <NavbarMenuItemCustom label={item.label} to={item.to} subMenu={item.subMenu} />
+            <NavmenuItemCustom key={index} label={item.label} to={item.to} subMenu={item.subMenu} />
           );
         })}
       </NavbarMenu>
+
     </Navbar>
   );
 }

@@ -2714,6 +2714,10 @@ input[type="range"]::-ms-fill-lower {
   white-space: nowrap;
 }
 
+.text-wrap {
+  text-wrap: wrap;
+}
+
 .text-nowrap {
   text-wrap: nowrap;
 }
