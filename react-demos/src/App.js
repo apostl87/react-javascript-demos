@@ -7,24 +7,25 @@ import Home from './Views/Home';
 import SpaceGame from './Views/SpaceGame';
 import Profile from './Views/Profile';
 import Contact from './Views/Contact';
+import Navbar from './Components/Navbar';
 
 function App() {
   return (
     <div className="App">
-        <div className="App-Header">
-          <Navigation />
-        </div>
-        <div>
-          <Routes>
-            <Route exact path='/' element={<Home />} />
-            <Route exact path='/home' element={<Home />} />
-            <Route exact path='/productportfolioexample' element={<ProductPortfolio />} />
-            <Route exact path='/spacegameexample' element={<SpaceGame />} />
-            <Route exact path='/contact' element={<Contact />} />
-            <Route exact path='/profile' element={<Profile />} />
-            <Route path='*' element={<NotFound />} />
-          </Routes>
-        </div>
+      <div className="App-Header">
+        <Navigation />
+      </div>
+      <div>
+        <Routes>
+          <Route exact path='/' element={<Home />} />
+          <Route exact path='/home' element={<Home />} />
+          <Route exact path='/examples/manage-product-portfolio' element={<ProductPortfolio />} />
+          <Route exact path='/spacegameexample' element={<SpaceGame />} />
+          <Route exact path='/contact' element={<Contact />} />
+          <Route exact path='/profile' element={<Profile />} />
+          <Route path='*' element={<NotFound />} />
+        </Routes>
+      </div>
     </div>
   );
 }
