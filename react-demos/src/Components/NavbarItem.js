@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import '../static/css/Navigation.css';
 
 const NavbarItemCustom = ({ label, to, subMenu }) => {
     const [isHovered, setIsHovered] = useState(false);

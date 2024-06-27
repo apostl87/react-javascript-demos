@@ -13,7 +13,7 @@ const Profile = () => {
       <h3 className="p-2">
         Your Profile
       </h3>
-      <div className="profile-content flex items-center justify-center flex-row">
+      <div className="profile-content flex justify-center flex-row items-stretch">
         <div>
           <img
             src={user.picture}
@@ -46,6 +46,12 @@ const Profile = () => {
             )}
           </tr>
         </table>
+        <div>
+          <button className="button-standard">
+            Edit
+          </button>
+        </div>
+
       </div>
     </div>
   );

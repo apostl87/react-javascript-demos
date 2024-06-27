@@ -273,7 +273,7 @@ h3 {
   margin-top: 20px;
 }
 
-.button-product-portfolio {
+.button-standard {
   padding: 10px 20px;
   border: none;
   border-radius: 5px;
@@ -282,7 +282,6 @@ h3 {
   cursor: pointer;
   transition: background-color 0.3s;
   vertical-align: bottom;
-  margin-top: 8px;
 }
 
 .button-disabled {
@@ -309,23 +308,18 @@ button:hover {
   margin-bottom: 15px;
 }
 
-.pagination button {
-  margin: 0 5px;
+.button-pagination {
+  margin-right: 4px;
   padding: 5px 10px;
   border: 1px solid #ddd;
   border-radius: 3px;
-  background-color: #f9f9f9;
+  background-color: #97adc2;
   color: #333;
   cursor: pointer;
   transition: background-color 0.3s;
 }
 
-button.pagination-active {
-  background-color: #007bff;
-  color: white;
-}
-
-.pagination button:hover {
+.button-pagination:hover {
   background-color: #e0e0e0;
 }
 

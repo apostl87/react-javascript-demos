@@ -238,11 +238,11 @@ function ProductPortfolioEditable() {
     return (
 
         <div className='p-5'>
-            <h3 className='p-2'>
+            <h3 className='p-2 pl-0 text-left'>
                 Product Portfolio
             </h3>
 
-            <div className='flex flex-row justify-center'>
+            <div className='flex flex-row justify-left'>
                 <input
                     id="searchStringInput"
                     className='my-auto h-8 w-auto'
@@ -308,7 +308,7 @@ function ProductPortfolioEditable() {
                                                 </p>
                                             </div>
                                             <div className='flex flex-row-reverse gap-1'>
-                                                <button onClick={() => handleSaveClick(product.id)} className='button-product-portfolio'>Save</button>
+                                                <button onClick={() => handleSaveClick(product.id)} className='button-standard'>Save</button>
                                             </div>
                                         </div>
                                     </div>
@@ -330,8 +330,8 @@ function ProductPortfolioEditable() {
                                                 <p><strong>Price:</strong> {product.price ? product.price : '-'} {product.price_currency}</p>
                                             </div>
                                             <div className="flex flex-row-reverse gap-1">
-                                                <button onClick={() => handleEditClick(product)} className='button-product-portfolio'>Edit</button>
-                                                <button onClick={() => deleteProduct} className='button-product-portfolio button-disabled' disabled>Delete</button>
+                                                <button onClick={() => handleEditClick(product)} className='button-standard'>Edit</button>
+                                                <button onClick={() => deleteProduct} className='button-standard button-disabled' disabled>Delete</button>
                                             </div>
                                         </div>
                                     </div>
@@ -353,7 +353,7 @@ function ProductPortfolioEditable() {
                 isOpen={isOpen} />
 
             <div className='margin-top-20'>
-                <button onClick={createProduct} className='button-product-portfolio button-disabled' disabled>Add new Product</button>
+                <button onClick={createProduct} className='button-standard button-disabled' disabled>Add new Product</button>
             </div>
         </div>
     );
