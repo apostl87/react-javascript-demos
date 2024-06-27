@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import '../static/css/Navigation.css';
 
 const NavmenuItemCustom = ({ label, to, subMenu }) => {
   const [isOpen, setIsOpen] = useState(isActive(to));

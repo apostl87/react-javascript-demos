@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useRef } from 'react';
-import '../static/css/ProductPortfolio.css'; // Import the CSS file
 import { Tooltip } from 'react-tooltip';
 import PaginationBar from '../Components/PaginationBar';
 
