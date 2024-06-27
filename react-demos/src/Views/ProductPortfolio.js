@@ -252,8 +252,8 @@ function ProductPortfolioEditable() {
                     value={searchString}
                     onChange={e => { filterProducts(products, e.target.value, setIsFiltered) }}
                 />
-                <div className={(!isFiltered ? 'hidden ' : '') + 'my-auto pl-2'}>
-                    <a onClick={() => {document.getElementById('searchStringInput').value = ''}} href="javascript:;">
+                <div className='my-auto pl-2'>
+                    <a onClick={() => {document.getElementById('searchStringInput').value = ''}} className='cursor-pointer'>
                         Clear
                     </a>
                 </div>

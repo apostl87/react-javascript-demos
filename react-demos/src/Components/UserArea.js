@@ -1,10 +1,12 @@
 import { React, useState, useRef } from "react";
+import { useNavigate } from "react-router-dom";
 import { NavbarContent, NavbarItem, Link } from "@nextui-org/react";
 import { useAuth0 } from "@auth0/auth0-react";
 import iconUser from "../media/icon-user.png"
 
 export default function UserArea() {
     const { loginWithRedirect, logout, user, isLoading } = useAuth0();
+    const navigate = useNavigate();
     const [userAreaOpen, setUserAreaOpen] = useState(false);
     const userArea = useRef(null)
     const userAreaIcon = useRef(null)
@@ -51,7 +53,7 @@ export default function UserArea() {
                         <div className="user-area-info">
                             Logged in as <br />{user.name}
                         </div>
-                        <button href="/profile" className="user-area-link">
+                        <button className="user-area-link" onClick={() => navigate('/profile')}>
                             <div align="right">
                                 Profile
                             </div>
