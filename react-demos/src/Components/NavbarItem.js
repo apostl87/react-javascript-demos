@@ -11,7 +11,7 @@ const NavbarItemCustom = ({ label, to, subMenu }) => {
 
     return (
         <div
-            className={(isActive(to) ? "navbar-item-active " : "") + "navbar-item hover:bg-gray-600 pt-2 pb-2 text-white rounded-md"}
+            className={(isActive(to) ? "navbar-item-active " : "") + "navbar-item hover:bg-gray-600 text-white rounded-md"}
             onMouseEnter={() => setIsHovered(true)}
             onMouseLeave={() => setIsHovered(false)}
         >

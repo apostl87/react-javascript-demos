@@ -14,7 +14,7 @@ export default function Navigation() {
     {
       label: "Demo examples", to: "examples",
       subMenu: [
-        { label: "Manage product portfolio", to: "manage-product-portfolio" },
+        { label: "Manage product portfolio (no login required)", to: "manage-product-portfolio" },
         { label: "Space game", to: "space-game" },
       ]
     },
