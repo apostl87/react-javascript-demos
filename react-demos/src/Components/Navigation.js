@@ -6,7 +6,7 @@ import UserArea from "../Components/UserArea";
 import NavbarItemCustom from "./NavbarItem";
 import NavmenuItemCustom from "./NavmenuItem";
 
-export default function NavigationNext() {
+export default function Navigation() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const menuItems = [
