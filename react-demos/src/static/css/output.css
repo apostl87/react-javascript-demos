@@ -1304,14 +1304,6 @@ input[type="range"]::-ms-fill-lower {
   z-index: auto;
 }
 
-.float-end {
-  float: inline-end;
-}
-
-.float-right {
-  float: right;
-}
-
 .float-left {
   float: left;
 }
@@ -1334,6 +1326,10 @@ input[type="range"]::-ms-fill-lower {
 
 .m-0 {
   margin: 0px;
+}
+
+.m-auto {
+  margin: auto;
 }
 
 .-mx-1 {
@@ -3690,16 +3686,6 @@ input[type="range"]::-ms-fill-lower {
   background-color: hsl(var(--nextui-secondary) / 0.2);
 }
 
-.bg-sky-600 {
-  --tw-bg-opacity: 1;
-  background-color: rgb(2 132 199 / var(--tw-bg-opacity));
-}
-
-.bg-sky-800 {
-  --tw-bg-opacity: 1;
-  background-color: rgb(7 89 133 / var(--tw-bg-opacity));
-}
-
 .bg-success {
   --tw-bg-opacity: 1;
   background-color: hsl(var(--nextui-success) / var(--nextui-success-opacity, var(--tw-bg-opacity)));
@@ -5812,59 +5798,6 @@ code {
   }
 }
 
-.App {
-  text-align: center;
-}
-
-.App-logo {
-  height: 40px;
-  pointer-events: none;
-  margin: 6px 0 0 10px;
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
-}
-
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-
-  to {
-    transform: rotate(360deg);
-  }
-}
-
-.App-header {
-  background-color: #282c34;
-  min-height: 12vh;
-  display: flex;
-  flex-wrap: nowrap;
-  gap: 20px;
-  flex-direction: row;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
-}
-
-.App-link {
-  color: #61dafb;
-}
-
-.logo {
-  display: flex;
-  align-items: center;
-}
-
-.logo img {
-  height: 40px;
-  margin-right: 10px;
-}
-
 .placeholder\:text-danger::placeholder {
   --tw-text-opacity: 1;
   color: hsl(var(--nextui-danger) / var(--nextui-danger-opacity, var(--tw-text-opacity)));
@@ -7027,11 +6960,6 @@ code {
 .hover\:bg-gray-200:hover {
   --tw-bg-opacity: 1;
   background-color: rgb(229 231 235 / var(--tw-bg-opacity));
-}
-
-.hover\:bg-gray-400:hover {
-  --tw-bg-opacity: 1;
-  background-color: rgb(156 163 175 / var(--tw-bg-opacity));
 }
 
 .hover\:bg-gray-50:hover {

@@ -23,20 +23,35 @@ function ProductPortfolioEditable() {
     const [isOpen, setIsOpen] = useState(null);
     const [tooltipState, setTooltipState] = useState(['', '']); // [name of input field, tooltip text]
 
-    // HTTP requests
+    // Search filter hooks
+    const [isFiltered, setIsFiltered] = useState(false)
+    const [searchString, setSearchString] = useState('')
+    const [filteredProducts, setFilteredProducts] = useState([])
+
+    // Execution on initial loading: 1) HTTP requests to retreive data and 2) Initialization of filtered products
     useEffect(() => {
         getProducts();
         getCountries();
     }, []);
 
+    // Apply search string
+    // const filteredProducts = filterProducts(products, searchString, setIsFiltered)
+
+    // Current page parameters
+    const indexOfLastProduct = Math.min(currentPage * productsPerPage, filteredProducts.length) - 1;
+    const indexOfFirstProduct = Math.max(0, indexOfLastProduct - productsPerPage + 1)
+    const currentProducts = filteredProducts.slice(indexOfFirstProduct, indexOfLastProduct + 1);
+
+
+    // Helper functions
     function getProducts() {
         fetch('http://localhost:3001/')
             .then(response => response.json())
-            .then(data => filterAndSaveProductData(data));
+            .then(data => saveProductData(data));
     }
 
-    function filterAndSaveProductData(data) {
-        const filteredData = data.map(data => {
+    function saveProductData(data) {
+        const products = data.map(data => {
             return {
                 id: data.id,
                 product_name: data.product_name,
@@ -49,7 +64,31 @@ function ProductPortfolioEditable() {
                 country_name: data.country_name,
             };
         });
-        setProducts(filteredData);
+        setProducts(products);
+        setFilteredProducts(products);
+    }
+
+    function filterProducts(products, searchString, setFilteredFlag) {
+        setSearchString(searchString);
+        if (!searchString.trim()) {
+            setFilteredFlag(false);
+            setFilteredProducts(products);
+        } else {
+            setFilteredFlag(true);
+            setFilteredProducts(products.filter(product => {
+                for (let attribute in product) {
+                    if (typeof product[attribute] === 'string') {
+                        if (product[attribute].toLowerCase().includes(searchString.toLowerCase())) {
+                            return true;
+                        }
+                    } else {
+                        if (String(product[attribute]).toLowerCase().includes(searchString.toLowerCase())) {
+                            return true;
+                        }
+                    }
+                }
+            }))
+        }
     }
 
     function updateProduct(id) {
@@ -83,7 +122,7 @@ function ProductPortfolioEditable() {
             ));
     }
 
-    // Functions for editing a product
+    // Helper functions for editing a product
     function selectCountry(countries) {
         return (
             <select id="country_id" name="country_id" onChange={handleInputChange} value={editedProduct.country_id}>
@@ -118,11 +157,13 @@ function ProductPortfolioEditable() {
             />
         );
     }
+
     function handleEditClick(product) {
         setEditingProductId(product.id);
         delete product['country_name'];
         setEditedProduct(product)
     }
+
     function handleInputChange(e) {
         let { name, value } = e.target;
         if (name == 'weight') {
@@ -133,6 +174,7 @@ function ProductPortfolioEditable() {
         }
         setEditedProduct({ ...editedProduct, [name]: value });
     }
+
     function handleSaveClick(id) {
         let empty_var = null
         if (!editedProduct.product_name) {
@@ -193,19 +235,35 @@ function ProductPortfolioEditable() {
         editedProduct.color = value;
     }
 
-    // Pagination parameters
-    const indexOfLastProduct = Math.min(currentPage * productsPerPage, products.length) - 1;
-    const indexOfFirstProduct = indexOfLastProduct - productsPerPage + 1
-    const currentProducts = products.slice(indexOfFirstProduct, indexOfLastProduct + 1);
 
     return (
+
         <div className='p-5'>
             <h3 className='p-2'>
                 Product Portfolio
             </h3>
-            <PaginationBar currentPage={currentPage} switchPageFn={setCurrentPage} startIdx={indexOfFirstProduct} endIdx={indexOfLastProduct} nProducts={products.length} />
-            
-            {products.length > 0 ? (
+
+            <div className='flex flex-row justify-center'>
+                <input
+                    id="searchStringInput"
+                    className='my-auto h-8 w-auto'
+                    type="text"
+                    placeholder="Search"
+                    value={searchString}
+                    onChange={e => { filterProducts(products, e.target.value, setIsFiltered) }}
+                />
+                <div className={(!isFiltered ? 'hidden ' : '') + 'my-auto pl-2'}>
+                    <a onClick={() => {document.getElementById('searchStringInput').value = ''}} href="javascript:;">
+                        Clear
+                    </a>
+                </div>
+            </div>
+
+            <PaginationBar currentPage={currentPage} switchPageFn={setCurrentPage}
+                startIdx={indexOfFirstProduct} endIdx={indexOfLastProduct}
+                nProducts={filteredProducts.length} isFiltered={isFiltered} />
+
+            {filteredProducts.length > 0 ? (
                 <div className="product-list">
                     {currentProducts.map((product) => (
                         <div key={product.id} className="product-item">
@@ -284,16 +342,17 @@ function ProductPortfolioEditable() {
                     ))}
                 </div>
             ) : (
-                <p>There is no product data available</p>
+                <p>No products were found.</p>
             )}
 
-            <PaginationBar currentPage={currentPage} switchPageFn={setCurrentPage} startIdx={indexOfFirstProduct} endIdx={indexOfLastProduct} nProducts={products.length} />
+            <PaginationBar currentPage={currentPage} switchPageFn={setCurrentPage}
+                startIdx={indexOfFirstProduct} endIdx={indexOfLastProduct}
+                nProducts={filteredProducts.length} isFiltered={isFiltered} />
 
-            <Tooltip
-                id={tooltipState[0]}
+            <Tooltip id={tooltipState[0]}
                 content={tooltipState[1]}
-                isOpen={isOpen}
-            />
+                isOpen={isOpen} />
+
             <div className='margin-top-20'>
                 <button onClick={createProduct} className='button-product-portfolio button-disabled' disabled>Add new Product</button>
             </div>

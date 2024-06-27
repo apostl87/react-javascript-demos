@@ -1,6 +1,6 @@
 import React from 'react'
 
-const PaginationBar = ({currentPage, switchPageFn, startIdx, endIdx, nProducts}) => {
+const PaginationBar = ({ currentPage, switchPageFn, startIdx, endIdx, nProducts, isFiltered }) => {
     const productsPerPage = endIdx - startIdx + 1;
 
     const paginationDisplayArray = () => {
@@ -10,10 +10,14 @@ const PaginationBar = ({currentPage, switchPageFn, startIdx, endIdx, nProducts})
         return a.filter(x => x > 0 && x <= Npages)
     }
 
-    return (
-        <div className="pagination flex flex-col gap-2" >
+    const displayedItemsText = (isFiltered) ?
+        `${startIdx + 1}-${endIdx + 1} of ${nProducts} (filtered)` :
+        `${startIdx + 1}-${endIdx + 1} of ${nProducts}`;
+
+    const output =
+        <>
             <div>
-                Showing items {startIdx + 1}-{endIdx + 1} of {nProducts}
+                {displayedItemsText}
             </div>
             <div>
                 {paginationDisplayArray().map(idx => {
@@ -28,7 +32,12 @@ const PaginationBar = ({currentPage, switchPageFn, startIdx, endIdx, nProducts})
                     }
                 })}
             </div>
-        </div >
+        </>;
+
+    return (
+        <div className="pagination flex flex-col gap-2">
+            {nProducts > 0 ? output : ''}
+        </div>
     )
 }
 
