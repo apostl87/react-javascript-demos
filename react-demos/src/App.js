@@ -6,7 +6,6 @@ import Home from './Views/Home';
 import SpaceGame from './Views/SpaceGame';
 import Profile from './Views/Profile';
 import Contact from './Views/Contact';
-import './static/css/App.css';
 
 function App() {
   return (

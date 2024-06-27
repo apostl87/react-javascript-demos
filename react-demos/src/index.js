@@ -1,7 +1,8 @@
+import "./static/css/output.css";
+import "rsuite/dist/rsuite.css";
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import { BrowserRouter as Router, Link, Routes, Route } from 'react-router-dom';
-import './static/css/output.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 import { NextUIProvider } from "@nextui-org/react";
