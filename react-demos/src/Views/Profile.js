@@ -1,6 +1,6 @@
 import { useAuth0 } from "@auth0/auth0-react";
 import React from "react";
-import '../static/css/Profile.css';
+import '../static/css/Other.css';
 
 const Profile = () => {
   const { user, isAuthenticated } = useAuth0();
