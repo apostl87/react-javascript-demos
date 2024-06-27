@@ -9,30 +9,45 @@ const Profile = () => {
   }
 
   return (
-      <div className="content-layout">
-        <h1 id="page-title" className="content__title">
-          Your profile
-        </h1>
-        <div className="content__body">
-          <div className="profile-grid">
-            <div className="profile__header">
-              <img
-                src={user.picture}
-                alt="Profile"
-                className="profile__avatar"
-              />
-              <div className="profile__headline">
-                <h2 className="profile__title">{user.name}</h2>
-                <span className="profile__description">{user.email}</span>
-              </div>
-            </div>
-            <div className="profile__details">
-              <code>{JSON.stringify(user, null, 2)}
-              </code>
-            </div>
-          </div>
+    <>
+      <h4 id="page-title">
+        Your Profile
+      </h4>
+      <div className="profile-content flex items-center justify-center flex-row">
+        <div>
+          <img
+            src={user.picture}
+            alt="Profile"
+            className="profile__avatar"
+          />
         </div>
+        <table className="profile-table">
+          <tr>
+            <td className="profile__title">Name</td>
+            <td className="profile__description">{user.name}</td>
+          </tr>
+
+          <tr className="profile__info">
+            <td>Email Address:</td>
+            <td>{user.email}</td>
+          </tr>
+
+          <tr className="profile__info">
+            <td>Authentication Method:</td>
+            <td>{user.sub.split("|")[0]}</td>
+          </tr>
+
+          <tr className="profile__info">
+            <td>Email Verification Status:</td>
+            {user.email_verified ? (
+              <td>Verified</td>
+            ) : (
+              <td>Not Verified</td>
+            )}
+          </tr>
+        </table>
       </div>
+    </>
   );
 };
 

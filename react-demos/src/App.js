@@ -1,4 +1,3 @@
-import './static/css/App.css';
 import { BrowserRouter as Router, Link, Routes, Route } from 'react-router-dom';
 import Navigation from './Components/Navigation';
 import NotFound from './Components/NotFound';
@@ -7,6 +6,7 @@ import Home from './Views/Home';
 import SpaceGame from './Views/SpaceGame';
 import Profile from './Views/Profile';
 import Contact from './Views/Contact';
+import './static/css/App.css';
 
 function App() {
   return (

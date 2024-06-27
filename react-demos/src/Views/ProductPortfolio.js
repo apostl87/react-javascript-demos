@@ -152,6 +152,7 @@ function ProductPortfolioEditable() {
             updateProduct(id);
         }
     }
+    
     function sanitizeNumeric(name, value, precision) {
         let regex = /^([0-9]+)(\.)([0-9]*)$/;
 
