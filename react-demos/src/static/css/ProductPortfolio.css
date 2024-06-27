@@ -85,7 +85,7 @@ h3 {
     margin-top: 20px;
 }
 
-button {
+.button-product-portfolio {
     padding: 10px 20px;
     border: none;
     border-radius: 5px;
@@ -94,10 +94,16 @@ button {
     cursor: pointer;
     transition: background-color 0.3s;
     vertical-align: bottom;
+    margin-top: 8px;
+}
+
+.button-disabled {
+    background-color: #808080;
+    background-color: #808080;
 }
 
 button:hover {
-    background-color: #0056b3;
+    background-color: #56616c;
 }
 
 .button-disabled {
@@ -111,7 +117,8 @@ button:hover {
 .pagination {
     display: flex;
     justify-content: center;
-    margin-top: 20px;
+    margin-top: 15px;
+    margin-bottom: 15px;
 }
 
 .pagination button {
