@@ -234,7 +234,6 @@ function ProductPortfolioEditable() {
         editedProduct.color = value;
     }
 
-
     return (
 
         <div className='p-5'>

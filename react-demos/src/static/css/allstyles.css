@@ -176,9 +176,14 @@ code {
   text-decoration: none;
 }
 
-.profile-table td {
+.table-profile td {
   text-align: left;
   padding-left: 8px;
+  padding-bottom: 4px;
+}
+
+.table-profile tr {
+  margin-bottom: 5px;
 }
 
 .table-space-game th, .table-space-game td {
@@ -274,7 +279,7 @@ h3 {
 }
 
 .button-standard {
-  padding: 10px 20px;
+  padding: 6px 20px;
   border: none;
   border-radius: 5px;
   background-color: #007bff;
@@ -289,8 +294,8 @@ h3 {
   background-color: #808080;
 }
 
-button:hover {
-  background-color: #56616c;
+.button-standard:hover {
+  background-color: #406992;
 }
 
 .button-disabled {

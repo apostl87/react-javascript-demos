@@ -8,48 +8,67 @@ const Profile = () => {
     return null;
   }
 
+  const authMethod = user.sub.split("|")[0];
+
   return (
     <div className="p-5">
       <h3 className="p-2">
         Your Profile
       </h3>
-      <div className="profile-content flex justify-center flex-row items-stretch">
+      <div className="profile-content flex justify-center flex-row items-center gap-8">
         <div>
           <img
             src={user.picture}
             alt="Profile"
-            className="profile__avatar"
+            className="align-center"
           />
         </div>
-        <table className="profile-table">
+        <table className="table-profile">
           <tr>
-            <td className="profile__title">Name</td>
-            <td className="profile__description">{user.name}</td>
+            <td>Username:</td>
+            <td>{user.nickname}</td>
           </tr>
 
-          <tr className="profile__info">
+          <tr>
+            <td>First Name:</td>
+            <td>{user.given_name}</td>
+          </tr>
+
+          <tr>
+            <td>Last Name:</td>
+            <td>{user.family_name}</td>
+          </tr>
+
+          <tr>
             <td>Email Address:</td>
             <td>{user.email}</td>
           </tr>
 
-          <tr className="profile__info">
+          <tr>
             <td>Authentication Method:</td>
-            <td>{user.sub.split("|")[0]}</td>
+            <td>{authMethod}</td>
           </tr>
 
-          <tr className="profile__info">
-            <td>Email Verification Status:</td>
-            {user.email_verified ? (
-              <td>Verified</td>
-            ) : (
-              <td>Not Verified</td>
-            )}
-          </tr>
+          {authMethod === "auth0" &&
+            <tr>
+              <td>Email Verification Status:</td>
+              <td>{user.email_verified ? 'Verified' : 'Not Verified'}</td>
+            </tr>
+          }
         </table>
-        <div>
-          <button className="button-standard">
-            Edit
-          </button>
+
+        <div className="pl-5">
+
+          {authMethod === "auth0"
+            ?
+            <button className="button-standard">
+              Edit profile
+            </button>
+            :
+            <button className="button-standard button-disabled" title="Not available for social login" disabled>
+              Edit profile
+            </button>
+          }
         </div>
 
       </div>
