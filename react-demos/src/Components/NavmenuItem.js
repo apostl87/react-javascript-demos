@@ -1,10 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import '../static/css/NavigationItem.css';
+import '../static/css/Navigation.css';
 
 const NavmenuItemCustom = ({ label, to, subMenu }) => {
   const [isOpen, setIsOpen] = useState(isActive(to));
-  let overwriteIsActive = false;
 
   function toggleIsOpen() {
     setIsOpen(!isOpen)

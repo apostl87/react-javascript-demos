@@ -1504,6 +1504,10 @@ input[type="range"]::-ms-fill-lower {
   margin-right: 0.75rem;
 }
 
+.mt-0 {
+  margin-top: 0px;
+}
+
 .mt-1 {
   margin-top: 0.25rem;
 }
@@ -1841,20 +1845,12 @@ input[type="range"]::-ms-fill-lower {
   width: 0.875rem;
 }
 
-.w-32 {
-  width: 8rem;
-}
-
 .w-36 {
   width: 9rem;
 }
 
 .w-4 {
   width: 1rem;
-}
-
-.w-48 {
-  width: 12rem;
 }
 
 .w-5 {
@@ -2712,10 +2708,6 @@ input[type="range"]::-ms-fill-lower {
 
 .whitespace-nowrap {
   white-space: nowrap;
-}
-
-.text-wrap {
-  text-wrap: wrap;
 }
 
 .text-nowrap {
@@ -4293,6 +4285,10 @@ input[type="range"]::-ms-fill-lower {
 
 .text-center {
   text-align: center;
+}
+
+.text-right {
+  text-align: right;
 }
 
 .text-start {

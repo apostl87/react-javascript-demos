@@ -19,7 +19,7 @@ function App() {
           <Route exact path='/' element={<Home />} />
           <Route exact path='/home' element={<Home />} />
           <Route exact path='/examples/manage-product-portfolio' element={<ProductPortfolio />} />
-          <Route exact path='/spacegameexample' element={<SpaceGame />} />
+          <Route exact path='/examples/space-game' element={<SpaceGame />} />
           <Route exact path='/contact' element={<Contact />} />
           <Route exact path='/profile' element={<Profile />} />
           <Route path='*' element={<NotFound />} />

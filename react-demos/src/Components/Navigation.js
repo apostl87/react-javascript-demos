@@ -1,8 +1,8 @@
 import { React, useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import { Navbar, NavbarBrand, NavbarContent, NavbarItem, NavbarMenuToggle, NavbarMenu, NavbarMenuItem, Link, Button } from "@nextui-org/react";
-import icon from './Icon_Brand_small.png';
-import AuthenticationUI from "../Views/AuthenticationUI";
+import iconBrand from '../media/icon-brand-small.png';
+import UserArea from "../Views/AuthenticationUI";
 import NavbarItemCustom from "./NavbarItem";
 import NavmenuItemCustom from "./NavmenuItem";
 
@@ -30,7 +30,7 @@ export default function NavigationNext() {
           className="sm:hidden bg-gray-900 hover:bg-gray-600 h-11 mt-3"
         />
         <NavbarBrand>
-          <img src={icon} className="mt-2 w-7 animate-spin-slow" />
+          {/* <img src={iconBrand} className="mt-2 w-7 animate-spin-slow" /> */}
         </NavbarBrand>
       </NavbarContent>
 
@@ -42,10 +42,10 @@ export default function NavigationNext() {
         })}
       </NavbarContent>
 
-      <div className="w-32"></div>
+      <div className="w-2"></div>
 
       {/* Auth section */}
-      <AuthenticationUI />
+      <UserArea />
 
       {/* Collapsable menu for mobile devices and small-width-screens */}
       <NavbarMenu className="top-13 gap-1">
