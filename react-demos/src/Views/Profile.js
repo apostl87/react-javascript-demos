@@ -9,10 +9,10 @@ const Profile = () => {
   }
 
   return (
-    <>
-      <h4 id="page-title">
+    <div className="p-5">
+      <h3 className="p-2">
         Your Profile
-      </h4>
+      </h3>
       <div className="profile-content flex items-center justify-center flex-row">
         <div>
           <img
@@ -47,7 +47,7 @@ const Profile = () => {
           </tr>
         </table>
       </div>
-    </>
+    </div>
   );
 };
 

@@ -12,8 +12,8 @@ const Imprint = () => {
     }
 
     return (
-        <div className='textcontent text-left'>
-            <h4>Contact</h4>
+        <div className='textcontent text-left p-5'>
+            <h3 className='text-left'>Contact</h3>
             Andreas Postl <br />
             andreas.postl.42 (at) gmail.com
 
