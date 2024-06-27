@@ -2,9 +2,9 @@ import React from 'react'
 
 const Home = () => {
   return (
-    <h1 className="text-2xl font-bold underline">
-      Test
-    </h1>
+    <div className='p-5'>
+      This is a small demonstration page created with React.js v18.
+    </div>
   )
 }
 
