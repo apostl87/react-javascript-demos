@@ -2,7 +2,7 @@ import { React, useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import { Navbar, NavbarBrand, NavbarContent, NavbarItem, NavbarMenuToggle, NavbarMenu, NavbarMenuItem, Link, Button } from "@nextui-org/react";
 import iconBrand from '../media/icon-brand-small.png';
-import UserArea from "../Views/AuthenticationUI";
+import UserArea from "../Components/UserArea";
 import NavbarItemCustom from "./NavbarItem";
 import NavmenuItemCustom from "./NavmenuItem";
 

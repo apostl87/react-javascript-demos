@@ -15,7 +15,6 @@ export default function UserArea() {
 
     const closeUserArea = (e)=>{
         if(userAreaOpen && !userArea.current?.contains(e.target) && !userAreaIcon.current?.contains(e.target)){
-          console.log(userArea.current, e.target, "user are", userArea)
           setUserAreaOpen(false)
         }
     }
@@ -26,8 +25,6 @@ export default function UserArea() {
             returnTo: window.location.pathname,
         })
     }
-
-    // window.addEventListener("click", setUserAreaOpen(false))
 
     if (!isLoading && !user) {
         return (
