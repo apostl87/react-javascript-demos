@@ -10,6 +10,18 @@ const Profile = () => {
 
   const authMethod = user.sub.split("|")[0];
 
+  const UserAttributes = (user) => {
+    return (
+      <>
+        {Object.entries(user).map(([attribute, value]) => (
+          <p key={attribute}>
+            {attribute}: {value}
+          </p>
+        ))}
+      </>
+    );
+  };
+
   return (
     <div className="p-5">
       <h3 className="p-2">
@@ -72,6 +84,9 @@ const Profile = () => {
         </div>
 
       </div>
+
+      {UserAttributes(user)}
+
     </div>
   );
 };
