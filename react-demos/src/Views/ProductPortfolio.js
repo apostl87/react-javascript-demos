@@ -156,44 +156,6 @@ function ProductPortfolioEditable() {
         }
     }
 
-    function handleEditClick(product) {
-        setEditingProductId(product.id);
-        delete product['country_name'];
-        setEditedProduct(product)
-    }
-
-    function handleInputChange(e) {
-        let { name, value } = e.target;
-        if (name == 'weight') {
-            value = sanitizeNumeric(name, value, 1);
-        }
-        if (name == 'price') {
-            value = sanitizeNumeric(name, value, 2);
-        }
-        setEditedProduct({ ...editedProduct, [name]: value });
-    }
-
-    function handleSaveClick(id) {
-        let empty_var = null
-        if (!editedProduct.product_name) {
-            empty_var = 'Product Name'
-        } else if (!editedProduct.weight) {
-            empty_var = 'Weight'
-        } else if (!editedProduct.price) {
-            empty_var = 'Price'
-        }
-        if (empty_var) {
-            setTooltipState([empty_var.replace(" ", "_").toLowerCase(), empty_var + " cannot be empty"]);
-            // Show tooltip for two seconds
-            setIsOpen(true);
-            setTimeout(() => {
-                setIsOpen(false)
-            }, 2000);
-        } else {
-            updateProduct(id);
-        }
-    }
-
     function sanitizeNumeric(name, value, precision) {
         let regex = /^([0-9]+)(\.)([0-9]*)$/;
 
@@ -232,6 +194,47 @@ function ProductPortfolioEditable() {
         setSelectedColor(value);
         editedProduct.color = value;
     }
+
+    // Callback functions
+    function handleEditClick(product) {
+        setEditingProductId(product.id);
+        delete product['country_name'];
+        setEditedProduct(product)
+    }
+
+    function handleInputChange(e) {
+        let { name, value } = e.target;
+        if (name == 'weight') {
+            value = sanitizeNumeric(name, value, 1);
+        }
+        if (name == 'price') {
+            value = sanitizeNumeric(name, value, 2);
+        }
+        setEditedProduct({ ...editedProduct, [name]: value });
+    }
+
+    function handleSaveClick(id) {
+        let empty_var = null
+        if (!editedProduct.product_name) {
+            empty_var = 'Product Name'
+        } else if (!editedProduct.weight) {
+            empty_var = 'Weight'
+        } else if (!editedProduct.price) {
+            empty_var = 'Price'
+        }
+        if (empty_var) {
+            setTooltipState([empty_var.replace(" ", "_").toLowerCase(), empty_var + " cannot be empty"]);
+            // Show tooltip for two seconds
+            setIsOpen(true);
+            setTimeout(() => {
+                setIsOpen(false)
+            }, 2000);
+        } else {
+            updateProduct(id);
+        }
+    }
+
+
 
     return (
 
