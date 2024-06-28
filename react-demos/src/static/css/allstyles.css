@@ -176,6 +176,16 @@ code {
   text-decoration: none;
 }
 
+.input-profile {
+  margin: 0 5px;
+  flex: 1 0 auto;
+  min-height: 15px;
+  max-height: 22px;
+  min-width: 200px;
+  font-size: small;
+  padding: 0 2px 0 5px;
+}
+
 .table-profile td {
   text-align: left;
   padding-left: 8px;

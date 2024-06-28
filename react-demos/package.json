@@ -8,6 +8,7 @@
     "@testing-library/jest-dom": "^5.17.0",
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",
+    "axios": "^1.7.2",
     "flowbite-react": "^0.9.0",
     "framer-motion": "^11.2.10",
     "jquery": "^3.7.1",
@@ -27,8 +28,8 @@
     "web-vitals": "^2.1.4"
   },
   "scripts": {
-    "buildcss": "npx tailwindcss -i ./src/static/css/index.css -o ./src/static/css/output.css",
-    "watchcss": "npx tailwindcss -i ./src/static/css/index.css -o ./src/static/css/output.css -w",
+    "buildcss": "npx tailwindcss -i ./src/static/css/allstyles.css -o ./src/static/css/output.css",
+    "watchcss": "npx tailwindcss -i ./src/static/css/allstyles.css -o ./src/static/css/output.css -w",
     "start": "npm run buildcss && react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",

@@ -91,7 +91,6 @@ function ProductPortfolioEditable() {
     }
 
     function updateProduct(id) {
-        //console.log(editedProduct)
         fetch(`http://localhost:3001/products/${id}`, {
             method: 'PUT',
             headers: {
@@ -144,17 +143,17 @@ function ProductPortfolioEditable() {
                     disabled
                 />
             );
+        } else {
+            return (
+                <input
+                    type={type}
+                    name={name}
+                    value={value}
+                    onChange={handleInputChange}
+                    data-tooltip-id={name}
+                />
+            );
         }
-
-        return (
-            <input
-                type={type}
-                name={name}
-                value={value}
-                onChange={handleInputChange}
-                data-tooltip-id={name}
-            />
-        );
     }
 
     function handleEditClick(product) {
@@ -251,7 +250,7 @@ function ProductPortfolioEditable() {
                     onChange={e => { filterProducts(products, e.target.value, setIsFiltered) }}
                 />
                 <div className='my-auto pl-2'>
-                    <a onClick={() => {document.getElementById('searchStringInput').value = ''}} className='cursor-pointer'>
+                    <a onClick={() => { document.getElementById('searchStringInput').value = '' }} className='cursor-pointer'>
                         Clear
                     </a>
                 </div>
