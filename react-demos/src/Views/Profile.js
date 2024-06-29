@@ -49,7 +49,7 @@ const Profile = () => {
     let labels = ["Nickname", "First Name", "Last Name", "Email", "Email is verified", "Authentication Method"]
     let editable = [true, true, true, true, false, false]
     return values.map((value, index) => (
-      <tr key={index}>
+      <tr key={index} className="tr-profile">
         <td className="text-nowrap font-bold">{labels[index]}:</td>
         <td className="flex flex-col gap-1">
           {(editing && editable[index]) ?
