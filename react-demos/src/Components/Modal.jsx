@@ -45,7 +45,7 @@ const styles = {
     borderRadius: "8px",
     position: "relative",
     width: "auto",
-    // maxWidth: "500px"
+    maxWidth: "100%"
   },
   closeButton: {
     position: "absolute",

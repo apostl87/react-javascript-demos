@@ -2520,8 +2520,8 @@ input[type="range"]::-ms-fill-lower {
   gap: 1rem;
 }
 
-.gap-8 {
-  gap: 2rem;
+.gap-5 {
+  gap: 1.25rem;
 }
 
 .gap-x-0 {
@@ -3656,6 +3656,11 @@ input[type="range"]::-ms-fill-lower {
   background-color: rgb(253 232 232 / var(--tw-bg-opacity));
 }
 
+.bg-red-300 {
+  --tw-bg-opacity: 1;
+  background-color: rgb(248 180 180 / var(--tw-bg-opacity));
+}
+
 .bg-red-400 {
   --tw-bg-opacity: 1;
   background-color: rgb(249 128 128 / var(--tw-bg-opacity));
@@ -4207,10 +4212,6 @@ input[type="range"]::-ms-fill-lower {
 
 .pl-3 {
   padding-left: 0.75rem;
-}
-
-.pl-5 {
-  padding-left: 1.25rem;
 }
 
 .pl-8 {
@@ -5958,12 +5959,21 @@ code {
   min-width: 200px;
   font-size: small;
   padding: 0 2px 0 5px;
+  border: none;
+  border-bottom: 2px;
+  border-color: rgb(157, 157, 157);
 }
 
-.table-profile td {
-  text-align: left;
-  padding-left: 8px;
-  padding-bottom: 12px;
+input:focus {
+  outline: none;
+}
+
+.table-profile input:focus {
+  outline: none;
+}
+
+.tr-profile {
+  height: 32px;
 }
 
 .table-space-game th, .table-space-game td {
@@ -5978,7 +5988,9 @@ code {
   margin: 0 auto;
 }
 
-h3 {
+.page-title {
+  font-size: 2.5rem;
+  font-weight: bold;
   text-align: center;
   color: #333;
 }
@@ -6069,11 +6081,22 @@ h3 {
   vertical-align: bottom;
 }
 
-.button-disabled {
-  background-color: #808080;
+.button-standard:hover {
+  background-color: #406992;
 }
 
-.button-standard:hover {
+.button-standard-blue-grey {
+  padding: 6px 20px;
+  border: none;
+  border-radius: 5px;
+  background-color: #8ba6b6;
+  color: white;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  vertical-align: bottom;
+}
+
+.button-standard-blue-grey:hover {
   background-color: #406992;
 }
 
@@ -6097,7 +6120,7 @@ h3 {
   padding: 5px 10px;
   border: 1px solid #ddd;
   border-radius: 3px;
-  background-color: #97adc2;
+  background-color: #8ba6b6;
   color: #333;
   cursor: pointer;
   transition: background-color 0.3s;
@@ -6122,44 +6145,6 @@ h3 {
 .margin-top-20 {
   margin-top: 20px;
   margin-bottom: 0;
-}
-
-.modal {
-  font-size: 12px;
-}
-
-.modal > .header {
-  width: 100%;
-  border-bottom: 1px solid gray;
-  font-size: 18px;
-  text-align: center;
-  padding: 5px;
-}
-
-.modal > .content {
-  width: 100%;
-  padding: 10px 5px;
-}
-
-.modal > .actions {
-  width: 100%;
-  padding: 10px 5px;
-  margin: auto;
-  text-align: center;
-}
-
-.modal > .close {
-  cursor: pointer;
-  position: absolute;
-  display: block;
-  padding: 2px 5px;
-  line-height: 20px;
-  right: -10px;
-  top: -10px;
-  font-size: 24px;
-  background: #ffffff;
-  border-radius: 18px;
-  border: 1px solid #cfcece;
 }
 
 .placeholder\:text-danger::placeholder {

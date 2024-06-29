@@ -42,27 +42,6 @@ const Profile = () => {
     }
   } //.sub.split("|")[0];
 
-  function renderRows() {
-    if (!userData) return null;
-    let values = [userData.nickname, userData.given_name, userData.family_name, userData.email, (userData.email_verified ? 'Yes' : 'No'), authMethod(userData)]
-    let fieldNames = ['nickname', 'given_name', 'family_name', 'email', 'email_verified', 'auth_method']
-    let labels = ["Nickname", "First Name", "Last Name", "Email", "Email is verified", "Authentication Method"]
-    let editable = [true, true, true, true, false, false]
-    return values.map((value, index) => (
-      <tr key={index} className="tr-profile">
-        <td className="text-nowrap font-bold">{labels[index]}:</td>
-        <td className="flex flex-col gap-1">
-          {(editing && editable[index]) ?
-            <input type="text" name={fieldNames[index]} defaultValue={value} onChange={handleInputChange} className="input-profile" /> :
-            value}
-          {(editing && fieldNames[index] == 'email' && (editedUserData.email != userData.email)) ?
-            <input type="text" name={fieldNames[index] + "_control"} defaultValue="" onChange={handleInputChange} placeholder="Retype new email address" className="input-profile" /> :
-            null}
-        </td>
-      </tr>
-    ))
-  }
-
   function modalText() {
     return (
       <span>If you proceed, you will be logged out
@@ -97,10 +76,10 @@ const Profile = () => {
   }
 
   function handleSaveClick() {
-  //   #TODO
-  //  Sanitization of input in helper function
-  //  - Meaningful values for all fields
-  //  - Both mmail addresses equal ("email" and "email_control"), if editedUserData.email != userData.email
+    //   #TODO
+    //  Sanitization of input in helper function
+    //  - Meaningful values for all fields
+    //  - Both mmail addresses equal ("email" and "email_control"), if editedUserData.email != userData.email
 
     if (editedUserData.email != userData.email) {
       setChangeEmailModalOpen(true)
@@ -129,17 +108,39 @@ const Profile = () => {
     );
   }
 
+  function renderRows() {
+    if (!userData) {
+      return null;
+    }
+
+    let values = [userData.nickname, userData.given_name, userData.family_name, userData.email, (userData.email_verified ? 'Yes' : 'No'), authMethod(userData)]
+    let fieldNames = ['nickname', 'given_name', 'family_name', 'email', 'email_verified', 'auth_method']
+    let labels = ["Nickname", "First Name", "Last Name", "Email", "Email is verified", "Authentication Method"]
+    let editable = [true, true, true, true, false, false]
+
+    return values.map((value, index) => (
+      <tr key={index} className="tr-profile">
+        <td className="text-nowrap font-bold text-right"><span>{labels[index]}:</span></td>
+        <td className="pl-2 ">
+            {(editing && editable[index]) ?
+              <input type="text" name={fieldNames[index]} defaultValue={value} onChange={handleInputChange} className="input-profile" /> :
+              value}
+        </td>
+      </tr>
+    ))
+  }
+
   return (
     <div className="p-5">
-      <h3 className="p-2">
+      <div className="p-2 page-title">
         Your Profile
-      </h3>
-      <div className="profile-content flex justify-center flex-row items-center gap-8">
+      </div>
+      <div className="profile-content flex justify-center flex-col gap-5 flex-wrap">
         <div>
           <img
             src={user.picture}
             alt="Profile"
-            className="align-center flex-shrink-0 flex-grow-0"
+            className="flex-shrink-0 flex-grow-0"
           />
         </div>
         <table className="table-profile">
@@ -149,13 +150,13 @@ const Profile = () => {
           </tbody>
         </table>
 
-        <div className="pl-5 items-end justify-end flex flex-col">
+        <div>
 
           {authMethod(userData) === "auth0"
             ?
             editing
               ?
-              <div className="flex flex-col gap-1">
+              <div className="flex flex-row-reverse gap-1">
                 <button className="button-standard w-full" onClick={handleSaveClick}>
                   Save changes
                 </button>
@@ -189,5 +190,4 @@ const Profile = () => {
     </div >
   );
 };
-
 export default Profile;
