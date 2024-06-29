@@ -18,11 +18,10 @@ const Profile = () => {
   // Editing hooks
   const [editing, setEditing] = useState(false)
   const [editedUserData, setEditedUserData] = useState({})
-  const [submissionUserData, setSubmissionUserData] = useState({})
 
   // Modal hooks
   const [changeEmailModalOpen, setChangeEmailModalOpen] = useState(false)
-  const [modalText, setModalText] = useState("")
+  //const [modalText, setModalText] = useState("")
 
   // Stop rendering when data from Auth0 has not been loaded yet
   if (isLoading) {
@@ -52,34 +51,44 @@ const Profile = () => {
     return values.map((value, index) => (
       <tr key={index}>
         <td className="text-nowrap font-bold">{labels[index]}:</td>
-        <td>{(editing && editable[index]) ? <input type="text" name={fieldNames[index]} defaultValue={value} onChange={handleInputChange} className="input-profile" /> : value}</td>
+        <td className="flex flex-col gap-1">
+          {(editing && editable[index]) ?
+            <input type="text" name={fieldNames[index]} defaultValue={value} onChange={handleInputChange} className="input-profile" /> :
+            value}
+          {(editing && fieldNames[index] == 'email' && (editedUserData.email != userData.email)) ?
+            <input type="text" name={fieldNames[index] + "_control"} defaultValue="" onChange={handleInputChange} placeholder="Retype new email address" className="input-profile" /> :
+            null}
+        </td>
       </tr>
     ))
   }
 
-  function prepareUpdateUser() {
-    setSubmissionUserData({
+  function modalText() {
+    return (
+      <span>If you proceed, you will be logged out
+        and a verification mail will be sent to <b>{editedUserData.email}</b>.
+        <br />
+        <u>Important</u>: You will need to login using the <b>new email address</b>, even if you opt to not verify it.
+      </span>
+    )
+  }
+
+  function updateUserWrapper({ changedEmail = false } = {}) {
+    let data = {
       nickname: editedUserData.nickname,
       given_name: editedUserData.given_name,
       family_name: editedUserData.family_name,
-      name: `${editedUserData.given_name} ${editedUserData.family_name}`,
-    })
-    if (editedUserData.email != userData.email) {
-      setSubmissionUserData({
-        ...submissionUserData,
-        email: editedUserData.email, email_verified: false, verify_email: true
-      })
-      setModalText(
-        <span>If you proceed, you will be logged out
-          and a verification mail will be sent to <b>{submissionUserData.email}</b>.
-          Important: You need to <b>login with your new email address</b>, even if you opt to not verify it.
-        </span>
-      )
-      setChangeEmailModalOpen(true)
-    } else {
-      updateUser(user.sub, submissionUserData, setUserData);
+      name: editedUserData.given_name + " " + editedUserData.family_name,
     }
-  };
+    if (changedEmail) {
+      data = {
+        ...data,
+        ['email']: editedUserData.email, ['email_verified']: false, ['verify_email']: true
+      }
+    }
+    updateUser(user.sub, data, setUserData);
+    setEditing(false)
+  }
 
   // Callback functions
   function handleEditClick() {
@@ -88,8 +97,16 @@ const Profile = () => {
   }
 
   function handleSaveClick() {
-    setEditing(false);
-    prepareUpdateUser();
+  //   #TODO
+  //  Sanitization of input in helper function
+  //  - Meaningful values for all fields
+  //  - Both mmail addresses equal ("email" and "email_control"), if editedUserData.email != userData.email
+
+    if (editedUserData.email != userData.email) {
+      setChangeEmailModalOpen(true)
+    } else {
+      updateUserWrapper({ changedEmail: false });
+    }
   }
 
   function handleCancelClick() {
@@ -99,10 +116,11 @@ const Profile = () => {
 
   function handleInputChange(e) {
     let { name, value } = e.target;
-    // Sanitization here #todo
     setEditedUserData({ ...editedUserData, [name]: value });
+    console.log(e.target.value)
   }
 
+  // #TODO finalization
   const NotificationBox = () => {
     return (
       <div className={`notification ${notification ? 'show' : 'hide'}`}>
@@ -110,21 +128,6 @@ const Profile = () => {
       </div>
     );
   }
-
-  // For development
-  const UserAttributes = (user) => {
-    return (
-      <>
-        {Object.entries(user).map(([attribute, value]) => (
-          (typeof value == Object ? <p key={attribute}>-</p> :
-            <p key={attribute}>
-              {attribute}: {value}
-            </p >
-          )))}
-      </>
-    );
-  };
-  //
 
   return (
     <div className="p-5">
@@ -143,19 +146,6 @@ const Profile = () => {
           <thead></thead>
           <tbody>
             {renderRows()}
-
-            {/* <tr>
-              <td className="text-nowrap font-bold">Authentication Method:</td>
-              <td>{authMethod(userData)}</td>
-            </tr>
-
-            {authMethod(userData) === "auth0" &&
-              <tr>
-                <td className="text-nowrap font-bold">Email Verification Status:</td>
-                <td>{userData.email_verified ? 'Verified' : 'Not Verified'}</td>
-              </tr>
-            } */}
-
           </tbody>
         </table>
 
@@ -174,9 +164,9 @@ const Profile = () => {
                 </button>
               </div>
               :
-                <button className="button-standard w-full" onClick={handleEditClick}>
-                  Edit profile
-                </button>
+              <button className="button-standard w-full" onClick={handleEditClick}>
+                Edit profile
+              </button>
             :
             <button className="button-standard button-disabled w-full" title="Not available for social login" disabled>
               Edit profile
@@ -186,18 +176,13 @@ const Profile = () => {
 
       </div>
 
-      {/* <NotificationBox /> */}
-
-      {/* {UserAttributes(user)}
-      <div>{JSON.stringify(userData)}</div> */}
-
-      <button onClick={() => setChangeEmailModalOpen(true)}>Open Modal</button>
+      <NotificationBox />
 
       {changeEmailModalOpen &&
         <ModalConfirmCancel
           title="Changing Email Address"
-          text={modalText}
-          onConfirm={() => { updateUser(user.sub, submissionUserData, setUserData); window.location.reload(); }}
+          text={modalText()}
+          onConfirm={() => { updateUserWrapper({ changedEmail: true }); window.location.reload(); }}
           onClose={() => setChangeEmailModalOpen(false)} />
       }
 

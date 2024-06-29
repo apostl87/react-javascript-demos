@@ -295,6 +295,10 @@ h3 {
   vertical-align: bottom;
 }
 
+.button-standard:hover {
+  background-color: #406992;
+}
+
 .button-standard-blue-grey {
   padding: 6px 20px;
   border: none;
@@ -306,11 +310,7 @@ h3 {
   vertical-align: bottom;
 }
 
-.button-disabled {
-  background-color: #808080;
-}
-
-.button-standard:hover {
+.button-standard-blue-grey:hover {
   background-color: #406992;
 }
 

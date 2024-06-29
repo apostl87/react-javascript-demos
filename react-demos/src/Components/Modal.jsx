@@ -2,7 +2,7 @@ import React from "react";
 
 export function ModalConfirmCancel( {isShown, title, text, onConfirm, onClose }) {
   return (
-    <Modal onClose={onClose} className={isShown ? 'show' : 'hide'}>
+    <Modal onClose={onClose}>
       <h4>{title}</h4>
       <hr />
       <p>{text}</p>
@@ -37,15 +37,15 @@ const styles = {
     backgroundColor: "rgba(0, 0, 0, 0.7)",
     display: "flex",
     alignItems: "center",
-    justifyContent: "center"
+    justifyContent: "center",
   },
   modal: {
     backgroundColor: "white",
     padding: "20px",
     borderRadius: "8px",
     position: "relative",
-    width: "80%",
-    maxWidth: "500px"
+    width: "auto",
+    // maxWidth: "500px"
   },
   closeButton: {
     position: "absolute",
