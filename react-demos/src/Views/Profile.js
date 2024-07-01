@@ -17,7 +17,7 @@ const Profile = () => {
 
   // Editing hooks
   const [editing, setEditing] = useState(false)
-  const [editedUserData, setEditedUserData] = useState({})
+  const [editedUserData, setEditedUserData] = useState(null)
 
   // Modal hooks
   const [changeEmailModalOpen, setChangeEmailModalOpen] = useState(false)
@@ -40,7 +40,7 @@ const Profile = () => {
     } else {
       return null;
     }
-  } //.sub.split("|")[0];
+  }
 
   function modalText() {
     return (
@@ -175,6 +175,7 @@ const Profile = () => {
           }
         </div>
 
+        {userData && userData.user_id}
       </div>
 
       <NotificationBox />
@@ -184,7 +185,7 @@ const Profile = () => {
           title="Changing Email Address"
           text={modalText()}
           onConfirm={() => { updateUserWrapper({ changedEmail: true }); window.location.reload(); }}
-          onClose={() => setChangeEmailModalOpen(false)} />
+          onCancel={() => setChangeEmailModalOpen(false)} />
       }
 
     </div >

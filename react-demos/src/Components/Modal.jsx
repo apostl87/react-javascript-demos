@@ -1,30 +1,34 @@
 import React from "react";
 
-export function ModalConfirmCancel( {isShown, title, text, onConfirm, onClose }) {
+export function ModalConfirmCancel({ isShown, title, text, onConfirm, onCancel }) {
   return (
-    <Modal onClose={onClose}>
+    <Modal onClose={onCancel} isShown={isShown}>
       <h4>{title}</h4>
       <hr />
       <p>{text}</p>
       <div className="flex justify-between mt-3">
-        <button className="button-standard-blue-grey" onClick={onClose}>Cancel</button>
+        <button className="button-standard-blue-grey" onClick={onCancel}>Cancel</button>
         <button className="button-standard" onClick={onConfirm}>Confirm</button>
       </div>
     </Modal>
   );
 }
 
-export function Modal({ children, onClose }) {
-  return (
-    <div style={styles.overlay}>
-      <div style={styles.modal}>
-        {children}
-        <button style={styles.closeButton} onClick={onClose}>
-          X
-        </button>
+export function Modal({ isShown, children, onClose }) {
+  if (isShown) {
+    return (
+      <div style={styles.overlay}>
+        <div style={styles.modal}>
+          {children}
+          <button style={styles.closeButton} onClick={onClose}>
+            X
+          </button>
+        </div>
       </div>
-    </div>
-  );
+    );
+  } else {
+    return;
+  }
 }
 
 const styles = {

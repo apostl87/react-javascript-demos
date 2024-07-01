@@ -339,10 +339,9 @@ code {
 .button-pagination {
   margin-right: 4px;
   padding: 5px 10px;
-  border: 1px solid #ddd;
+  border: 2px solid #111111;
   border-radius: 3px;
-  background-color: #8ba6b6;
-  color: #333;
+  background-color: #ffffff;
   cursor: pointer;
   transition: background-color 0.3s;
 }

@@ -14,7 +14,8 @@ export default function Navigation() {
     {
       label: "Demo examples", to: "examples",
       subMenu: [
-        { label: "Manage product portfolio (no login required)", to: "manage-product-portfolio" },
+        { label: "Edit product portfolio (no login required)", to: "product-portfolio" },
+        { label: "Fully manage retailer product portfolio", to: "merchant-product-portfolio" },
         { label: "Space game", to: "space-game" },
       ]
     },

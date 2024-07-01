@@ -29,7 +29,8 @@ const PaginationBar = ({ currentPage, switchPageFn, startIdx, endIdx, nProducts,
                     if (index == 2) {
                         return (
                         <span key={index} onClick={() => switchPageFn(value)} className='pl-2 pr-2'>
-                            Page {value} of {nPages}
+                            Products {startIdx + 1}-{endIdx + 1} of {nProducts} {isFiltered ? '(filtered)' : ''}
+                            {/* Page {value} of {nPages} */}
                         </span>)
                     } else {
                         return (

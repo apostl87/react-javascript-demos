@@ -33,9 +33,6 @@ function ProductPortfolioEditable() {
         getCountries();
     }, []);
 
-    // Apply search string
-    // const filteredProducts = filterProducts(products, searchString, setIsFiltered)
-
     // Current page parameters
     const indexOfLastProduct = Math.min(currentPage * productsPerPage, filteredProducts.length) - 1;
     const indexOfFirstProduct = Math.max(0, indexOfLastProduct - productsPerPage + 1)
@@ -44,12 +41,13 @@ function ProductPortfolioEditable() {
 
     // Helper functions
     function getProducts() {
-        fetch('http://localhost:3001/')
+        fetch('http://localhost:3001/products')
             .then(response => response.json())
             .then(data => saveProductData(data));
     }
 
     function saveProductData(data) {
+        console.log(data)
         const products = data.map(data => {
             return {
                 id: data.id,
@@ -92,7 +90,7 @@ function ProductPortfolioEditable() {
 
     function updateProduct(id) {
         fetch(`http://localhost:3001/products/${id}`, {
-            method: 'PUT',
+            method: 'PATCH',
             headers: {
                 'Content-Type': 'application/json',
             },
@@ -116,8 +114,7 @@ function ProductPortfolioEditable() {
     function getCountries() {
         fetch('http://localhost:3001/countries')
             .then(response => response.json())
-            .then(data => setCountries(data
-            ));
+            .then(data => setCountries(data));
     }
 
     // Helper functions for editing a product
@@ -198,8 +195,7 @@ function ProductPortfolioEditable() {
     // Callback functions
     function handleEditClick(product) {
         setEditingProductId(product.id);
-        delete product['country_name'];
-        setEditedProduct(product)
+        setEditedProduct(product);
     }
 
     function handleInputChange(e) {
@@ -332,7 +328,7 @@ function ProductPortfolioEditable() {
                                             </div>
                                             <div className="flex flex-row-reverse gap-1">
                                                 <button onClick={() => handleEditClick(product)} className='button-standard'>Edit</button>
-                                                <button onClick={() => deleteProduct} className='button-standard button-disabled' disabled>Delete</button>
+                                                <button onClick={() => {}} className='button-standard button-disabled' disabled>Delete</button>
                                             </div>
                                         </div>
                                     </div>
