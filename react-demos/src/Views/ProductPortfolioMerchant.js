@@ -110,6 +110,7 @@ function ProductPortfolioMerchant() {
         }
     }
 
+    // todo: debug
     function updateProduct(product_id) {
         fetch(`http://localhost:3001/merchant-products/${user.sub}/${product_id}`, {
             method: 'PATCH',
@@ -125,6 +126,7 @@ function ProductPortfolioMerchant() {
             });
     }
 
+    // todo: implement
     function createProduct() {
         return null
     }
@@ -315,10 +317,15 @@ function ProductPortfolioMerchant() {
             </h3>
 
             <div className='pt-2 pb-2'>
-                <button onClick={createProduct} className='button-standard button-disabled' disabled>Add new Product</button>
-            </div>
 
-            <SearchBar onInputChange={(val) => filterProducts(products, val, setIsFiltered)} />
+            </div>
+            <div className='flex flex-wrap justify-between pb-2'>
+                <SearchBar onInputChange={(val) => filterProducts(products, val, setIsFiltered)} />
+                <button onClick={createProduct} className='button-new flex justify-between items-center my-auto' disabled>
+                    <span>+</span>
+                    <span>New</span>
+                </button>
+            </div>
 
             <PaginationBar currentPage={currentPage} switchPageFn={setCurrentPage}
                 startIdx={indexOfFirstProduct} endIdx={indexOfLastProduct}
@@ -426,10 +433,10 @@ function ProductPortfolioMerchant() {
                 tooltipIsOpen={tooltipIsOpen} />
 
             <ModalConfirmCancel isShown={deleteOneModalIsOpen} title='Confirm deletion' text={deleteModalText}
-                onConfirm={() => {deleteProduct(); setDeleteOneModalIsOpen(false);}} onCancel={() => { setDeleteOneModalIsOpen(false) }} />
+                onConfirm={() => { deleteProduct(); setDeleteOneModalIsOpen(false); }} onCancel={() => { setDeleteOneModalIsOpen(false) }} />
 
             <ModalConfirmCancel isShown={deleteAllModalIsOpen} title='Confirm deletion' text={deleteModalText}
-                onConfirm={() => {deleteAllProducts(); setDeleteAllModalIsOpen(false);}} onCancel={() => { setDeleteAllModalIsOpen(false) }} />
+                onConfirm={() => { deleteAllProducts(); setDeleteAllModalIsOpen(false); }} onCancel={() => { setDeleteAllModalIsOpen(false) }} />
         </div>
     );
 }
