@@ -1,6 +1,7 @@
 .DS_Store
 excluded
 testdata
+.testdata
 
 # dependencies
 node_modules
