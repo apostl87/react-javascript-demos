@@ -79,7 +79,7 @@ const Profile = () => {
     setEditedUserData(userData);
   }
 
-  function handleSaveClick() {
+  function handleSubmit() {
     //   #TODO
     //  Sanitization of input in helper function
     //  - Meaningful values for all fields
@@ -138,49 +138,52 @@ const Profile = () => {
       <div className="p-2 page-title">
         Your Profile
       </div>
-      <div className="profile-content flex justify-center flex-row gap-5 flex-wrap">
-        <div>
-          <img
-            src={user.picture}
-            alt="Profile"
-            className="flex-shrink-0 flex-grow-0"
-          />
+      <form onSubmit={handleSubmit}>
+        <div className="profile-content flex justify-center flex-row gap-5 flex-wrap">
+          <div>
+            <img
+              src={user.picture}
+              alt="Profile"
+              className="flex-shrink-0 flex-grow-0"
+            />
+          </div>
+          <table className="table-profile">
+            <thead></thead>
+            <tbody>
+              {renderRows()}
+            </tbody>
+          </table>
         </div>
-        <table className="table-profile">
-          <thead></thead>
-          <tbody>
-            {renderRows()}
-          </tbody>
-        </table>
-      </div>
 
-      <div className="pt-2 flex flex-row justify-center">
+        <div className="pt-2 flex flex-row justify-center">
 
-        {authMethod(userData) === "auth0"
-          ?
-          editing
+          {authMethod(userData) === "auth0"
             ?
-            <div className="flex flex-row-reverse gap-1 w-2/3">
-              <button className="button-standard w-1/2" onClick={handleSaveClick}>
-                Save changes
+            editing
+              ?
+              <div className="flex flex-row-reverse gap-1 w-2/3">
+                <button type="submit" className="button-standard w-1/2" onClick={handleSubmit}>
+                  Save changes
+                </button>
+                <button type="button" className="button-standard w-1/2" onClick={handleCancelClick}>
+                  Cancel
+                </button>
+              </div>
+              :
+              <button type="button" className="button-standard w-2/3" onClick={handleEditClick}>
+                Edit profile
               </button>
-              <button className="button-standard w-1/2" onClick={handleCancelClick}>
-                Cancel
-              </button>
-            </div>
             :
-            <button className="button-standard w-2/3" onClick={handleEditClick}>
+            <button type="button" className="button-standard button-disabled w-full" title="Not available for social login" disabled>
               Edit profile
             </button>
-          :
-          <button className="button-standard button-disabled w-full" title="Not available for social login" disabled>
-            Edit profile
-          </button>
-        }
-      </div>
+          }
+        </div>
+      </form>
 
       <NotificationBox />
 
+      {/* Overlay components */}
       <ModalConfirmCancel
         isShown={changeEmailModalOpen}
         title="Changing Email Address"

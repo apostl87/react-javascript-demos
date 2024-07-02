@@ -1,6 +1,11 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Tooltip } from 'react-tooltip';
 import PaginationBar from '../Components/PaginationBar';
+import SearchBar from '../Components/SearchBar';
+
+const api_url = process.env.REACT_APP_BACKEND_API_URL;
+
+// Development of this View has been abandoned ==> ProductPortfolioMerchant
 
 function ProductPortfolioEditable() {
     // General data hooks
@@ -41,13 +46,12 @@ function ProductPortfolioEditable() {
 
     // Helper functions
     function getProducts() {
-        fetch('http://localhost:3001/products')
+        fetch(`${api_url}products`)
             .then(response => response.json())
             .then(data => saveProductData(data));
     }
 
     function saveProductData(data) {
-        console.log(data)
         const products = data.map(data => {
             return {
                 id: data.id,
@@ -89,7 +93,7 @@ function ProductPortfolioEditable() {
     }
 
     function updateProduct(id) {
-        fetch(`http://localhost:3001/products/${id}`, {
+        fetch(`${api_url}products/${id}`, {
             method: 'PATCH',
             headers: {
                 'Content-Type': 'application/json',
@@ -112,7 +116,7 @@ function ProductPortfolioEditable() {
     }
 
     function getCountries() {
-        fetch('http://localhost:3001/countries')
+        fetch(`${api_url}countries`)
             .then(response => response.json())
             .then(data => setCountries(data));
     }
@@ -239,21 +243,11 @@ function ProductPortfolioEditable() {
                 Product Portfolio
             </h3>
 
-            <div className='flex flex-row justify-left'>
-                <input
-                    id="searchStringInput"
-                    className='my-auto h-8 w-auto'
-                    type="text"
-                    placeholder="Search"
-                    value={searchString}
-                    onChange={e => { filterProducts(products, e.target.value, setIsFiltered) }}
-                />
-                <div className='my-auto pl-2'>
-                    <a onClick={() => { document.getElementById('searchStringInput').value = '' }} className='cursor-pointer'>
-                        Clear
-                    </a>
-                </div>
+            <div className='flex flex-row flex-wrap justify-center gap-4'>
+                <SearchBar onInputChange={(val) => filterProducts(products, val, setIsFiltered)} />
             </div>
+
+            <hr />
 
             <PaginationBar currentPage={currentPage} switchPageFn={setCurrentPage}
                 startIdx={indexOfFirstProduct} endIdx={indexOfLastProduct}
@@ -328,7 +322,8 @@ function ProductPortfolioEditable() {
                                             </div>
                                             <div className="flex flex-row-reverse gap-1">
                                                 <button onClick={() => handleEditClick(product)} className='button-standard'>Edit</button>
-                                                <button onClick={() => {}} className='button-standard button-disabled' disabled>Delete</button>
+                                                <button onClick={() => { }} className='button-standard button-disabled' disabled
+                                                    title="Deleting is not possible on this public portfolio page">Delete</button>
                                             </div>
                                         </div>
                                     </div>
@@ -345,13 +340,12 @@ function ProductPortfolioEditable() {
                 startIdx={indexOfFirstProduct} endIdx={indexOfLastProduct}
                 nProducts={filteredProducts.length} isFiltered={isFiltered} />
 
+            <hr />
+
+            {/* Overlay components */}
             <Tooltip id={tooltipState[0]}
                 content={tooltipState[1]}
                 isOpen={isOpen} />
-
-            <div className='margin-top-20'>
-                <button onClick={createProduct} className='button-standard button-disabled' disabled>Add new Product</button>
-            </div>
         </div>
     );
 }

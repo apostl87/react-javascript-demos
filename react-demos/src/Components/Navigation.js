@@ -19,7 +19,7 @@ export default function Navigation() {
         { label: "Space game", to: "space-game" },
       ]
     },
-    { label: "Testarea", to: "testarea"},
+    //{ label: "Testarea", to: "testarea"},
     { label: "Contact", to: "contact" },
   ];
 

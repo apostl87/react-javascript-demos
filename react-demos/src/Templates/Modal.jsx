@@ -20,8 +20,8 @@ export function ModalTemplate({ isShown, children, onClose }) {
 export function ModalCreateProductTemplate({ isShown, children }) {
   if (isShown) {
     return (
-      <div style={styles.overlay} className='z-50'>
-        <div style={styles.modal}>
+      <div style={styles.overlay} className='z-50 overflow-y-scroll'>
+        <div style={styles.modalCreateProduct}>
           {children}
         </div>
       </div>
@@ -48,8 +48,16 @@ const styles = {
     padding: "20px",
     borderRadius: "8px",
     position: "relative",
-    width: "80vw",
+    width: "600px",
     maxWidth: "100%",
+  },
+  modalCreateProduct: {
+    backgroundColor: "white",
+    padding: "20px",
+    borderRadius: "8px",
+    position: "relative",
+    width: "80vw",
+    maxWidth: "800px",
   },
   closeButton: {
     position: "absolute",

@@ -1,13 +1,22 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Tooltip } from 'react-tooltip';
+import { useAuth0 } from "@auth0/auth0-react";
+import axios from 'axios';
+import $, { parseHTML, valHooks } from 'jquery';
 import PaginationBar from '../Components/PaginationBar';
 import SearchBar from '../Components/SearchBar';
-import { useAuth0 } from "@auth0/auth0-react";
 import { ModalCreateProductTemplate } from '../Templates/Modal';
 import { ModalConfirmCancel } from '../Components/ModalConfirmCancel';
-import axios from 'axios';
+import Dropzone from '../Components/Dropzone';
+
+const api_url = process.env.REACT_APP_BACKEND_API_URL;
+
+// Code needs a major overhaul
+// - Refactoring of Components
+// - Refactoring of certain functions
 
 function ProductPortfolioMerchant() {
+    // Auth0 hook
     const { user, isLoading } = useAuth0();
 
     // General data hooks
@@ -68,15 +77,108 @@ function ProductPortfolioMerchant() {
     const indexOfFirstProduct = Math.max(0, indexOfLastProduct - productsPerPage + 1)
     const currentProducts = filteredProducts.slice(indexOfFirstProduct, indexOfLastProduct + 1);
 
-    // Helper functions
+    // API requests
     function getProducts() {
         if (!user) return;
-        fetch('http://localhost:3001/merchant-products/' + user.sub)
+        fetch(`${api_url}merchant-products/${user.sub}`)
             .then(response => response.json())
             .catch(error => console.log(error))
             .then(data => processProductData(data));
     }
 
+    // #TODO: debug
+    function updateProduct(product_id) {
+        fetch(`${api_url}merchant-products/${user.sub}/${product_id}`, {
+            method: 'PATCH',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(editedProduct),
+        })
+            .then(response => response.json())
+            .then(data => {
+                setEditedProduct({});
+                getProducts(); // #TODO: avoid this extra api call by updating the product in the frontend
+            });
+    }
+
+    function createProduct(requestBody) {
+        fetch(`${api_url}merchant-products/create`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(requestBody),
+        })
+            .then(response => response.json())
+            .catch(error => console.log("Here", error))
+            .then(data => {
+                if ('name' in data && data.name == 'error') {
+                    return;
+                }
+                try {
+                    let newProducts = [...products, ...mapProductData(data)];
+                    setProducts(newProducts);
+                    setCurrentPage(Math.ceil(newProducts.length / productsPerPage));
+                    setNotification('Product created successfully!');
+                } catch {
+                    setNotification('Failed to create product. Please try again.');
+                }
+            });
+    }
+
+    function deleteProduct() {
+        fetch(`${api_url}merchant-products/${user.sub}/${productToDelete.id}`, {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({}),
+        })
+            .then(response => response.text())
+            .catch(error => console.log(error))
+            .then(notification => {
+                //process-notification
+                getProducts();
+            });
+    }
+
+    function deleteAllProducts() {
+        fetch(`${api_url}merchant-products/${user.sub}`, {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({}),
+        })
+            .then(response => response.text())
+            .catch(error => console.log(error))
+            .then(notification => {
+                //process-notification
+                getProducts();
+            });
+    }
+
+    function initProducts() {
+        fetch(`${api_url}merchant-products/${user.sub}/init`, {
+            method: 'POST', // Pseudo POST endpoint
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({}),
+        })
+            .then(response => response.json())
+            .catch(error => console.log(error))
+            .then(data => processProductData(data));
+    }
+
+    function getCountries() {
+        fetch(`${api_url}countries`)
+            .then(response => response.json())
+            .then(data => setCountries(data));
+    }
+
+    // Other functions
     function processProductData(data) {
         const products = mapProductData(data)
         setProducts(products);
@@ -121,129 +223,6 @@ function ProductPortfolioMerchant() {
                 }
             }))
         }
-    }
-
-    // todo: debug
-    function updateProduct(product_id) {
-        fetch(`http://localhost:3001/merchant-products/${user.sub}/${product_id}`, {
-            method: 'PATCH',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(editedProduct),
-        })
-            .then(response => response.json())
-            .then(data => {
-                setEditedProduct({});
-                getProducts();
-            });
-    }
-
-    function createProduct(requestBody) {
-        fetch(`http://localhost:3001/merchant-products/create`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(requestBody),
-        })
-            .then(response => response.json())
-            .catch(error => console.log("Here", error))
-            .then(data => {
-                if ('name' in data && data.name == 'error') {
-                    return;
-                }
-                try {
-                    let newProducts = [...products, ...mapProductData(data)];
-                    setProducts(newProducts);
-                    setCurrentPage(Math.ceil(newProducts.length / productsPerPage));
-                    setNotification('Product created successfully!');
-                } catch {
-                    setNotification('Failed to create product. Please try again.');
-                }
-            });
-    }
-
-    function deleteProduct() {
-        fetch(`http://localhost:3001/merchant-products/${user.sub}/${productToDelete.id}`, {
-            method: 'DELETE',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({}),
-        })
-            .then(response => response.text())
-            .catch(error => console.log(error))
-            .then(notification => {
-                //process-notification
-                getProducts();
-            });
-    }
-
-    function deleteAllProducts() {
-        fetch(`http://localhost:3001/merchant-products/${user.sub}`, {
-            method: 'DELETE',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({}),
-        })
-            .then(response => response.json())
-            .catch(error => console.log(error))
-            .then(notification => {
-                //process-notification
-                getProducts();
-            });
-    }
-
-    function initProducts() {
-        fetch(`http://localhost:3001/merchant-products/${user.sub}/init`, {
-            method: 'POST', // Pseudo POST endpoint
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({}),
-        })
-            .then(response => response.json())
-            .catch(error => console.log(error))
-            .then(data => processProductData(data));
-    }
-
-    function getCountries() {
-        // fetch('http://localhost:3010/api/vercel/countries')
-        fetch('http://localhost:3001/countries')
-            .then(response => response.json())
-            .then(data => setCountries(data));
-    }
-
-    // Helper functions for editing a product
-    function selectCountry(countries) {
-        return (
-            <select id="country_id_production" name="country_id_production" onChange={handleInputChanged} value={editedProduct.country_id_production}>
-                {countries.map((country, idx) => {
-                    return (<option key={idx} value={country.country_id_production}>{country.country_name}</option>)
-                })}
-            </select>
-        )
-    }
-
-    function inputField(type, name, value) {
-        let disabled
-        if (name == 'color') {
-            disabled = true
-        } else {
-            disabled = false
-        }
-        return (
-            <input
-                type={type}
-                name={name}
-                value={value}
-                onChange={handleInputChanged}
-                data-tooltip-id={name}
-                disabled={disabled}
-            />
-        );
     }
 
     // Callback functions
@@ -296,6 +275,37 @@ function ProductPortfolioMerchant() {
             value = formatNumeric(name, value, 2, setTooltipIsOpen, setTooltipState);
         }
         setEditedProduct({ ...editedProduct, [name]: value });
+    }
+
+
+    // Helper functions
+    function selectCountry(countries) {
+        return (
+            <select id="country_id_production" name="country_id_production" onChange={handleInputChanged} value={editedProduct.country_id_production}>
+                {countries.map((country, idx) => {
+                    return (<option key={idx} value={country.country_id_production}>{country.country_name}</option>)
+                })}
+            </select>
+        )
+    }
+
+    function inputField(type, name, value) {
+        let disabled
+        if (name == 'color') {
+            disabled = true
+        } else {
+            disabled = false
+        }
+        return (
+            <input
+                type={type}
+                name={name}
+                value={value}
+                onChange={handleInputChanged}
+                data-tooltip-id={name}
+                disabled={disabled}
+            />
+        );
     }
 
     return (
@@ -488,10 +498,24 @@ const ModalCreateProduct = ({ isShown, countries, onClose, onSubmit }) => {
     // Image hooks
     const [imageUrl, setImageUrl] = useState(''); // Actually used image url
     const [manualImageUrl, setManualImageUrl] = useState(''); // Manually input image url
-    const [imageFile, setImageFile] = useState({});
-    const [previewImageButtonEnabled, setImagePreviewButtonEnabled] = useState(false);
-    const [uploadImageButtonEnabled, setuploadImageButtonEnabled] = useState(false);
+    // const [imageFile, setImageFile] = useState({});
+    const [previewImageButtonEnabled, setPreviewImageButtonEnabled] = useState(false);
+    // const [uploadImageButtonEnabled, setUploadImageButtonEnabled] = useState(false);
     const [uploadProgress, setUploadProgress] = useState(-1);
+
+    useEffect(() => {
+        async function doAsync() {
+            const isValid = await verifyUrlImage(imageUrl);
+            if (!isValid) {
+                setImageUrl('');
+            }
+        }
+        doAsync();
+    }, [imageUrl])
+
+    // useEffect(() => {
+    //     setUploadImageButtonEnabled(true)
+    // }, [imageFile])
 
     function handleInputChanged(e) {
         let { id, value } = e.target;
@@ -509,30 +533,30 @@ const ModalCreateProduct = ({ isShown, countries, onClose, onSubmit }) => {
 
     function handleManualImageUrlChanged(e) {
         setManualImageUrl(e.target.value)
-        setImagePreviewButtonEnabled(!!e.target.value);
+        setPreviewImageButtonEnabled(!!e.target.value);
     }
 
     function handleLoadImageClicked(e) {
         setImageUrl(manualImageUrl);
-        setImagePreviewButtonEnabled(false);
+        setPreviewImageButtonEnabled(false);
     }
 
-    function handleImageFileChanged(e) {
-        setImageFile(e.target.files[0])
-        if (e.target.files.size > 5e6) {
-            document.getElementById('create-image-file-info').innerText = "Uploaded file must be smaller than 5 MB."
-        } else {
-            setuploadImageButtonEnabled(true);
-        }
-    }
+    // function handleImageFileChanged(e) {
+    //     setImageFile(e.target.files[0])
+    //     if (e.target.files.size > 3145728) {
+    //         document.getElementById('create-image-file-info').innerText = "Uploaded file must be smaller than 3 MB."
+    //     } else {
+    //         setUploadImageButtonEnabled(true);
+    //     }
+    // }
 
-    function uploadComplete(url) {
-        setImageUrl(url);
-        setUploadProgress(-1);
-    }
+    // function uploadImageClicked(e) {
+    //     e.preventDefault();
+    //     uploadImage(imageFile);
+    //     setUploadImageButtonEnabled(false);
+    // }
 
-    function uploadImageClicked(e) {
-        e.preventDefault()
+    function uploadImage(imageFile) {
         // Constructing the axios request parameters
         const api_url = `https://api.imgbb.com/1/upload?key=${process.env.REACT_APP_IMGBB_API_KEY}&expiration=259200`;
         const formData = new FormData();
@@ -549,18 +573,22 @@ const ModalCreateProduct = ({ isShown, countries, onClose, onSubmit }) => {
 
         axios.post(api_url, formData, config)
             .then((response) => {
-                console.log("API response");
+                console.log("IMGBB API response");
                 console.log(response);
-                uploadComplete(response.data.data.url);
+                handleUploadComplete(response.data.data.url);
             })
             .catch((err) => {
-                console.log("API error");
+                console.log("IMGBB API error");
                 console.log(err);
                 if (err.response.data.error) {
                     console.log(err.response.data.error);
                 }
             });
-        setuploadImageButtonEnabled(false);
+    }
+
+    function handleUploadComplete(url) {
+        setImageUrl(url);
+        setUploadProgress(-1);
     }
 
     function handleClose(onClose) {
@@ -596,8 +624,8 @@ const ModalCreateProduct = ({ isShown, countries, onClose, onSubmit }) => {
                 <h4>Create product</h4>
                 <hr />
                 <form onSubmit={handleSubmit} id='createform'>
-                    <div className='modal-create-product grid grid-cols-2 gap-4 items-start'>
-                        <div className='grid grid-rows-1'>
+                    <div className='modal-create-product flex flex-row flex-wrap justify-between gap-4 items-start'>
+                        <div className='grid grid-rows-1 w-auto flex-grow overflow-scroll'>
 
                             <label htmlFor="create-product_name">
                                 Product Name*
@@ -628,7 +656,7 @@ const ModalCreateProduct = ({ isShown, countries, onClose, onSubmit }) => {
                             <label htmlFor="create-weight_kg">
                                 Weight in kg*
                             </label>
-                            <input type="text" id="create-weight_kg" placeholder='Enter weight_kg'
+                            <input type="text" id="create-weight_kg" placeholder='Enter weight'
                                 data-tooltip-id="create-weight_kg" onChange={handleInputChanged} required />
 
                             <label htmlFor="create-price">
@@ -638,27 +666,35 @@ const ModalCreateProduct = ({ isShown, countries, onClose, onSubmit }) => {
                                 data-tooltip-id="create-price" onChange={handleInputChanged} required />
                         </div>
 
-                        <div className='flex flex-col justify-start border-1 border-gray-400 rounded p-2'>
+                        <div className='flex-grow flex flex-col justify-start border-1 border-gray-400 rounded p-2 w-auto'>
 
                             <div className='flex flex-row justify-between'>
                                 <label htmlFor="create-image">Image</label>
                                 <button type="button" className='button-standard h-8' onClick={() => setImageUrl('')}>Reset image</button>
                             </div>
 
+
                             <div className='create-image-preview mx-auto mt-2'>
-                                <img className='create-image-preview-img' src={imageUrl} alt="No image will be linked." />
+                                {imageUrl ?
+                                    <img className='create-image-preview-img' src={imageUrl} alt="No product image linked." />
+                                    :
+                                    <p>(No image preview)</p>}
                             </div>
 
-                            {uploadProgress >= 0 ? <span className='self-center'>Uploading image: {uploadProgress}%</span> : <></>}
+
+                            {(uploadProgress >= 0 && uploadProgress < 100) ?
+                                <span className='self-center'>Uploading image: {uploadProgress}%</span> : <></>}
 
                             <div className='create-image-upload-area pt-2 pb-2'>
-                                <input type="file" id="create-image-file" onChange={handleImageFileChanged}
-                                    accept="image/png, image/jpeg, image/gif" className='h-3 w-full' />
+                                <Dropzone uploadImage={uploadImage} boxIsLarge={!imageUrl} />
+
+                                {/* Alternative solution without Dropzone */}
+                                {/* <input type="file" id="create-image-file" onChange={handleImageFileChanged}
+                                    accept="image/*" className='h-3 w-full' />
                                 <button type="button" onClick={uploadImageClicked}
                                     className={(!uploadImageButtonEnabled ? 'button-disabled ' : '') + 'button-standard w-full'} disabled={!uploadImageButtonEnabled}>
                                     Upload image
-                                </button>
-
+                                </button> */}
                             </div>
 
                             <span className='pb-1 self-center'>OR</span>
@@ -674,7 +710,7 @@ const ModalCreateProduct = ({ isShown, countries, onClose, onSubmit }) => {
 
                     </div>
 
-                    <div className="flex flex-row justify-between gap-2 mt-3">
+                    <div className="flex flex-row justify-between gap-2 mt-3 overflow-scroll">
                         <span>
                             * ... required
                         </span>
@@ -690,4 +726,19 @@ const ModalCreateProduct = ({ isShown, countries, onClose, onSubmit }) => {
                 isOpen={tooltipIsOpen} />
         </div >
     )
+}
+
+async function verifyUrlImage(url) {
+    try {
+        let resp = $.ajax(url);
+        await resp;
+        let headers = resp.getAllResponseHeaders().split(/\n/g);
+        for (let i = 0; i <= headers.length; i++) {
+            let hd = headers[i].split(': ')
+            if (hd[0] == 'content-type' && hd[1].indexOf('image') == 0)
+                return true;
+        }
+    }
+    catch { }
+    return false;
 }

@@ -7,7 +7,7 @@ import { BrowserRouter as Router, Link, Routes, Route } from 'react-router-dom';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 import { NextUIProvider } from "@nextui-org/react";
-import Auth0ProviderWithHistory from './auth/auth0-provider-with-history';
+import Auth0ProviderWithHistory from './services/auth0-provider-with-history';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
