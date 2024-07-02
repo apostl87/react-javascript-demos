@@ -7,6 +7,7 @@ import Home from './Views/Home';
 import SpaceGame from './Views/SpaceGame';
 import Profile from './Views/Profile';
 import Contact from './Views/Contact';
+import Testview from './Views/Testview';
 
 function App() {
   return (
@@ -23,6 +24,7 @@ function App() {
           <Route exact path='/examples/space-game' element={<SpaceGame />} />
           <Route exact path='/contact' element={<Contact />} />
           <Route exact path='/profile' element={<Profile />} />
+          <Route exact path='/testarea' element={<Testview />} />
           <Route path='*' element={<NotFound />} />
         </Routes>
       </div>

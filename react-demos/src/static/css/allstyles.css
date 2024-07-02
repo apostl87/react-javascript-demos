@@ -131,7 +131,8 @@ code {
   border: 3px solid #333333;
 }
 
-.navmenu-item:hover, .navmenu-subitem:hover {
+.navmenu-item:hover,
+.navmenu-subitem:hover {
   background-color: rgb(75 85 99);
   color: white;
 }
@@ -167,7 +168,7 @@ code {
   border-radius: 0.375rem;
   cursor: pointer;
   color: inherit
-  /* <NavbarItem className="lg:flex bg-white hover:bg-gray-600 pt-0 pb-0 mb-2 pl-2 pr-2 rounded-md"> */
+    /* <NavbarItem className="lg:flex bg-white hover:bg-gray-600 pt-0 pb-0 mb-2 pl-2 pr-2 rounded-md"> */
 }
 
 .user-area-link:hover {
@@ -197,7 +198,8 @@ code {
   height: 32px;
 }
 
-.table-space-game th, .table-space-game td {
+.table-space-game th,
+.table-space-game td {
   text-align: left;
   padding: 2px 16px;
 }
@@ -228,9 +230,8 @@ code {
   border: 1px solid #ddd;
   border-radius: 5px;
   padding: 15px;
-  width: 400px;
-  flex: 1 1 auto;
-  min-width: 400px;
+  width: 425px;
+  flex: 0 0 auto;
   height: auto;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   display: flex;
@@ -262,22 +263,21 @@ code {
   vertical-align: bottom;
 }
 
-.product-details-row input {
-  margin: 0 5px;
+.product-details-row input,
+select,
+textarea {
+  margin: 0 5px 0px 5px;
   flex: 1 1 auto;
   min-height: 15px;
   max-height: 22px;
   font-size: small;
-  padding: 0 2px 0 5px;
+  padding: 0 2px 0 4px;
+  border: none;
+  border-bottom: 2px solid #666666;
 }
 
 .product-details-row select {
-  margin: 0 5px;
-  flex: 1 1 auto;
-  min-height: 15px;
-  max-height: 22px;
-  font-size: small;
-  padding: 0 2px 0 5px;
+  max-width: 140px;
 }
 
 .product-item p {
@@ -323,7 +323,7 @@ code {
 
 .button-new {
   height: 32px;
-  width: 70px;
+  width: 120px;
   padding: 6px 10px;
   border: 2px solid #000000;
   border-radius: 5px;
@@ -375,7 +375,45 @@ code {
   margin: 0 5px;
 }
 
-.margin-top-20 {
-  margin-top: 20px;
-  margin-bottom: 0;
+.modal-create-product input[type='text'], .modal-create-product input[type='file'], .modal-create-product select {
+  margin: 0 0px 0px 0px;
+  flex: 1 1 auto;
+  min-height: 40px;
+  max-height: 40px;
+  font-size: small;
+  margin-bottom: 10px;
+  border: 1px solid #aaaaaa;
+  border-bottom: 2px solid #666666;
+  border-radius: 5px;
+  padding-left: 8px;
+}
+
+.modal-create-product label {
+  font-weight: bold;
+}
+
+#create-color-picker {
+  max-width: 50px;
+}
+
+.create-image-preview-img {
+    max-height: 300px;
+    height: auto;
+    position: relative;
+}
+
+.create-image-preview-img[alt]:after {  
+  display: block;
+  position: absolute;
+  margin-top: 20;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: #fff;
+  font-family: 'Helvetica';
+  font-weight: 300;
+  line-height: 1;  
+  text-align: center;
+  content: attr(alt);
 }

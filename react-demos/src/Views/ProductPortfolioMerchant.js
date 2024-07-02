@@ -3,7 +3,9 @@ import { Tooltip } from 'react-tooltip';
 import PaginationBar from '../Components/PaginationBar';
 import SearchBar from '../Components/SearchBar';
 import { useAuth0 } from "@auth0/auth0-react";
-import { ModalConfirmCancel } from '../Components/Modal';
+import { ModalCreateProductTemplate } from '../Templates/Modal';
+import { ModalConfirmCancel } from '../Components/ModalConfirmCancel';
+import axios from 'axios';
 
 function ProductPortfolioMerchant() {
     const { user, isLoading } = useAuth0();
@@ -40,6 +42,12 @@ function ProductPortfolioMerchant() {
     const [deleteModalText, setDeleteModalText] = useState('');
     const [productToDelete, setProductToDelete] = useState({});
 
+    // Create hooks
+    const [createModalIsOpen, setCreateModalIsOpen] = useState(false);
+
+    // Notification hook
+    const [notification, setNotification] = useState('')
+
     // Execution on initial loading: 1) HTTP requests to retreive data and 2) Initialization of filtered products
     useEffect(() => {
         getProducts();
@@ -70,6 +78,12 @@ function ProductPortfolioMerchant() {
     }
 
     function processProductData(data) {
+        const products = mapProductData(data)
+        setProducts(products);
+        setFilteredProducts(products);
+    }
+
+    function mapProductData(data) {
         const products = data.map(data => {
             return {
                 id: data.id,
@@ -78,13 +92,12 @@ function ProductPortfolioMerchant() {
                 image_url: data.image_url,
                 price_currency: data.price_currency,
                 price: data.price,
-                weight: data.weight_kg,
-                country_id: data.country_id,
+                weight_kg: data.weight_kg,
+                country_id_production: data.country_id_production,
                 country_name: data.country_name,
             };
         });
-        setProducts(products);
-        setFilteredProducts(products);
+        return (products);
     }
 
     function filterProducts(products, searchString, setFilteredFlag) {
@@ -119,16 +132,36 @@ function ProductPortfolioMerchant() {
             },
             body: JSON.stringify(editedProduct),
         })
-            .then(response => response.text())
+            .then(response => response.json())
             .then(data => {
                 setEditedProduct({});
                 getProducts();
             });
     }
 
-    // todo: implement
-    function createProduct() {
-        return null
+    function createProduct(requestBody) {
+        fetch(`http://localhost:3001/merchant-products/create`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(requestBody),
+        })
+            .then(response => response.json())
+            .catch(error => console.log("Here", error))
+            .then(data => {
+                if ('name' in data && data.name == 'error') {
+                    return;
+                }
+                try {
+                    let newProducts = [...products, ...mapProductData(data)];
+                    setProducts(newProducts);
+                    setCurrentPage(Math.ceil(newProducts.length / productsPerPage));
+                    setNotification('Product created successfully!');
+                } catch {
+                    setNotification('Failed to create product. Please try again.');
+                }
+            });
     }
 
     function deleteProduct() {
@@ -186,75 +219,31 @@ function ProductPortfolioMerchant() {
     // Helper functions for editing a product
     function selectCountry(countries) {
         return (
-            <select id="country_id" name="country_id" onChange={handleInputChange} value={editedProduct.country_id}>
+            <select id="country_id_production" name="country_id_production" onChange={handleInputChanged} value={editedProduct.country_id_production}>
                 {countries.map((country, idx) => {
-                    return (<option key={idx} value={country.country_id}>{country.country_name}</option>)
+                    return (<option key={idx} value={country.country_id_production}>{country.country_name}</option>)
                 })}
             </select>
         )
     }
 
     function inputField(type, name, value) {
+        let disabled
         if (name == 'color') {
-            return (
-                <input
-                    type={type}
-                    name={name}
-                    value={value}
-                    onChange={handleInputChange}
-                    data-tooltip-id={name}
-                    disabled
-                />
-            );
+            disabled = true
         } else {
-            return (
-                <input
-                    type={type}
-                    name={name}
-                    value={value}
-                    onChange={handleInputChange}
-                    data-tooltip-id={name}
-                />
-            );
+            disabled = false
         }
-    }
-
-    function sanitizeNumeric(name, value, precision) {
-        let regex = /^([0-9]+)(\.)([0-9]*)$/;
-
-        if (!regex.test(value)) {
-            let ct = (value.match(/\./g) || []).length;
-            if (value.match(/[^\d\.]/g) || ct > 1) {
-                setTooltipState([name, "Format: " + String(Number(0).toFixed(precision))]);
-                // Show tooltip for two seconds
-                setTooltipIsOpen(true);
-                setTimeout(() => {
-                    setTooltipIsOpen(false)
-                }, 5000);
-            }
-
-            value = value.replace(/[^\d\.]/g, '');
-
-            let idx = value.indexOf('.');
-            if (idx == 0) {
-                value = '0' + value;
-            }
-            if (ct > 1) {
-                value = value.slice(0, idx) + "." + value.slice(idx).replaceAll('.', '')
-            }
-        }
-        let idx = value.indexOf('.');
-        if (idx != -1 && value.slice(idx + 1).length > precision) {
-            value = String(Number(value).toFixed(precision))
-        }
-        return value
-    }
-
-    // Color Picker
-    function colorPicked() {
-        let value = document.getElementById("colorPicker").value;
-        setSelectedColor(value);
-        editedProduct.color = value;
+        return (
+            <input
+                type={type}
+                name={name}
+                value={value}
+                onChange={handleInputChanged}
+                data-tooltip-id={name}
+                disabled={disabled}
+            />
+        );
     }
 
     // Callback functions
@@ -272,7 +261,7 @@ function ProductPortfolioMerchant() {
         let empty_var = null
         if (!editedProduct.product_name) {
             empty_var = 'Product Name'
-        } else if (!editedProduct.weight) {
+        } else if (!editedProduct.weight_kg) {
             empty_var = 'Weight'
         } else if (!editedProduct.price) {
             empty_var = 'Price'
@@ -293,18 +282,18 @@ function ProductPortfolioMerchant() {
         setEditedProduct({});
     }
 
-    function handleDeleteAllClick(product) {
+    function handleDeleteAllClick() {
         setDeleteAllModalIsOpen(true);
         setDeleteModalText(`Are you sure you want to delete all products?`);
     }
 
-    function handleInputChange(e) {
+    function handleInputChanged(e) {
         let { name, value } = e.target;
-        if (name == 'weight') {
-            value = sanitizeNumeric(name, value, 1);
+        if (name == 'weight_kg') {
+            value = formatNumeric(name, value, 1, setTooltipIsOpen, setTooltipState);
         }
         if (name == 'price') {
-            value = sanitizeNumeric(name, value, 2);
+            value = formatNumeric(name, value, 2, setTooltipIsOpen, setTooltipState);
         }
         setEditedProduct({ ...editedProduct, [name]: value });
     }
@@ -312,20 +301,23 @@ function ProductPortfolioMerchant() {
     return (
 
         <div className='p-5'>
-            <h3 className='p-2 pl-0 text-left'>
-                Retailer Product Portfolio
-            </h3>
-
-            <div className='pt-2 pb-2'>
+            <div className='flex flex-row justify-between'>
+                <h3 className='p-2 pl-0 text-left'>
+                    Retailer Product Portfolio
+                </h3>
 
             </div>
-            <div className='flex flex-wrap justify-between pb-2'>
-                <SearchBar onInputChange={(val) => filterProducts(products, val, setIsFiltered)} />
-                <button onClick={createProduct} className='button-new flex justify-between items-center my-auto' disabled>
+
+            <div className='flex flex-row flex-wrap justify-center gap-4'>
+                <button onClick={() => setCreateModalIsOpen(true)} className='button-new flex justify-between items-center my-auto'>
                     <span>+</span>
-                    <span>New</span>
+                    <span>New product</span>
                 </button>
+
+                <SearchBar onInputChange={(val) => filterProducts(products, val, setIsFiltered)} />
             </div>
+
+            <hr />
 
             <PaginationBar currentPage={currentPage} switchPageFn={setCurrentPage}
                 startIdx={indexOfFirstProduct} endIdx={indexOfLastProduct}
@@ -337,50 +329,54 @@ function ProductPortfolioMerchant() {
                         {currentProducts.map((product) => (
                             <div key={product.id} className="product-item">
                                 <div className='w-full flex flex-shrink'>
-                                    {editedProduct === product ? (
+                                    {editedProduct.id === product.id ? (
                                         <div className='w-full flex flex-shrink gap-1'>
                                             <div className='flex-shrink'>
                                                 <img src={product.image_url} alt={product.product_name} className="product-image" />
                                             </div>
-                                            <div className='flex flex-col flex-grow'>
-                                                <div align='left' className='float-left w-full'>
-                                                    <p className='product-details-row'>
-                                                        <strong>Product ID:</strong> {product.id}
-                                                    </p>
-                                                    <p className='product-details-row'>
-                                                        <strong>Product Name:</strong>
-                                                        {inputField('text', 'product_name', editedProduct.product_name)}
-                                                    </p>
+                                            <div className='flex flex-col'>
+                                                <form onSubmit={(e) => {
+                                                    e.preventDefault();
+                                                    handleSaveClick(product.id);
+                                                }}>
+                                                    <div align='left' className='w-full'>
+                                                        <p className='product-details-row'>
+                                                            <strong>Product ID:</strong> {product.id}
+                                                        </p>
+                                                        <p className='product-details-row'>
+                                                            <strong>Product Name:</strong>
+                                                            {inputField('text', 'product_name', editedProduct.product_name)}
+                                                        </p>
 
-                                                    <p className='product-details-row'>
-                                                        <strong>Production&nbsp;Country:</strong>
-                                                        {selectCountry(countries)}
-                                                    </p>
+                                                        <p className='product-details-row'>
+                                                            <strong>Production&nbsp;Country:</strong>
+                                                            {selectCountry(countries)}
+                                                        </p>
 
-                                                    <p className='product-details-row'>
-                                                        <strong>Color:</strong>
-                                                        &nbsp;&nbsp;Choose
-                                                        <input type="color" value={editedProduct.color} name='color' id="colorPicker" onChange={() => colorPicked()} />
-                                                        Code
-                                                        {inputField('text', 'color', editedProduct.color)}
-                                                    </p>
+                                                        <p className='product-details-row'>
+                                                            <strong>Color:</strong>
+                                                            &nbsp;&nbsp;Pick
+                                                            <input type="color" className='my-auto' value={editedProduct.color} name='color' id="colorPicker" onChange={handleInputChanged} />
+                                                            {inputField('text', 'color', editedProduct.color)}
+                                                        </p>
 
-                                                    <p className='product-details-row'>
-                                                        <strong>Weight:</strong>
-                                                        {inputField('text', 'weight', editedProduct.weight)}
-                                                        <label>{WEIGHT_UNIT}</label>
-                                                    </p>
+                                                        <p className='product-details-row'>
+                                                            <strong>Weight:</strong>
+                                                            {inputField('text', 'weight_kg', editedProduct.weight_kg)}
+                                                            <label>{WEIGHT_UNIT}</label>
+                                                        </p>
 
-                                                    <p className='product-details-row'>
-                                                        <strong>Price:</strong>
-                                                        {inputField('text', 'price', editedProduct.price)}
-                                                        <label>{editedProduct.price_currency}</label>
-                                                    </p>
-                                                </div>
-                                                <div className='flex flex-row-reverse gap-1'>
-                                                    <button onClick={() => handleSaveClick(product.id)} className='button-standard'>Save</button>
-                                                    <button onClick={() => handleCancelClick()} className='button-standard-blue-grey'>Cancel</button>
-                                                </div>
+                                                        <p className='product-details-row'>
+                                                            <strong>Price:</strong>
+                                                            {inputField('text', 'price', editedProduct.price)}
+                                                            <label>{editedProduct.price_currency}</label>
+                                                        </p>
+                                                    </div>
+                                                    <div className='flex flex-row-reverse gap-1'>
+                                                        <button type='submit' onClick={() => handleSaveClick(product.id)} className='button-standard'>Save</button>
+                                                        <button type='button' onClick={() => handleCancelClick()} className='button-standard-blue-grey'>Cancel</button>
+                                                    </div>
+                                                </form>
                                             </div>
                                         </div>
                                     ) : (
@@ -397,7 +393,7 @@ function ProductPortfolioMerchant() {
                                                         <span className='color-show' style={{ display: 'inline-block', backgroundColor: product.color }}></span>
                                                         {product.color}
                                                     </p>
-                                                    <p><strong>Weight:</strong> {product.weight ? product.weight : '-'} {WEIGHT_UNIT}</p>
+                                                    <p><strong>Weight:</strong> {product.weight_kg ? product.weight_kg : '-'} {WEIGHT_UNIT}</p>
                                                     <p><strong>Price:</strong> {product.price ? product.price : '-'} {product.price_currency}</p>
                                                 </div>
                                                 <div className="flex flex-row-reverse gap-1">
@@ -415,30 +411,283 @@ function ProductPortfolioMerchant() {
                 (
                     <div className="flex flex-col gap-5">
                         <p>No products were found.</p>
-                        <button onClick={() => initProducts()} className='button-standard w-64'>Create products with test data</button>
+                        {products.length === 0 &&
+                            <button onClick={() => initProducts()} className='button-standard w-64'>Create products with test data</button>
+                        }
                     </div>
-                )}
+                )
+            }
 
             <PaginationBar currentPage={currentPage} switchPageFn={setCurrentPage}
                 startIdx={indexOfFirstProduct} endIdx={indexOfLastProduct}
                 nProducts={filteredProducts.length} isFiltered={isFiltered} />
 
-            <div className='pt-2 pb-2'>
+            <hr />
+
+            <div className='flex flex-row justify-center'>
                 <button onClick={() => handleDeleteAllClick()} className='button-standard-blue-grey'>Delete all products</button>
             </div>
 
             {/* Overlay components */}
             <Tooltip id={tooltipState[0]}
                 content={tooltipState[1]}
-                tooltipIsOpen={tooltipIsOpen} />
+                isOpen={tooltipIsOpen} />
 
             <ModalConfirmCancel isShown={deleteOneModalIsOpen} title='Confirm deletion' text={deleteModalText}
                 onConfirm={() => { deleteProduct(); setDeleteOneModalIsOpen(false); }} onCancel={() => { setDeleteOneModalIsOpen(false) }} />
 
             <ModalConfirmCancel isShown={deleteAllModalIsOpen} title='Confirm deletion' text={deleteModalText}
                 onConfirm={() => { deleteAllProducts(); setDeleteAllModalIsOpen(false); }} onCancel={() => { setDeleteAllModalIsOpen(false) }} />
-        </div>
+
+            <ModalCreateProduct isShown={createModalIsOpen} countries={countries}
+                onClose={() => setCreateModalIsOpen(false)} onSubmit={createProduct} />
+
+        </div >
     );
 }
 
 export default ProductPortfolioMerchant
+
+function formatNumeric(id, value, precision, setTooltipIsOpen, setTooltipState) {
+    let regex = /^([0-9]+)(\.)([0-9]*)$/;
+
+    if (!regex.test(value)) {
+        let ct = (value.match(/\./g) || []).length;
+        if (value.match(/[^\d\.]/g) || ct > 1) {
+            setTooltipState([id, "Format: " + String(Number(0).toFixed(precision))]);
+            setTooltipIsOpen(true);
+            setTimeout(() => {
+                setTooltipIsOpen(false)
+            }, 5000);
+        }
+
+        value = value.replace(/[^\d\.]/g, '');
+
+        let idx = value.indexOf('.');
+        if (idx == 0) {
+            value = '0' + value;
+        }
+        if (ct > 1) {
+            value = value.slice(0, idx) + "." + value.slice(idx).replaceAll('.', '')
+        }
+    }
+    let idx = value.indexOf('.');
+    if (idx != -1 && value.slice(idx + 1).length > precision) {
+        value = String(Number(value).toFixed(precision))
+    }
+    return value
+}
+
+const ModalCreateProduct = ({ isShown, countries, onClose, onSubmit }) => {
+    const { user } = useAuth0();
+
+    // Tooltip hooks
+    const [tooltipIsOpen, setTooltipIsOpen] = useState(null);
+    const [tooltipState, setTooltipState] = useState(['', '']); // [name of input field, tooltip text]
+
+    // Image hooks
+    const [imageUrl, setImageUrl] = useState(''); // Actually used image url
+    const [manualImageUrl, setManualImageUrl] = useState(''); // Manually input image url
+    const [imageFile, setImageFile] = useState({});
+    const [previewImageButtonEnabled, setImagePreviewButtonEnabled] = useState(false);
+    const [uploadImageButtonEnabled, setuploadImageButtonEnabled] = useState(false);
+    const [uploadProgress, setUploadProgress] = useState(-1);
+
+    function handleInputChanged(e) {
+        let { id, value } = e.target;
+        if (id == 'create-weight_kg') {
+            value = formatNumeric(id, value, 1, setTooltipIsOpen, setTooltipState);
+        }
+        if (id == 'create-price') {
+            value = formatNumeric(id, value, 2, setTooltipIsOpen, setTooltipState);
+        }
+        document.getElementById(id).value = value;
+        if (id.includes("color-picker")) {
+            document.getElementById('create-color').innerText = value;
+        }
+    }
+
+    function handleManualImageUrlChanged(e) {
+        setManualImageUrl(e.target.value)
+        setImagePreviewButtonEnabled(!!e.target.value);
+    }
+
+    function handleLoadImageClicked(e) {
+        setImageUrl(manualImageUrl);
+        setImagePreviewButtonEnabled(false);
+    }
+
+    function handleImageFileChanged(e) {
+        setImageFile(e.target.files[0])
+        if (e.target.files.size > 5e6) {
+            document.getElementById('create-image-file-info').innerText = "Uploaded file must be smaller than 5 MB."
+        } else {
+            setuploadImageButtonEnabled(true);
+        }
+    }
+
+    function uploadComplete(url) {
+        setImageUrl(url);
+        setUploadProgress(-1);
+    }
+
+    function uploadImageClicked(e) {
+        e.preventDefault()
+        // Constructing the axios request parameters
+        const api_url = `https://api.imgbb.com/1/upload?key=${process.env.REACT_APP_IMGBB_API_KEY}&expiration=259200`;
+        const formData = new FormData();
+        formData.append('image', imageFile);
+        const config = {
+            headers: {
+                'content-type': 'multipart/form-data',
+            },
+            onUploadProgress: (progressEvent) => {
+                const percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total);
+                setUploadProgress(percentCompleted);
+            }
+        };
+
+        axios.post(api_url, formData, config)
+            .then((response) => {
+                console.log("API response");
+                console.log(response);
+                uploadComplete(response.data.data.url);
+            })
+            .catch((err) => {
+                console.log("API error");
+                console.log(err);
+                if (err.response.data.error) {
+                    console.log(err.response.data.error);
+                }
+            });
+        setuploadImageButtonEnabled(false);
+    }
+
+    function handleClose(onClose) {
+        onClose();
+        setTooltipIsOpen(false);
+        setImageUrl('');
+    }
+
+    function handleSubmit(e) {
+        e.preventDefault();
+        const product_name = document.querySelector('#create-product_name').value
+        const country_id_production = document.querySelector('#create-country_id_production').value
+        const color = document.querySelector('#create-color').innerText
+        const weight_kg = document.querySelector('#create-weight_kg').value
+        const price = document.querySelector('#create-price').value
+        const requestBody = {
+            product_name: product_name,
+            country_id_production: country_id_production,
+            color: color,
+            weight_kg: weight_kg,
+            price: price,
+            price_currency: 'EUR',
+            image_url: imageUrl,
+            merchant_userid: user.sub,
+        }
+        onSubmit(requestBody);
+        handleClose(onClose);
+    }
+
+    return (
+        <div className='w-3/4'>
+            <ModalCreateProductTemplate isShown={isShown}>
+                <h4>Create product</h4>
+                <hr />
+                <form onSubmit={handleSubmit} id='createform'>
+                    <div className='modal-create-product grid grid-cols-2 gap-4 items-start'>
+                        <div className='grid grid-rows-1'>
+
+                            <label htmlFor="create-product_name">
+                                Product Name*
+                            </label>
+
+                            <input type="text" id="create-product_name"
+                                data-tooltip-id='create-product-name' placeholder='Enter product name' required />
+
+                            <label htmlFor="create-country_id_production">
+                                Production Country
+                            </label>
+                            <select id="create-country_id_production" defaultValue="0">
+                                <option value="-1">Choose country...</option>
+                                <option disabled>──────────</option>
+                                {countries.map((country, idx) => {
+                                    return (<option key={idx} value={country.country_id_production}>{country.country_name}</option>)
+                                })}
+                            </select>
+
+                            <label htmlFor="create-weight_kg">
+                                Color
+                            </label>
+                            <div className='flex flex-row items-center'>
+                                <input type="color" id='create-color-picker' defaultValue='#FFFFFF' onChange={handleInputChanged} />
+                                <span id='create-color' className='pl-1 mb-2'>#FFFFFF</span>
+                            </div>
+
+                            <label htmlFor="create-weight_kg">
+                                Weight in kg*
+                            </label>
+                            <input type="text" id="create-weight_kg" placeholder='Enter weight_kg'
+                                data-tooltip-id="create-weight_kg" onChange={handleInputChanged} required />
+
+                            <label htmlFor="create-price">
+                                Price in EUR*
+                            </label>
+                            <input type="text" id="create-price" placeholder='Enter price'
+                                data-tooltip-id="create-price" onChange={handleInputChanged} required />
+                        </div>
+
+                        <div className='flex flex-col justify-start border-1 border-gray-400 rounded p-2'>
+
+                            <div className='flex flex-row justify-between'>
+                                <label htmlFor="create-image">Image</label>
+                                <button type="button" className='button-standard h-8' onClick={() => setImageUrl('')}>Reset image</button>
+                            </div>
+
+                            <div className='create-image-preview mx-auto mt-2'>
+                                <img className='create-image-preview-img' src={imageUrl} alt="No image will be linked." />
+                            </div>
+
+                            {uploadProgress >= 0 ? <span className='self-center'>Uploading image: {uploadProgress}%</span> : <></>}
+
+                            <div className='create-image-upload-area pt-2 pb-2'>
+                                <input type="file" id="create-image-file" onChange={handleImageFileChanged}
+                                    accept="image/png, image/jpeg, image/gif" className='h-3 w-full' />
+                                <button type="button" onClick={uploadImageClicked}
+                                    className={(!uploadImageButtonEnabled ? 'button-disabled ' : '') + 'button-standard w-full'} disabled={!uploadImageButtonEnabled}>
+                                    Upload image
+                                </button>
+
+                            </div>
+
+                            <span className='pb-1 self-center'>OR</span>
+
+                            <input type="text" id="create-image-url-manual" value={manualImageUrl}
+                                placeholder='Enter or paste URL here (http://...)' onChange={handleManualImageUrlChanged} />
+                            <button type="button" onClick={handleLoadImageClicked}
+                                className={(!previewImageButtonEnabled ? 'button-disabled ' : '') + "button-standard"} disabled={!previewImageButtonEnabled}>
+                                Load image from URL
+                            </button>
+
+                        </div>
+
+                    </div>
+
+                    <div className="flex flex-row justify-between gap-2 mt-3">
+                        <span>
+                            * ... required
+                        </span>
+                        <div className='flex gap-2'>
+                            <button type='button' className="button-standard-blue-grey" onClick={() => handleClose(onClose)}>Cancel</button>
+                            <button type='submit' className="button-standard">Create product</button>
+                        </div>
+                    </div>
+                </form>
+            </ModalCreateProductTemplate >
+            <Tooltip id={tooltipState[0]}
+                content={tooltipState[1]}
+                isOpen={tooltipIsOpen} />
+        </div >
+    )
+}

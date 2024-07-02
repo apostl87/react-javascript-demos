@@ -2,7 +2,7 @@ import React from 'react';
 
 function SearchBar({ onInputChange }) {
     return (
-        <div className='flex flex-row justify-left pb-2 pt-2'>
+        <div className='flex flex-row justify-center pb-2 pt-2'>
             <input
                 id="searchStringInput"
                 className='my-auto h-8 w-auto'

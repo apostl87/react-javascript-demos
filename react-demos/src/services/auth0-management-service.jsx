@@ -21,7 +21,7 @@ export const getUser = (id, onSuccess) => {
 
     axios.request(config)
     .then((response) => {
-        console.log(response)
+        //console.log(response)
         onSuccess(response.data);
     })
     .catch((error) => {
@@ -46,7 +46,7 @@ export const updateUser = (id, userData, onSuccess) => {
 
     axios.request(config)
     .then((response) => {
-        console.log(response)
+        // console.lgo(response)
         onSuccess(response.data);
     })
     .catch((error) => {

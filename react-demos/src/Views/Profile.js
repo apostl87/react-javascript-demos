@@ -1,7 +1,7 @@
 import { useAuth0 } from "@auth0/auth0-react";
 import { React, useEffect, useState } from "react";
 import { getUser, updateUser } from "../services/auth0-management-service";
-import { Modal, ModalConfirmCancel } from '../Components/Modal';
+import { ModalConfirmCancel } from '../Components/ModalConfirmCancel';
 
 const Profile = () => {
   const { user, isAuthenticated, isLoading } = useAuth0();
@@ -43,13 +43,17 @@ const Profile = () => {
   }
 
   function modalText() {
-    return (
-      <span>If you proceed, you will be logged out
-        and a verification mail will be sent to <b>{editedUserData.email}</b>.
-        <br />
-        <u>Important</u>: You will need to login using the <b>new email address</b>, even if you opt to not verify it.
-      </span>
-    )
+    if (editedUserData) {
+      return (
+        <span>If you proceed, you will be logged out
+          and a verification mail will be sent to <b>{editedUserData.email}</b>.
+          <br />
+          <u>Important</u>: You will need to login using the <b>new email address</b>, even if you opt to not verify it.
+        </span>
+      )
+    } else {
+      return;
+    }
   }
 
   function updateUserWrapper({ changedEmail = false } = {}) {
@@ -93,10 +97,9 @@ const Profile = () => {
     setEditedUserData({});
   }
 
-  function handleInputChange(e) {
+  function handleInputChanged(e) {
     let { name, value } = e.target;
     setEditedUserData({ ...editedUserData, [name]: value });
-    console.log(e.target.value)
   }
 
   // #TODO finalization
@@ -122,9 +125,9 @@ const Profile = () => {
       <tr key={index} className="tr-profile">
         <td className="text-nowrap font-bold text-right"><span>{labels[index]}:</span></td>
         <td className="pl-2 ">
-            {(editing && editable[index]) ?
-              <input type="text" name={fieldNames[index]} defaultValue={value} onChange={handleInputChange} className="input-profile" /> :
-              value}
+          {(editing && editable[index]) ?
+            <input type="text" name={fieldNames[index]} defaultValue={value} onChange={handleInputChanged} className="input-profile" /> :
+            value}
         </td>
       </tr>
     ))
@@ -135,7 +138,7 @@ const Profile = () => {
       <div className="p-2 page-title">
         Your Profile
       </div>
-      <div className="profile-content flex justify-center flex-col gap-5 flex-wrap">
+      <div className="profile-content flex justify-center flex-row gap-5 flex-wrap">
         <div>
           <img
             src={user.picture}
@@ -149,44 +152,41 @@ const Profile = () => {
             {renderRows()}
           </tbody>
         </table>
+      </div>
 
-        <div>
+      <div className="pt-2 flex flex-row justify-center">
 
-          {authMethod(userData) === "auth0"
+        {authMethod(userData) === "auth0"
+          ?
+          editing
             ?
-            editing
-              ?
-              <div className="flex flex-row-reverse gap-1">
-                <button className="button-standard w-full" onClick={handleSaveClick}>
-                  Save changes
-                </button>
-                <button className="button-standard w-full" onClick={handleCancelClick}>
-                  Cancel
-                </button>
-              </div>
-              :
-              <button className="button-standard w-full" onClick={handleEditClick}>
-                Edit profile
+            <div className="flex flex-row-reverse gap-1 w-2/3">
+              <button className="button-standard w-1/2" onClick={handleSaveClick}>
+                Save changes
               </button>
+              <button className="button-standard w-1/2" onClick={handleCancelClick}>
+                Cancel
+              </button>
+            </div>
             :
-            <button className="button-standard button-disabled w-full" title="Not available for social login" disabled>
+            <button className="button-standard w-2/3" onClick={handleEditClick}>
               Edit profile
             </button>
-          }
-        </div>
-
-        {userData && userData.user_id}
+          :
+          <button className="button-standard button-disabled w-full" title="Not available for social login" disabled>
+            Edit profile
+          </button>
+        }
       </div>
 
       <NotificationBox />
 
-      {changeEmailModalOpen &&
-        <ModalConfirmCancel
-          title="Changing Email Address"
-          text={modalText()}
-          onConfirm={() => { updateUserWrapper({ changedEmail: true }); window.location.reload(); }}
-          onCancel={() => setChangeEmailModalOpen(false)} />
-      }
+      <ModalConfirmCancel
+        isShown={changeEmailModalOpen}
+        title="Changing Email Address"
+        text={modalText()}
+        onConfirm={() => { updateUserWrapper({ changedEmail: true }); window.location.reload(); }}
+        onCancel={() => setChangeEmailModalOpen(false)} />
 
     </div >
   );

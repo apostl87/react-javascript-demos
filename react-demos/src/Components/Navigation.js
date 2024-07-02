@@ -19,11 +19,12 @@ export default function Navigation() {
         { label: "Space game", to: "space-game" },
       ]
     },
+    { label: "Testarea", to: "testarea"},
     { label: "Contact", to: "contact" },
   ];
 
   return (
-    <Navbar onMenuOpenChange={setIsMenuOpen} className="bg-gray-950 text-white h-12 mt-1">
+    <Navbar onMenuOpenChange={setIsMenuOpen} className="bg-gray-950 text-white h-12">
 
       <NavbarContent>
         <NavbarMenuToggle

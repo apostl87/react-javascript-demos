@@ -15,21 +15,13 @@ const PaginationBar = ({ currentPage, switchPageFn, startIdx, endIdx, nProducts,
 
     const buttonLabels = ['First', 'Previous', '', 'Next', 'Last']
 
-    // const displayedItemsText = (isFiltered) ?
-    //     `Items ${startIdx + 1}-${endIdx + 1} of ${nProducts} (filtered)` :
-    //     `Items ${startIdx + 1}-${endIdx + 1} of ${nProducts}`;
-
     const output =
-        <>
-            {/* <div>
-                {displayedItemsText}
-            </div> */}
-            <div>
+            <div className='self-center'>
                 {paginationDisplayArray().map((value, index) => {
                     if (index == 2) {
                         return (
-                        <span key={index} onClick={() => switchPageFn(value)} className='pl-2 pr-2'>
-                            Products {startIdx + 1}-{endIdx + 1} of {nProducts} {isFiltered ? '(filtered)' : ''}
+                        <span key={index} onClick={() => switchPageFn(value)} className='text-nowrap pl-2 pr-2'>
+                            Products {startIdx + 1} - {endIdx + 1} of {nProducts} {isFiltered ? '(filtered)' : ''}
                             {/* Page {value} of {nPages} */}
                         </span>)
                     } else {
@@ -39,11 +31,10 @@ const PaginationBar = ({ currentPage, switchPageFn, startIdx, endIdx, nProducts,
                         </button>)
                     }
                 })}
-            </div>
-        </>;
+            </div>;
 
     return (
-        <div className="pagination flex flex-col gap-2">
+        <div className="pagination flex flex-row gap-2">
             {nProducts > 0 ? output : ''}
         </div>
     )
