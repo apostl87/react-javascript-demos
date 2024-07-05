@@ -58,7 +58,7 @@ export default function UserArea() {
                                 Profile
                             </div>
                         </button>
-                        <button onClick={logoutWithHistory} className="user-area-link">
+                        <button onClick={logout} className="user-area-link">
                             <div className="text-right">
                                 Logout
                             </div>

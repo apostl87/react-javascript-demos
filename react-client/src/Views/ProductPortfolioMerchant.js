@@ -8,6 +8,7 @@ import SearchBar from '../Components/SearchBar';
 import { ModalCreateProductTemplate } from '../Templates/Modal';
 import { ModalConfirmCancel } from '../Components/ModalConfirmCancel';
 import Dropzone from '../Components/Dropzone';
+import request from '../services/request-service';
 
 const api_url = process.env.REACT_APP_BACKEND_API_URL;
 
@@ -17,7 +18,12 @@ const api_url = process.env.REACT_APP_BACKEND_API_URL;
 
 function ProductPortfolioMerchant() {
     // Auth0 hook
-    const { user, isLoading } = useAuth0();
+    const { user,
+        isLoading,
+        getAccessTokenSilently,
+        loginWithPopup,
+        getAccessTokenWithPopup,
+    } = useAuth0();
 
     // General data hooks
     const [products, setProducts] = useState([]);
@@ -57,16 +63,23 @@ function ProductPortfolioMerchant() {
     // Notification hook
     const [notification, setNotification] = useState('')
 
-    // Execution on initial loading: 1) HTTP requests to retreive data and 2) Initialization of filtered products
+    // Loading hook
+    const [loadingMsg, setLoadingMsg] = useState('')
+
+    // Execution on initial loading:
     useEffect(() => {
-        getProducts();
-        getCountries();
-    }, [user]);
+        if (user) {
+            getProducts();
+            getCountries();
+        }
+    }, [user])
 
     // Apply filter whenever Array products changes
     useEffect(() => {
         filterProducts(products, searchString, setIsFiltered)
     }, [products]);
+
+    const [test, setTest] = useState(0);
 
     if (isLoading || (!isLoading && !user)) {
         return null;
@@ -77,18 +90,40 @@ function ProductPortfolioMerchant() {
     const indexOfFirstProduct = Math.max(0, indexOfLastProduct - productsPerPage + 1)
     const currentProducts = filteredProducts.slice(indexOfFirstProduct, indexOfLastProduct + 1);
 
+
     // API requests
     function getProducts() {
-        if (!user) return;
-        fetch(`${api_url}merchant-products/${user.sub}`)
-            .then(response => response.json())
+
+        console.log("Called getProducts ", test);
+
+        let at = accessToken
+        if (test == 0) {
+            at = 'invalid'
+            setTest(test + 1)
+        }
+
+        fetch(`${api_url}/merchant-products/${user.sub}`, {
+            method: 'GET',
+            headers: new Headers({
+                Authorization: `Bearer ${at}`,
+            })
+        })
+            .then(response => {
+                if (response.status === 401) {
+                    //setOverrideContent
+                    return;
+                }
+                let data = response.json();
+                processProductData(data);
+            })
             .catch(error => console.log(error))
-            .then(data => processProductData(data));
     }
 
     // #TODO: debug
     function updateProduct(product_id) {
-        fetch(`${api_url}merchant-products/${user.sub}/${product_id}`, {
+        const url = `${api_url}/merchant-products/${user.sub}/${product_id}`;
+
+        fetch(url, {
             method: 'PATCH',
             headers: {
                 'Content-Type': 'application/json',
@@ -96,6 +131,7 @@ function ProductPortfolioMerchant() {
             body: JSON.stringify(editedProduct),
         })
             .then(response => response.json())
+            .catch(error => console.log(error))
             .then(data => {
                 setEditedProduct({});
                 getProducts(); // #TODO: avoid this extra api call by updating the product in the frontend
@@ -103,7 +139,7 @@ function ProductPortfolioMerchant() {
     }
 
     function createProduct(requestBody) {
-        fetch(`${api_url}merchant-products/create`, {
+        fetch(`${api_url}/merchant-products/create`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -111,7 +147,7 @@ function ProductPortfolioMerchant() {
             body: JSON.stringify(requestBody),
         })
             .then(response => response.json())
-            .catch(error => console.log("Here", error))
+            .catch(error => console.log(error))
             .then(data => {
                 if ('name' in data && data.name == 'error') {
                     return;
@@ -128,7 +164,7 @@ function ProductPortfolioMerchant() {
     }
 
     function deleteProduct() {
-        fetch(`${api_url}merchant-products/${user.sub}/${productToDelete.id}`, {
+        fetch(`${api_url}/merchant-products/${user.sub}/${productToDelete.id}`, {
             method: 'DELETE',
             headers: {
                 'Content-Type': 'application/json',
@@ -144,7 +180,7 @@ function ProductPortfolioMerchant() {
     }
 
     function deleteAllProducts() {
-        fetch(`${api_url}merchant-products/${user.sub}`, {
+        fetch(`${api_url}/merchant-products/${user.sub}`, {
             method: 'DELETE',
             headers: {
                 'Content-Type': 'application/json',
@@ -160,7 +196,7 @@ function ProductPortfolioMerchant() {
     }
 
     function initProducts() {
-        fetch(`${api_url}merchant-products/${user.sub}/init`, {
+        fetch(`${api_url}/merchant-products/${user.sub}/init`, {
             method: 'POST', // Pseudo POST endpoint
             headers: {
                 'Content-Type': 'application/json',
@@ -173,7 +209,12 @@ function ProductPortfolioMerchant() {
     }
 
     function getCountries() {
-        fetch(`${api_url}countries`)
+        fetch(`${api_url}/countries`, {
+            method: 'GET',
+            headers: new Headers({
+                Authorization: `Bearer ${accessToken}`,
+            })
+        })
             .then(response => response.json())
             .then(data => setCountries(data));
     }
@@ -277,13 +318,12 @@ function ProductPortfolioMerchant() {
         setEditedProduct({ ...editedProduct, [name]: value });
     }
 
-
     // Helper functions
     function selectCountry(countries) {
         return (
             <select id="country_id_production" name="country_id_production" onChange={handleInputChanged} value={editedProduct.country_id_production}>
                 {countries.map((country, idx) => {
-                    return (<option key={idx} value={country.country_id_production}>{country.country_name}</option>)
+                    return (<option key={idx} value={country.country_id}>{country.country_name}</option>)
                 })}
             </select>
         )
@@ -351,7 +391,7 @@ function ProductPortfolioMerchant() {
                                                 }}>
                                                     <div align='left' className='w-full'>
                                                         <p className='product-details-row'>
-                                                            <strong>Product ID:</strong> {product.id}
+                                                            <strong>Product ID:</strong> {editedProduct.id}
                                                         </p>
                                                         <p className='product-details-row'>
                                                             <strong>Product Name:</strong>
@@ -383,7 +423,7 @@ function ProductPortfolioMerchant() {
                                                         </p>
                                                     </div>
                                                     <div className='flex flex-row-reverse gap-1'>
-                                                        <button type='submit' onClick={() => handleSaveClick(product.id)} className='button-standard'>Save</button>
+                                                        <button type='submit' onClick={() => handleSaveClick(editedProduct.id)} className='button-standard'>Save</button>
                                                         <button type='button' onClick={() => handleCancelClick()} className='button-standard-blue-grey'>Cancel</button>
                                                     </div>
                                                 </form>
@@ -641,7 +681,7 @@ const ModalCreateProduct = ({ isShown, countries, onClose, onSubmit }) => {
                                 <option value="-1">Choose country...</option>
                                 <option disabled>──────────</option>
                                 {countries.map((country, idx) => {
-                                    return (<option key={idx} value={country.country_id_production}>{country.country_name}</option>)
+                                    return (<option key={idx} value={country.country_id}>{country.country_name}</option>)
                                 })}
                             </select>
 

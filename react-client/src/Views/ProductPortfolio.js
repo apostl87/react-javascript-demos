@@ -46,7 +46,7 @@ function ProductPortfolioEditable() {
 
     // Helper functions
     function getProducts() {
-        fetch(`${api_url}products`)
+        fetch(`${api_url}/products`)
             .then(response => response.json())
             .then(data => saveProductData(data));
     }
@@ -93,7 +93,7 @@ function ProductPortfolioEditable() {
     }
 
     function updateProduct(id) {
-        fetch(`${api_url}products/${id}`, {
+        fetch(`${api_url}/products/${id}`, {
             method: 'PATCH',
             headers: {
                 'Content-Type': 'application/json',
@@ -116,7 +116,7 @@ function ProductPortfolioEditable() {
     }
 
     function getCountries() {
-        fetch(`${api_url}countries`)
+        fetch(`${api_url}/countries`)
             .then(response => response.json())
             .then(data => setCountries(data));
     }
@@ -204,6 +204,7 @@ function ProductPortfolioEditable() {
 
     function handleInputChange(e) {
         let { name, value } = e.target;
+        console.log(name, value)
         if (name == 'weight') {
             value = sanitizeNumeric(name, value, 1);
         }
