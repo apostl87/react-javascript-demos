@@ -66,7 +66,7 @@ function ProductPortfolioMerchant() {
     // Loading hook
     const [loadingMsg, setLoadingMsg] = useState('')
 
-    // Execution on initial loading:
+    // Execution on initial loading
     useEffect(() => {
         if (user) {
             getProducts();

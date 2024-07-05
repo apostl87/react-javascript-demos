@@ -6,12 +6,12 @@ import TokenService from "./token-service"; // Could You please provide code fro
 
 class Request {
     constructor() {
-        this.baseURL = config.baseUrl;
+        this.baseURL = process.env.REACT_APP_BACKEND_API_URL;
         this.isRefreshing = false;
         this.failedRequests = [];
         this.tokenService = new TokenService();
         this.client = axios.create({
-            baseURL: config.apiServerBaseUrl,
+            baseURL: process.env.REACT_APP_BACKEND_API_URL,
             headers: {
                 clientSecret: this.clientSecret,
             },
