@@ -91,139 +91,100 @@ function ProductPortfolioMerchant() {
     const currentProducts = filteredProducts.slice(indexOfFirstProduct, indexOfLastProduct + 1);
 
 
-    // API requests
+    // API calls
     function getProducts() {
-
-        console.log("Called getProducts ", test);
-
-        let at = accessToken
-        if (test == 0) {
-            at = 'invalid'
-            setTest(test + 1)
-        }
-
-        fetch(`${api_url}/merchant-products/${user.sub}`, {
-            method: 'GET',
-            headers: new Headers({
-                Authorization: `Bearer ${at}`,
-            })
-        })
+        const url = `${api_url}/merchant-products/${user.sub}`
+        request.get(url)
             .then(response => {
-                if (response.status === 401) {
-                    //setOverrideContent
-                    return;
-                }
-                let data = response.json();
-                processProductData(data);
+                processProductData(response.data);
             })
-            .catch(error => console.log(error))
-    }
-
-    // #TODO: debug
-    function updateProduct(product_id) {
-        const url = `${api_url}/merchant-products/${user.sub}/${product_id}`;
-
-        fetch(url, {
-            method: 'PATCH',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(editedProduct),
-        })
-            .then(response => response.json())
-            .catch(error => console.log(error))
-            .then(data => {
-                setEditedProduct({});
-                getProducts(); // #TODO: avoid this extra api call by updating the product in the frontend
+            .catch(error => {
+                console.error(error);
             });
     }
 
-    function createProduct(requestBody) {
-        fetch(`${api_url}/merchant-products/create`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(requestBody),
-        })
-            .then(response => response.json())
-            .catch(error => console.log(error))
-            .then(data => {
-                if ('name' in data && data.name == 'error') {
-                    return;
-                }
+    function updateProduct(product_id) {
+        const url = `${api_url}/merchant-products/${user.sub}/${product_id}`;
+        request.patch(url, editedProduct)
+            .then(response => {
+                setEditedProduct({});
+                getProducts(); // #TODO: avoid this extra api call by updating the product in the frontend
+            })
+            .catch(error => {
+                console.error(error);
+            });
+    }
+
+    function createProduct(body) {
+        const url = `${api_url}/merchant-products/create`;
+        request.post(url, body)
+            .then(response => {
                 try {
-                    let newProducts = [...products, ...mapProductData(data)];
+                    let newProducts = [...products, ...mapProductData(response.data)];
                     setProducts(newProducts);
                     setCurrentPage(Math.ceil(newProducts.length / productsPerPage));
+                    window.scrollTo(0, document.body.scrollHeight);
                     setNotification('Product created successfully!');
                 } catch {
                     setNotification('Failed to create product. Please try again.');
                 }
+            })
+            .catch(error => {
+                console.error(error);
             });
     }
 
     function deleteProduct() {
-        fetch(`${api_url}/merchant-products/${user.sub}/${productToDelete.id}`, {
-            method: 'DELETE',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({}),
-        })
-            .then(response => response.text())
-            .catch(error => console.log(error))
-            .then(notification => {
-                //process-notification
-                getProducts();
+        const url = `${api_url}/merchant-products/${user.sub}/${productToDelete.id}`
+        request.delete(url)
+            .then(response => {
+                getProducts(); // #TODO: avoid this extra api call by updating the product in the frontend
+                // TODO: notification
+            })
+            .catch(error => {
+                console.error(error);
             });
     }
 
     function deleteAllProducts() {
-        fetch(`${api_url}/merchant-products/${user.sub}`, {
-            method: 'DELETE',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({}),
-        })
-            .then(response => response.text())
-            .catch(error => console.log(error))
-            .then(notification => {
-                //process-notification
-                getProducts();
+        const url = `${api_url}/merchant-products/${user.sub}`
+        request.delete(url)
+            .then(response => {
+                processProductData([]);
+                // TODO: notification
+            })
+            .catch(error => {
+                console.error(error);
             });
     }
 
     function initProducts() {
-        fetch(`${api_url}/merchant-products/${user.sub}/init`, {
-            method: 'POST', // Pseudo POST endpoint
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({}),
-        })
-            .then(response => response.json())
-            .catch(error => console.log(error))
-            .then(data => processProductData(data));
+        const url = `${api_url}/merchant-products/${user.sub}/init`
+        request.get(url) // This is a pseudo GET endpoint; It creates ressources without transmitting a body - The backend carries the rest of the information.
+            .then(response => {
+                processProductData(response.data);
+                // TODO: notification
+            })
+            .catch(error => {
+                console.error(error);
+            });
     }
 
     function getCountries() {
-        fetch(`${api_url}/countries`, {
-            method: 'GET',
-            headers: new Headers({
-                Authorization: `Bearer ${accessToken}`,
+        const url = `${api_url}/countries`;
+        request.get(url)
+            .then(response => {
+                setCountries(response.data);
             })
-        })
-            .then(response => response.json())
-            .then(data => setCountries(data));
+            .catch(error => {
+                console.error(error);
+            });
     }
 
     // Other functions
     function processProductData(data) {
         const products = mapProductData(data)
         setProducts(products);
-        setFilteredProducts(products);
     }
 
     function mapProductData(data) {

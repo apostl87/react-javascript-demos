@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { Tooltip } from 'react-tooltip';
 import PaginationBar from '../Components/PaginationBar';
 import SearchBar from '../Components/SearchBar';
+import request from '../services/request-service';
 
 const api_url = process.env.REACT_APP_BACKEND_API_URL;
 
@@ -44,11 +45,39 @@ function ProductPortfolioEditable() {
     const currentProducts = filteredProducts.slice(indexOfFirstProduct, indexOfLastProduct + 1);
 
 
-    // Helper functions
+    // API calls
     function getProducts() {
-        fetch(`${api_url}/products`)
-            .then(response => response.json())
-            .then(data => saveProductData(data));
+        const url = `${api_url}/products`
+        request.get(url)
+            .then(response => {
+                saveProductData(response.data);
+            })
+            .catch(error => {
+                console.error(error);
+            });
+    }
+
+    function updateProduct(id) {
+        const url = `${api_url}/products/${id}`
+        request.get(url, editedProduct)
+            .then(response => {
+                setEditingProductId(null);
+                getProducts(); // avoid this api call by correctly updating the array
+            })
+            .catch(error => {
+                console.error(error);
+            });
+    }
+
+    function getCountries() {
+        const url = `${api_url}/countries`
+        request.get(url)
+            .then(response => {
+                setCountries(response.data);
+            })
+            .catch(error => {
+                console.error(error);
+            });
     }
 
     function saveProductData(data) {
@@ -90,35 +119,6 @@ function ProductPortfolioEditable() {
                 }
             }))
         }
-    }
-
-    function updateProduct(id) {
-        fetch(`${api_url}/products/${id}`, {
-            method: 'PATCH',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(editedProduct),
-        })
-            .then(response => response.text())
-            .then(data => {
-                setEditingProductId(null);
-                getProducts();
-            });
-    }
-
-    function createProduct() {
-        return null
-    }
-
-    function deleteProduct() {
-        return null;
-    }
-
-    function getCountries() {
-        fetch(`${api_url}/countries`)
-            .then(response => response.json())
-            .then(data => setCountries(data));
     }
 
     // Helper functions for editing a product

@@ -14,12 +14,12 @@ export default function Navigation() {
     {
       label: "Demo examples", to: "examples",
       subMenu: [
-        { label: "Edit product portfolio (no login required)", to: "product-portfolio" },
         { label: "Fully manage retailer product portfolio", to: "merchant-product-portfolio" },
+        { label: "Edit product portfolio (no login required)", to: "product-portfolio" },
         { label: "Space game", to: "space-game" },
       ]
     },
-    { label: "Testarea", to: "testarea"},
+    { label: "Developer area", to: "testarea"},
     { label: "Contact", to: "contact" },
   ];
 

@@ -1,7 +1,7 @@
 import axios from 'axios';
 import React from 'react';
 
-let baseUrl = REACT_APP_AUTH0_DOMAIN;
+let baseUrl = process.env.REACT_APP_AUTH0_DOMAIN;
 let apiToken = process.env.REACT_APP_AUTH0_MNGMT_TOKEN;
 
 export const getUser = (id, onSuccess) => {

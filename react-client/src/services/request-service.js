@@ -1,7 +1,6 @@
 import axios from "axios";
 
 /* @internal */
-import {config} from "../config";
 import TokenService from "./token-service"; // Could You please provide code from this file too?
 
 class Request {

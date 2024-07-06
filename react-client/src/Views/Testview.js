@@ -1,8 +1,6 @@
 import { React, useEffect, useState, useCallback } from 'react';
-import GetApiAccessToken from '../lib/GetApiAccessToken.js';
 import { useAuth0 } from "@auth0/auth0-react";
 import TokenService from '../services/token-service.js';
-import { config } from '../config.js';
 import request from "../services/request-service.js"; // Assuming request.js is in the same directory
 
 const api_url = process.env.REACT_APP_BACKEND_API_URL;
@@ -12,21 +10,13 @@ const Testview = () => {
         isLoading,
     } = useAuth0();
 
-    const [token, setToken] = useState('')
+    if (isLoading || !user || user.sub !== 'auth0|667d40d713548da815d3a4b0') {
+        return <div className='text-center mt-10'>Your account is not registered as a developer account</div>
+    }
 
-    useEffect(() => {
-        if (user) {
-            GetApiAccessToken(setToken);
-        }
-    }, [user])
+    let tokenService = new TokenService();
 
-    useEffect(() => {
-        if (token) {
-            console.log("Access token", token);
-        }
-    }, [token])
-
-    useEffect(() => {
+    function getProducts() {
         request.get("/products")
             .then(response => {
                 console.log("Response");
@@ -35,28 +25,22 @@ const Testview = () => {
             .catch(error => {
                 console.error(error);
             });
-    })
-
-    
-
-    let tokenService = new TokenService();
-    if (!tokenService.getAccessToken()) {
-        // tokenService.refreshAccessToken().then((token) => {
-        //     tokenService.setAccessToken(token);
-        // })
     }
-
-
-    // console.log(token);
 
     return (
         <div>
-            Testarea
+            <h2>Dev Area</h2>
             <div>
-                Token:
+                User:
                 <p>
-                    {token}
+                    {user.sub}
                 </p>
+            </div>
+            <div>
+                <button onClick={getProducts} className='button-standard'>Fetch products</button>
+            </div>
+            <div>
+                <button onClick={() => localStorage.clear()} className='button-standard'>Clear local storage</button>
             </div>
             <div>
                 Token Service:
@@ -65,7 +49,7 @@ const Testview = () => {
                 </p>
             </div>
             <div>
-                {config.baseUrl}
+                {process.env.REACT_APP_BACKEND_API_URL}
             </div>
         </div>
     )
