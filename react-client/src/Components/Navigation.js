@@ -12,7 +12,7 @@ export default function Navigation() {
   const menuItems = [
     { label: "Home", to: "home" },
     {
-      label: "Demo examples", to: "examples",
+      label: "Demos", to: "examples",
       subMenu: [
         { label: "Fully manage retailer product portfolio", to: "merchant-product-portfolio" },
         { label: "Edit product portfolio (no login required)", to: "product-portfolio" },
