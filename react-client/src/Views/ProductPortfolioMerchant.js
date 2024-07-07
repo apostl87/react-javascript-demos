@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { Tooltip } from 'react-tooltip';
 import { useAuth0 } from "@auth0/auth0-react";
 import axios from 'axios';
-import $, { parseHTML, valHooks } from 'jquery';
+import $ from 'jquery';
 import PaginationBar from '../Components/PaginationBar';
 import SearchBar from '../Components/SearchBar';
 import { ModalCreateProductTemplate } from '../Templates/Modal';
@@ -34,7 +34,7 @@ function ProductPortfolioMerchant() {
     // Constants for displaying
     const WEIGHT_UNIT = 'kg';
 
-    // Editing hooks
+    // Editing hook
     const [editedProduct, setEditedProduct] = useState({});
 
     // Tooltip hooks
@@ -108,8 +108,10 @@ function ProductPortfolioMerchant() {
         const url = `${api_url}/merchant-products/${user.sub}/${p_id}`;
         request.patch(url, editedProduct)
             .then(response => {
+                let newProducts = [...products];
+                newProducts[editedProduct.index] = {...editedProduct}
+                setProducts(newProducts);
                 setEditedProduct({});
-                getProducts(); // #TODO: avoid this extra api call by updating the product in the frontend
             })
             .catch(error => {
                 console.error(error);
@@ -198,7 +200,7 @@ function ProductPortfolioMerchant() {
                 mp_currency: data.mp_currency,
                 mp_price: data.mp_price,
                 mp_weight_kg: data.mp_weight_kg,
-                mp_c_id_production: data.mp_c_id_production ? data.mp_c_id_production : "-1",
+                mp_c_id_production: data.mp_c_id_production ? data.mp_c_id_production : -1,
             };
         });
         return (products);
@@ -237,7 +239,7 @@ function ProductPortfolioMerchant() {
 
     // Callback functions
     function handleEditClick(product) {
-        setEditedProduct(product)
+        setEditedProduct({ ...product, index: products.indexOf(product) });
     }
 
     function handleDeleteOneClick(product) {
@@ -285,8 +287,12 @@ function ProductPortfolioMerchant() {
         if (name == 'mp_price') {
             value = formatNumeric(name, value, 2, setTooltipIsOpen, setTooltipState);
         }
-        if (name == 'mp_c_id_production' && value == -1) {
-            value = 'null';
+        if (name == 'mp_c_id_production') {
+            if (value == -1) {
+                value = 'null';
+            } else {
+                value = parseInt(value);
+            }
         }
         setEditedProduct({ ...editedProduct, [name]: value });
     }
