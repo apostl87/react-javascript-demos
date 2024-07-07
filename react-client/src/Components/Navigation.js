@@ -9,7 +9,7 @@ import NavmenuItemCustom from "./NavmenuItem";
 export default function Navigation() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
-  const menuItems = [
+  let menuItems = [
     { label: "Home", to: "home" },
     {
       label: "Demos", to: "examples",
@@ -19,13 +19,20 @@ export default function Navigation() {
         { label: "Space game", to: "space-game" },
       ]
     },
-    { label: "Developer area", to: "devarea",
-      subMenu: [
-        { label: "Token service and request service", to: "01"}
-      ]
-    },
+
     { label: "Contact", to: "contact" },
   ];
+
+  if (process.env.NODE_ENV === 'development') {
+    menuItems.push(
+      { label: "Developer area", to: "devarea",
+        subMenu: [
+          { label: "Token service and request service", to: "01" },
+          { label: "Other", to: "02" }
+        ]
+      },
+    )
+  }
 
   return (
     <Navbar onMenuOpenChange={setIsMenuOpen} className="bg-gray-950 text-white h-12">
