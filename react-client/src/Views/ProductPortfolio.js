@@ -52,7 +52,6 @@ function ProductPortfolioEditable() {
     const indexOfFirstProduct = Math.max(0, indexOfLastProduct - productsPerPage + 1)
     const currentProducts = filteredProducts.slice(indexOfFirstProduct, indexOfLastProduct + 1);
 
-
     // API calls
     function getProducts() {
         const url = `${api_url}/products`
@@ -66,8 +65,8 @@ function ProductPortfolioEditable() {
             });
     }
 
-    function updateProduct(id) {
-        const url = `${api_url}/products/${id}`
+    function updateProduct(p_id) {
+        const url = `${api_url}/products/${p_id}`
         request.patch(url, editedProduct)
             .then(response => {
                 setEditingProductId(null);
@@ -92,19 +91,18 @@ function ProductPortfolioEditable() {
     function saveProductData(data) {
         const products = data.map(data => {
             return {
-                id: data.id,
-                product_name: data.product_name,
-                color: data.color,
-                image_url: data.image_url,
-                price_currency: data.price_currency,
-                price: data.price,
-                weight: data.weight_kg,
-                country_id: data.country_id,
-                country_name: data.country_name,
+                p_id: data.p_id,
+                p_name: data.p_name,
+                p_color: data.p_color,
+                p_image_url: data.p_image_url,
+                p_currency: data.p_currency,
+                p_price: data.p_price,
+                p_weight_kg: data.p_weight_kg,
+                p_c_id_production: data.p_c_id_production,
+                c_name: data.c_name,
             };
         });
         setProducts(products);
-        setFilteredProducts(products);
     }
 
     function filterProducts(products, searchString, setFilteredFlag) {
@@ -133,16 +131,16 @@ function ProductPortfolioEditable() {
     // Helper functions for editing a product
     function selectCountry(countries) {
         return (
-            <select id="country_id" name="country_id" onChange={handleInputChange} value={editedProduct.country_id}>
+            <select id="p_c_id_production" name="p_c_id_production" onChange={handleInputChange} value={editedProduct.p_c_id_production}>
                 {countries.map((country, idx) => {
-                    return (<option key={idx} value={country.country_id}>{country.country_name}</option>)
+                    return (<option key={idx} value={country.c_id}>{country.c_name}</option>)
                 })}
             </select>
         )
     }
 
     function inputField(type, name, value) {
-        if (name == 'color') {
+        if (name == 'p_color') {
             return (
                 <input
                     type={type}
@@ -202,21 +200,21 @@ function ProductPortfolioEditable() {
     function colorPicked() {
         let value = document.getElementById("colorPicker").value;
         setSelectedColor(value);
-        editedProduct.color = value;
+        editedProduct.p_color = value;
     }
 
     // Callback functions
     function handleEditClick(product) {
-        setEditingProductId(product.id);
+        setEditingProductId(product.p_id);
         setEditedProduct(product);
     }
 
     function handleInputChange(e) {
         let { name, value } = e.target;
-        if (name == 'weight') {
+        if (name == 'p_weight_kg') {
             value = sanitizeNumeric(name, value, 1);
         }
-        if (name == 'price') {
+        if (name == 'p_price') {
             value = sanitizeNumeric(name, value, 2);
         }
         setEditedProduct({ ...editedProduct, [name]: value });
@@ -224,11 +222,11 @@ function ProductPortfolioEditable() {
 
     function handleSaveClick(id) {
         let empty_var = null
-        if (!editedProduct.product_name) {
+        if (!editedProduct.p_name) {
             empty_var = 'Product Name'
-        } else if (!editedProduct.weight) {
+        } else if (!editedProduct.p_weight_kg) {
             empty_var = 'Weight'
-        } else if (!editedProduct.price) {
+        } else if (!editedProduct.p_price) {
             empty_var = 'Price'
         }
         if (empty_var) {
@@ -265,21 +263,21 @@ function ProductPortfolioEditable() {
             {filteredProducts.length > 0 ? (
                 <div className="product-list">
                     {currentProducts.map((product) => (
-                        <div key={product.id} className="product-item">
+                        <div key={product.p_id} className="product-item">
                             <div className='w-full flex flex-shrink'>
-                                {editingProductId === product.id ? (
+                                {editingProductId === product.p_id ? (
                                     <div className='w-full flex flex-shrink gap-1'>
                                         <div className='flex-shrink'>
-                                            <img src={product.image_url} alt={product.product_name} className="product-image" />
+                                            <img src={product.p_image_url} alt={product.p_name} className="product-image" />
                                         </div>
                                         <div className='flex flex-col flex-grow'>
                                             <div align='left' className='float-left w-full'>
                                                 <p className='product-details-row'>
-                                                    <strong>Product ID:</strong> {product.id}
+                                                    <strong>Product ID:</strong> {product.p_id}
                                                 </p>
                                                 <p className='product-details-row'>
                                                     <strong>Product Name:</strong>
-                                                    {inputField('text', 'product_name', editedProduct.product_name)}
+                                                    {inputField('text', 'p_name', editedProduct.p_name)}
                                                 </p>
 
                                                 <p className='product-details-row'>
@@ -290,44 +288,44 @@ function ProductPortfolioEditable() {
                                                 <p className='product-details-row'>
                                                     <strong>Color:</strong>
                                                     &nbsp;&nbsp;Choose
-                                                    <input type="color" value={editedProduct.color} name='color' id="colorPicker" onChange={() => colorPicked()} />
+                                                    <input type="color" value={editedProduct.p_color} name='p_color' id="colorPicker" onChange={() => colorPicked()} />
                                                     Code
-                                                    {inputField('text', 'color', editedProduct.color)}
+                                                    {inputField('text', 'p_color', editedProduct.p_color)}
                                                 </p>
 
                                                 <p className='product-details-row'>
                                                     <strong>Weight:</strong>
-                                                    {inputField('text', 'weight', editedProduct.weight)}
+                                                    {inputField('text', 'p_weight_kg', editedProduct.p_weight_kg)}
                                                     <label>{WEIGHT_UNIT}</label>
                                                 </p>
 
                                                 <p className='product-details-row'>
                                                     <strong>Price:</strong>
-                                                    {inputField('text', 'price', editedProduct.price)}
-                                                    <label>{editedProduct.price_currency}</label>
+                                                    {inputField('text', 'p_price', editedProduct.p_price)}
+                                                    <label>{editedProduct.p_currency}</label>
                                                 </p>
                                             </div>
                                             <div className='flex flex-row-reverse gap-1'>
-                                                <button onClick={() => handleSaveClick(product.id)} className='button-standard'>Save</button>
+                                                <button onClick={() => handleSaveClick(product.p_id)} className='button-standard'>Save</button>
                                             </div>
                                         </div>
                                     </div>
                                 ) : (
                                     <div className='w-full flex flex-shrink gap-1'>
                                         <div className=''>
-                                            <img src={product.image_url} alt={product.product_name} className="product-image" />
+                                            <img src={product.p_image_url} alt={product.p_name} className="product-image" />
                                         </div>
                                         <div className='flex flex-col flex-grow'>
                                             <div align='left' className='float-left w-full'>
-                                                <p><strong>Product ID:</strong> {product.id}</p>
-                                                <p><strong>Product Name:</strong> {product.product_name}</p>
-                                                <p><strong>Production&nbsp;Country:</strong> {product.country_name}</p>
+                                                <p><strong>Product ID:</strong> {product.p_id}</p>
+                                                <p><strong>Product Name:</strong> {product.p_name}</p>
+                                                <p><strong>Production&nbsp;Country:</strong> {product.c_name}</p>
                                                 <p><strong>Color:</strong>
-                                                    <span className='color-show' style={{ display: 'inline-block', backgroundColor: product.color }}></span>
-                                                    {product.color}
+                                                    <span className='color-show' style={{ display: 'inline-block', backgroundColor: product.p_color }}></span>
+                                                    {product.p_color}
                                                 </p>
-                                                <p><strong>Weight:</strong> {product.weight ? product.weight : '-'} {WEIGHT_UNIT}</p>
-                                                <p><strong>Price:</strong> {product.price ? product.price : '-'} {product.price_currency}</p>
+                                                <p><strong>Weight:</strong> {product.p_weight_kg ? product.p_weight_kg : '-'} {WEIGHT_UNIT}</p>
+                                                <p><strong>Price:</strong> {product.p_price ? product.p_price : '-'} {product.p_currency}</p>
                                             </div>
                                             <div className="flex flex-row-reverse gap-1">
                                                 <button onClick={() => handleEditClick(product)} className='button-standard'>Edit</button>
