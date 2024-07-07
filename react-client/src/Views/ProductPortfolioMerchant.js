@@ -8,6 +8,7 @@ import SearchBar from '../Components/SearchBar';
 import { ModalCreateProductTemplate } from '../Templates/Modal';
 import { ModalConfirmCancel } from '../Components/ModalConfirmCancel';
 import Dropzone from '../Components/Dropzone';
+import {NotLoggedIn} from '../Components/Misc';
 import request from '../services/request-service';
 
 const api_url = process.env.REACT_APP_BACKEND_API_URL;
@@ -20,9 +21,7 @@ function ProductPortfolioMerchant() {
     // Auth0 hook
     const { user,
         isLoading,
-        getAccessTokenSilently,
-        loginWithPopup,
-        getAccessTokenWithPopup,
+        loginWithRedirect,
     } = useAuth0();
 
     // General data hooks
@@ -63,12 +62,13 @@ function ProductPortfolioMerchant() {
     // Notification hook
     const [notification, setNotification] = useState('')
 
-    // Loading hook
-    const [loadingMsg, setLoadingMsg] = useState('')
+    // Loading (products) hook
+    let [loading, setLoading] = useState(false);
 
     // Execution on initial loading
     useEffect(() => {
         if (user) {
+            setLoading(true)
             getProducts();
             getCountries();
         }
@@ -79,10 +79,12 @@ function ProductPortfolioMerchant() {
         filterProducts(products, searchString, setIsFiltered)
     }, [products]);
 
-    const [test, setTest] = useState(0);
-
-    if (isLoading || (!isLoading && !user)) {
+    if (isLoading) {
         return null;
+    }
+
+    if ((!isLoading && !user)) {
+        return <NotLoggedIn />
     }
 
     // Current page parameters
@@ -97,6 +99,7 @@ function ProductPortfolioMerchant() {
         request.get(url)
             .then(response => {
                 processProductData(response.data);
+                setLoading(false);
             })
             .catch(error => {
                 console.error(error);
@@ -418,14 +421,17 @@ function ProductPortfolioMerchant() {
                             </div>
                         ))}
                     </div>
-                ) :
-                (
-                    <div className="flex flex-col gap-5">
-                        <p>No products were found.</p>
-                        {products.length === 0 &&
-                            <button onClick={() => initProducts()} className='button-standard w-64'>Create products with test data</button>
-                        }
-                    </div>
+                ) : (
+                    loading ?
+                        <div align="center">Loading...</div> :
+                        <div className='flex flex-col items-center gap-5' >
+                            <p>
+                                No products were found.
+                            </p>
+                            {products.length === 0 &&
+                                <button onClick={() => initProducts()} className='button-standard w-64'>Create products with test data</button>
+                            }
+                        </div>
                 )
             }
 
@@ -435,9 +441,11 @@ function ProductPortfolioMerchant() {
 
             <hr />
 
-            <div className='flex flex-row justify-center'>
-                <button onClick={() => handleDeleteAllClick()} className='button-standard-blue-grey'>Delete all products</button>
-            </div>
+            {filteredProducts.length > 0 &&
+                <div className='flex flex-row justify-center'>
+                    <button onClick={() => handleDeleteAllClick()} className='button-standard-blue-grey'>Delete all products</button>
+                </div>
+            }
 
             {/* Overlay components */}
             <Tooltip id={tooltipState[0]}

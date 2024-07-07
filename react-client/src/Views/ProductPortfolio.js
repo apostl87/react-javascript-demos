@@ -33,11 +33,19 @@ function ProductPortfolioEditable() {
     const [searchString, setSearchString] = useState('')
     const [filteredProducts, setFilteredProducts] = useState([])
 
+    // Loading (products) hook
+    let [loading, setLoading] = useState(false);
+
     // Execution on initial loading: 1) HTTP requests to retreive data and 2) Initialization of filtered products
     useEffect(() => {
+        setLoading(true);
         getProducts();
         getCountries();
     }, []);
+
+    useEffect(() => {
+        filterProducts(products, searchString, setIsFiltered)
+    }, [products]);
 
     // Current page parameters
     const indexOfLastProduct = Math.min(currentPage * productsPerPage, filteredProducts.length) - 1;
@@ -51,6 +59,7 @@ function ProductPortfolioEditable() {
         request.get(url)
             .then(response => {
                 saveProductData(response.data);
+                setLoading(false)
             })
             .catch(error => {
                 console.error(error);
@@ -59,7 +68,7 @@ function ProductPortfolioEditable() {
 
     function updateProduct(id) {
         const url = `${api_url}/products/${id}`
-        request.get(url, editedProduct)
+        request.patch(url, editedProduct)
             .then(response => {
                 setEditingProductId(null);
                 getProducts(); // avoid this api call by correctly updating the array
@@ -334,7 +343,7 @@ function ProductPortfolioEditable() {
                     ))}
                 </div>
             ) : (
-                <p>No products were found.</p>
+                <div align="center">{loading ? 'Loading...' : 'No products were found.'}</div>
             )}
 
             <PaginationBar currentPage={currentPage} switchPageFn={setCurrentPage}

@@ -1,17 +1,24 @@
 import { React, useEffect, useState, useCallback } from 'react';
 import { useAuth0 } from "@auth0/auth0-react";
+import { NotLoggedIn, NoDeveloper, Loading } from '../Components/Misc';
 import TokenService from '../services/token-service.js';
 import request from "../services/request-service.js"; // Assuming request.js is in the same directory
 
 const api_url = process.env.REACT_APP_BACKEND_API_URL;
 
-const Testview = () => {
+const DevView01 = () => {
     const { user,
         isLoading,
     } = useAuth0();
 
-    if (isLoading || !user || user.sub !== 'auth0|667d40d713548da815d3a4b0') {
-        return <div className='text-center mt-10'>Your account is not registered as a developer account</div>
+    if (isLoading) {
+        return <Loading />
+    }
+    if (!user) {
+        return <NotLoggedIn />
+    }
+    if (!process.env.REACT_APP_DEVELOPER_USER_IDS.split(" ").includes(user.sub)) {
+        return <NoDeveloper />;
     }
 
     let tokenService = new TokenService();
@@ -55,4 +62,4 @@ const Testview = () => {
     )
 }
 
-export default Testview
+export default DevView01

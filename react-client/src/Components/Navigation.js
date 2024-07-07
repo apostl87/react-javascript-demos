@@ -19,7 +19,11 @@ export default function Navigation() {
         { label: "Space game", to: "space-game" },
       ]
     },
-    { label: "Developer area", to: "testarea"},
+    { label: "Developer area", to: "devarea",
+      subMenu: [
+        { label: "Token service and request service", to: "01"}
+      ]
+    },
     { label: "Contact", to: "contact" },
   ];
 

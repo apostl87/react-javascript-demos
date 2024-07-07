@@ -58,7 +58,7 @@ export default function UserArea() {
                                 Profile
                             </div>
                         </button>
-                        <button onClick={logout} className="user-area-link">
+                        <button onClick={() => logout({ logoutParams: { returnTo: window.location.origin } })} className="user-area-link">
                             <div className="text-right">
                                 Logout
                             </div>
