@@ -220,7 +220,8 @@ function ProductPortfolioEditable() {
         setEditedProduct({ ...editedProduct, [name]: value });
     }
 
-    function handleSaveClick(id) {
+    function handleSaveClick(e, p_id) {
+        e.preventDefault();
         let empty_var = null
         if (!editedProduct.p_name) {
             empty_var = 'Product Name'
@@ -237,11 +238,14 @@ function ProductPortfolioEditable() {
                 setIsOpen(false)
             }, 2000);
         } else {
-            updateProduct(id);
+            updateProduct(p_id);
         }
     }
 
-
+    function handleCancelClick() {
+        setEditingProductId(null);
+        setEditedProduct({});
+    }
 
     return (
 
@@ -266,50 +270,56 @@ function ProductPortfolioEditable() {
                         <div key={product.p_id} className="product-item">
                             <div className='w-full flex flex-shrink'>
                                 {editingProductId === product.p_id ? (
-                                    <div className='w-full flex flex-shrink gap-1'>
-                                        <div className='flex-shrink'>
-                                            <img src={product.p_image_url} alt={product.p_name} className="product-image" />
-                                        </div>
-                                        <div className='flex flex-col flex-grow'>
-                                            <div align='left' className='float-left w-full'>
-                                                <p className='product-details-row'>
-                                                    <strong>Product ID:</strong> {product.p_id}
-                                                </p>
-                                                <p className='product-details-row'>
-                                                    <strong>Product Name:</strong>
-                                                    {inputField('text', 'p_name', editedProduct.p_name)}
-                                                </p>
-
-                                                <p className='product-details-row'>
-                                                    <strong>Production&nbsp;Country:</strong>
-                                                    {selectCountry(countries)}
-                                                </p>
-
-                                                <p className='product-details-row'>
-                                                    <strong>Color:</strong>
-                                                    &nbsp;&nbsp;Choose
-                                                    <input type="color" value={editedProduct.p_color} name='p_color' id="colorPicker" onChange={() => colorPicked()} />
-                                                    Code
-                                                    {inputField('text', 'p_color', editedProduct.p_color)}
-                                                </p>
-
-                                                <p className='product-details-row'>
-                                                    <strong>Weight:</strong>
-                                                    {inputField('text', 'p_weight_kg', editedProduct.p_weight_kg)}
-                                                    <label>{WEIGHT_UNIT}</label>
-                                                </p>
-
-                                                <p className='product-details-row'>
-                                                    <strong>Price:</strong>
-                                                    {inputField('text', 'p_price', editedProduct.p_price)}
-                                                    <label>{editedProduct.p_currency}</label>
-                                                </p>
+                                    <form onSubmit={(e) => {
+                                        e.preventDefault();
+                                        handleSaveClick(product.p_id);
+                                    }}>
+                                        <div className='w-full flex flex-shrink gap-1'>
+                                            <div className='flex-shrink'>
+                                                <img src={product.p_image_url} alt={product.p_name} className="product-image" />
                                             </div>
-                                            <div className='flex flex-row-reverse gap-1'>
-                                                <button onClick={() => handleSaveClick(product.p_id)} className='button-standard'>Save</button>
+                                            <div className='flex flex-col'>
+                                                <div align='left' className='w-full'>
+                                                    <p className='product-details-row'>
+                                                        <strong>Product ID:</strong> {product.p_id}
+                                                    </p>
+                                                    <p className='product-details-row'>
+                                                        <strong>Product Name:</strong>
+                                                        {inputField('text', 'p_name', editedProduct.p_name)}
+                                                    </p>
+
+                                                    <p className='product-details-row'>
+                                                        <strong>Production&nbsp;Country:</strong>
+                                                        {selectCountry(countries)}
+                                                    </p>
+
+                                                    <p className='product-details-row'>
+                                                        <strong>Color:</strong>
+                                                        &nbsp;&nbsp;Choose
+                                                        <input type="color" value={editedProduct.p_color} name='p_color' id="colorPicker" onChange={() => colorPicked()} />
+                                                        Code
+                                                        {inputField('text', 'p_color', editedProduct.p_color)}
+                                                    </p>
+
+                                                    <p className='product-details-row'>
+                                                        <strong>Weight:</strong>
+                                                        {inputField('text', 'p_weight_kg', editedProduct.p_weight_kg)}
+                                                        <label>{WEIGHT_UNIT}</label>
+                                                    </p>
+
+                                                    <p className='product-details-row'>
+                                                        <strong>Price:</strong>
+                                                        {inputField('text', 'p_price', editedProduct.p_price)}
+                                                        <label>{editedProduct.p_currency}</label>
+                                                    </p>
+                                                </div>
+                                                <div className='flex flex-row-reverse gap-1'>
+                                                    <button type='submit' onClick={(e) => handleSaveClick(e, product.p_id)} className='button-standard'>Save</button>
+                                                    <button type='button' onClick={() => handleCancelClick()} className='button-standard-blue-grey'>Cancel</button>
+                                                </div>
                                             </div>
                                         </div>
-                                    </div>
+                                    </form>
                                 ) : (
                                     <div className='w-full flex flex-shrink gap-1'>
                                         <div className=''>

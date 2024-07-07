@@ -8,7 +8,7 @@ import SearchBar from '../Components/SearchBar';
 import { ModalCreateProductTemplate } from '../Templates/Modal';
 import { ModalConfirmCancel } from '../Components/ModalConfirmCancel';
 import Dropzone from '../Components/Dropzone';
-import {NotLoggedIn} from '../Components/Misc';
+import { NotLoggedIn } from '../Components/Misc';
 import request from '../services/request-service';
 
 const api_url = process.env.REACT_APP_BACKEND_API_URL;
@@ -344,15 +344,16 @@ function ProductPortfolioMerchant() {
                             <div key={product.id} className="product-item">
                                 <div className='w-full flex flex-shrink'>
                                     {editedProduct.id === product.id ? (
-                                        <div className='w-full flex flex-shrink gap-1'>
-                                            <div className='flex-shrink'>
-                                                <img src={product.image_url} alt={product.product_name} className="product-image" />
-                                            </div>
-                                            <div className='flex flex-col'>
-                                                <form onSubmit={(e) => {
-                                                    e.preventDefault();
-                                                    handleSaveClick(product.id);
-                                                }}>
+                                        <form onSubmit={(e) => {
+                                            e.preventDefault();
+                                            handleSaveClick(product.id);
+                                        }}>
+                                            <div className='w-full flex flex-shrink gap-1'>
+                                                <div className='flex-shrink'>
+                                                    <img src={product.image_url} alt={product.product_name} className="product-image" />
+                                                </div>
+                                                <div className='flex flex-col'>
+
                                                     <div align='left' className='w-full'>
                                                         <p className='product-details-row'>
                                                             <strong>Product ID:</strong> {editedProduct.id}
@@ -390,9 +391,9 @@ function ProductPortfolioMerchant() {
                                                         <button type='submit' onClick={() => handleSaveClick(editedProduct.id)} className='button-standard'>Save</button>
                                                         <button type='button' onClick={() => handleCancelClick()} className='button-standard-blue-grey'>Cancel</button>
                                                     </div>
-                                                </form>
+                                                </div>
                                             </div>
-                                        </div>
+                                        </form>
                                     ) : (
                                         <div className='w-full flex flex-shrink gap-1'>
                                             <div className=''>
