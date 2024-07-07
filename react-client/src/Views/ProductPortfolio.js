@@ -271,8 +271,7 @@ function ProductPortfolioEditable() {
                             <div className='w-full flex flex-shrink'>
                                 {editingProductId === product.p_id ? (
                                     <form onSubmit={(e) => {
-                                        e.preventDefault();
-                                        handleSaveClick(product.p_id);
+                                        handleSaveClick(e, product.p_id);
                                     }}>
                                         <div className='w-full flex flex-shrink gap-1'>
                                             <div className='flex-shrink'>
@@ -283,6 +282,7 @@ function ProductPortfolioEditable() {
                                                     <p className='product-details-row'>
                                                         <strong>Product ID:</strong> {product.p_id}
                                                     </p>
+                                                    
                                                     <p className='product-details-row'>
                                                         <strong>Product Name:</strong>
                                                         {inputField('text', 'p_name', editedProduct.p_name)}
@@ -295,9 +295,8 @@ function ProductPortfolioEditable() {
 
                                                     <p className='product-details-row'>
                                                         <strong>Color:</strong>
-                                                        &nbsp;&nbsp;Choose
+                                                        &nbsp;&nbsp;Pick
                                                         <input type="color" value={editedProduct.p_color} name='p_color' id="colorPicker" onChange={() => colorPicked()} />
-                                                        Code
                                                         {inputField('text', 'p_color', editedProduct.p_color)}
                                                     </p>
 

@@ -21,7 +21,6 @@ function ProductPortfolioMerchant() {
     // Auth0 hook
     const { user,
         isLoading,
-        loginWithRedirect,
     } = useAuth0();
 
     // General data hooks
@@ -92,7 +91,6 @@ function ProductPortfolioMerchant() {
     const indexOfFirstProduct = Math.max(0, indexOfLastProduct - productsPerPage + 1)
     const currentProducts = filteredProducts.slice(indexOfFirstProduct, indexOfLastProduct + 1);
 
-
     // API calls
     function getProducts() {
         const url = `${api_url}/merchant-products/${user.sub}`
@@ -106,8 +104,8 @@ function ProductPortfolioMerchant() {
             });
     }
 
-    function updateProduct(product_id) {
-        const url = `${api_url}/merchant-products/${user.sub}/${product_id}`;
+    function updateProduct(p_id) {
+        const url = `${api_url}/merchant-products/${user.sub}/${p_id}`;
         request.patch(url, editedProduct)
             .then(response => {
                 setEditedProduct({});
@@ -138,7 +136,7 @@ function ProductPortfolioMerchant() {
     }
 
     function deleteProduct() {
-        const url = `${api_url}/merchant-products/${user.sub}/${productToDelete.id}`
+        const url = `${api_url}/merchant-products/${user.sub}/${productToDelete.mp_id}`
         request.delete(url)
             .then(response => {
                 getProducts(); // #TODO: avoid this extra api call by updating the product in the frontend
@@ -186,25 +184,32 @@ function ProductPortfolioMerchant() {
 
     // Other functions
     function processProductData(data) {
-        const products = mapProductData(data)
-        setProducts(products);
+        const newProducts = mapProductData(data)
+        setProducts(newProducts);
     }
 
     function mapProductData(data) {
         const products = data.map(data => {
             return {
-                id: data.id,
-                product_name: data.product_name,
-                color: data.color,
-                image_url: data.image_url,
-                price_currency: data.price_currency,
-                price: data.price,
-                weight_kg: data.weight_kg,
-                country_id_production: data.country_id_production,
-                country_name: data.country_name,
+                mp_id: data.mp_id,
+                mp_name: data.mp_name,
+                mp_color: data.mp_color,
+                mp_image_url: data.mp_image_url,
+                mp_currency: data.mp_currency,
+                mp_price: data.mp_price,
+                mp_weight_kg: data.mp_weight_kg,
+                mp_c_id_production: data.mp_c_id_production ? data.mp_c_id_production : "-1",
             };
         });
         return (products);
+    }
+
+    function findCountryNameById(countries, c_id) {
+        if (countries) {
+            return countries.filter(country => country.c_id === c_id)[0].c_name;
+        } else {
+            return "Loading...";
+        }
     }
 
     function filterProducts(products, searchString, setFilteredFlag) {
@@ -237,17 +242,18 @@ function ProductPortfolioMerchant() {
 
     function handleDeleteOneClick(product) {
         setDeleteOneModalIsOpen(true);
-        setDeleteModalText(`Are you sure you want to delete the product "${product.product_name}" (Product ID: ${product.id})?`);
+        setDeleteModalText(`Are you sure you want to delete the product "${product.mp_name}" (Product ID: ${product.mp_id})?`);
         setProductToDelete(product);
     }
 
-    function handleSaveClick(product_id) {
-        let empty_var = null
-        if (!editedProduct.product_name) {
+    function handleSaveClick(e, p_id) {
+        e.preventDefault();
+        let empty_var = null;
+        if (!editedProduct.mp_name) {
             empty_var = 'Product Name'
-        } else if (!editedProduct.weight_kg) {
+        } else if (!editedProduct.mp_weight_kg) {
             empty_var = 'Weight'
-        } else if (!editedProduct.price) {
+        } else if (!editedProduct.mp_price) {
             empty_var = 'Price'
         }
         if (empty_var) {
@@ -258,7 +264,7 @@ function ProductPortfolioMerchant() {
                 setTooltipIsOpen(false)
             }, 2000);
         } else {
-            updateProduct(product_id);
+            updateProduct(p_id);
         }
     }
 
@@ -273,11 +279,14 @@ function ProductPortfolioMerchant() {
 
     function handleInputChanged(e) {
         let { name, value } = e.target;
-        if (name == 'weight_kg') {
+        if (name == 'mp_weight_kg') {
             value = formatNumeric(name, value, 1, setTooltipIsOpen, setTooltipState);
         }
-        if (name == 'price') {
+        if (name == 'mp_price') {
             value = formatNumeric(name, value, 2, setTooltipIsOpen, setTooltipState);
+        }
+        if (name == 'mp_c_id_production' && value == -1) {
+            value = 'null';
         }
         setEditedProduct({ ...editedProduct, [name]: value });
     }
@@ -285,9 +294,11 @@ function ProductPortfolioMerchant() {
     // Helper functions
     function selectCountry(countries) {
         return (
-            <select id="country_id_production" name="country_id_production" onChange={handleInputChanged} value={editedProduct.country_id_production}>
+            <select id="mp_c_id_production" name="mp_c_id_production" onChange={handleInputChanged} value={editedProduct.mp_c_id_production}>
+                <option value="-1">Choose country...</option>
+                <option disabled>──────────</option>
                 {countries.map((country, idx) => {
-                    return (<option key={idx} value={country.country_id}>{country.country_name}</option>)
+                    return (<option key={idx} value={country.c_id}>{country.c_name}</option>)
                 })}
             </select>
         )
@@ -295,7 +306,7 @@ function ProductPortfolioMerchant() {
 
     function inputField(type, name, value) {
         let disabled
-        if (name == 'color') {
+        if (name == 'mp_color') {
             disabled = true
         } else {
             disabled = false
@@ -341,26 +352,25 @@ function ProductPortfolioMerchant() {
                 (
                     <div className="product-list">
                         {currentProducts.map((product) => (
-                            <div key={product.id} className="product-item">
+                            <div key={product.mp_id} className="product-item">
                                 <div className='w-full flex flex-shrink'>
-                                    {editedProduct.id === product.id ? (
+                                    {editedProduct.mp_id === product.mp_id ? (
                                         <form onSubmit={(e) => {
-                                            e.preventDefault();
-                                            handleSaveClick(product.id);
+                                            handleSaveClick(e, editedProduct.mp_id);
                                         }}>
                                             <div className='w-full flex flex-shrink gap-1'>
                                                 <div className='flex-shrink'>
-                                                    <img src={product.image_url} alt={product.product_name} className="product-image" />
+                                                    <img src={product.mp_image_url} alt={product.mp_name} className="product-image" />
                                                 </div>
                                                 <div className='flex flex-col'>
 
                                                     <div align='left' className='w-full'>
                                                         <p className='product-details-row'>
-                                                            <strong>Product ID:</strong> {editedProduct.id}
+                                                            <strong>Product ID:</strong> {editedProduct.mp_id}
                                                         </p>
                                                         <p className='product-details-row'>
                                                             <strong>Product Name:</strong>
-                                                            {inputField('text', 'product_name', editedProduct.product_name)}
+                                                            {inputField('text', 'mp_name', editedProduct.mp_name)}
                                                         </p>
 
                                                         <p className='product-details-row'>
@@ -371,24 +381,24 @@ function ProductPortfolioMerchant() {
                                                         <p className='product-details-row'>
                                                             <strong>Color:</strong>
                                                             &nbsp;&nbsp;Pick
-                                                            <input type="color" className='my-auto' value={editedProduct.color} name='color' id="colorPicker" onChange={handleInputChanged} />
-                                                            {inputField('text', 'color', editedProduct.color)}
+                                                            <input type="color" className='my-auto' value={editedProduct.mp_color} name='mp_color' id="colorPicker" onChange={handleInputChanged} />
+                                                            {inputField('text', 'mp_color', editedProduct.mp_color)}
                                                         </p>
 
                                                         <p className='product-details-row'>
                                                             <strong>Weight:</strong>
-                                                            {inputField('text', 'weight_kg', editedProduct.weight_kg)}
+                                                            {inputField('text', 'mp_weight_kg', editedProduct.mp_weight_kg)}
                                                             <label>{WEIGHT_UNIT}</label>
                                                         </p>
 
                                                         <p className='product-details-row'>
                                                             <strong>Price:</strong>
-                                                            {inputField('text', 'price', editedProduct.price)}
-                                                            <label>{editedProduct.price_currency}</label>
+                                                            {inputField('text', 'mp_price', editedProduct.mp_price)}
+                                                            <label>{editedProduct.mp_currency}</label>
                                                         </p>
                                                     </div>
                                                     <div className='flex flex-row-reverse gap-1'>
-                                                        <button type='submit' onClick={() => handleSaveClick(editedProduct.id)} className='button-standard'>Save</button>
+                                                        <button type='submit' onClick={(e) => handleSaveClick(e, editedProduct.mp_id)} className='button-standard'>Save</button>
                                                         <button type='button' onClick={() => handleCancelClick()} className='button-standard-blue-grey'>Cancel</button>
                                                     </div>
                                                 </div>
@@ -397,19 +407,19 @@ function ProductPortfolioMerchant() {
                                     ) : (
                                         <div className='w-full flex flex-shrink gap-1'>
                                             <div className=''>
-                                                <img src={product.image_url} alt={product.product_name} className="product-image" />
+                                                <img src={product.mp_image_url} alt={product.mp_name} className="product-image" />
                                             </div>
                                             <div className='flex flex-col flex-grow'>
                                                 <div align='left' className='float-left w-full'>
-                                                    <p><strong>Product ID:</strong> {product.id}</p>
-                                                    <p><strong>Product Name:</strong> {product.product_name}</p>
-                                                    <p><strong>Production&nbsp;Country:</strong> {product.country_name}</p>
+                                                    <p><strong>Product ID:</strong> {product.mp_id}</p>
+                                                    <p><strong>Product Name:</strong> {product.mp_name}</p>
+                                                    <p><strong>Production&nbsp;Country:</strong> {findCountryNameById(countries, product.mp_c_id_production)}</p>
                                                     <p><strong>Color:</strong>
-                                                        <span className='color-show' style={{ display: 'inline-block', backgroundColor: product.color }}></span>
-                                                        {product.color}
+                                                        <span className='color-show' style={{ display: 'inline-block', backgroundColor: product.mp_color }}></span>
+                                                        {product.mp_color}
                                                     </p>
-                                                    <p><strong>Weight:</strong> {product.weight_kg ? product.weight_kg : '-'} {WEIGHT_UNIT}</p>
-                                                    <p><strong>Price:</strong> {product.price ? product.price : '-'} {product.price_currency}</p>
+                                                    <p><strong>Weight:</strong> {product.mp_weight_kg ? product.mp_weight_kg : '-'} {WEIGHT_UNIT}</p>
+                                                    <p><strong>Price:</strong> {product.mp_price ? product.mp_price : '-'} {product.mp_currency}</p>
                                                 </div>
                                                 <div className="flex flex-row-reverse gap-1">
                                                     <button onClick={() => handleEditClick(product)} className='button-standard'>Edit</button>
@@ -529,15 +539,15 @@ const ModalCreateProduct = ({ isShown, countries, onClose, onSubmit }) => {
 
     function handleInputChanged(e) {
         let { id, value } = e.target;
-        if (id == 'create-weight_kg') {
+        if (id == 'create-mp_weight_kg') {
             value = formatNumeric(id, value, 1, setTooltipIsOpen, setTooltipState);
         }
-        if (id == 'create-price') {
+        if (id == 'create-mp_price') {
             value = formatNumeric(id, value, 2, setTooltipIsOpen, setTooltipState);
         }
         document.getElementById(id).value = value;
         if (id.includes("color-picker")) {
-            document.getElementById('create-color').innerText = value;
+            document.getElementById('create-mp_color').innerText = value;
         }
     }
 
@@ -596,20 +606,20 @@ const ModalCreateProduct = ({ isShown, countries, onClose, onSubmit }) => {
 
     function handleSubmit(e) {
         e.preventDefault();
-        const product_name = document.querySelector('#create-product_name').value
-        const country_id_production = document.querySelector('#create-country_id_production').value
-        const color = document.querySelector('#create-color').innerText
-        const weight_kg = document.querySelector('#create-weight_kg').value
-        const price = document.querySelector('#create-price').value
+        const mp_name = document.querySelector('#create-mp_name').value
+        const mp_c_id_production = document.querySelector('#create-mp_c_id_production').value
+        const mp_color = document.querySelector('#create-mp_color').innerText
+        const mp_weight_kg = document.querySelector('#create-mp_weight_kg').value
+        const mp_price = document.querySelector('#create-mp_price').value
         const requestBody = {
-            product_name: product_name,
-            country_id_production: country_id_production,
-            color: color,
-            weight_kg: weight_kg,
-            price: price,
-            price_currency: 'EUR',
-            image_url: imageUrl,
-            merchant_userid: user.sub,
+            mp_name: mp_name,
+            mp_c_id_production: mp_c_id_production == -1 ? 'null' : mp_c_id_production,
+            mp_color: mp_color,
+            mp_weight_kg: mp_weight_kg,
+            mp_price: mp_price,
+            mp_currency: 'EUR',
+            mp_image_url: imageUrl,
+            mp_merchant_user_id: user.sub,
         }
         onSubmit(requestBody);
         handleClose(onClose);
@@ -624,43 +634,43 @@ const ModalCreateProduct = ({ isShown, countries, onClose, onSubmit }) => {
                     <div className='modal-create-product flex flex-row flex-wrap justify-between gap-4 items-start'>
                         <div className='grid grid-rows-1 w-auto flex-grow overflow-scroll'>
 
-                            <label htmlFor="create-product_name">
+                            <label htmlFor="create-mp_name">
                                 Product Name*
                             </label>
 
-                            <input type="text" id="create-product_name"
+                            <input type="text" id="create-mp_name"
                                 data-tooltip-id='create-product-name' placeholder='Enter product name' required />
 
-                            <label htmlFor="create-country_id_production">
+                            <label htmlFor="create-mp_c_id_production">
                                 Production Country
                             </label>
-                            <select id="create-country_id_production" defaultValue="0">
+                            <select id="create-mp_c_id_production" defaultValue="-1">
                                 <option value="-1">Choose country...</option>
                                 <option disabled>──────────</option>
                                 {countries.map((country, idx) => {
-                                    return (<option key={idx} value={country.country_id}>{country.country_name}</option>)
+                                    return (<option key={idx} value={country.c_id}>{country.c_name}</option>)
                                 })}
                             </select>
 
-                            <label htmlFor="create-weight_kg">
+                            <label htmlFor="create-mp_weight_kg">
                                 Color
                             </label>
                             <div className='flex flex-row items-center'>
                                 <input type="color" id='create-color-picker' defaultValue='#FFFFFF' onChange={handleInputChanged} />
-                                <span id='create-color' className='pl-1 mb-2'>#FFFFFF</span>
+                                <span id='create-mp_color' className='pl-1 mb-2'>#FFFFFF</span>
                             </div>
 
-                            <label htmlFor="create-weight_kg">
+                            <label htmlFor="create-mp_weight_kg">
                                 Weight in kg*
                             </label>
-                            <input type="text" id="create-weight_kg" placeholder='Enter weight'
-                                data-tooltip-id="create-weight_kg" onChange={handleInputChanged} required />
+                            <input type="text" id="create-mp_weight_kg" placeholder='Enter weight'
+                                data-tooltip-id="create-mp_weight_kg" onChange={handleInputChanged} required />
 
-                            <label htmlFor="create-price">
+                            <label htmlFor="create-mp_price">
                                 Price in EUR*
                             </label>
-                            <input type="text" id="create-price" placeholder='Enter price'
-                                data-tooltip-id="create-price" onChange={handleInputChanged} required />
+                            <input type="text" id="create-mp_price" placeholder='Enter price'
+                                data-tooltip-id="create-mp_price" onChange={handleInputChanged} required />
                         </div>
 
                         <div className='flex-grow flex flex-col justify-start border-1 border-gray-400 rounded p-2 w-auto'>
