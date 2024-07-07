@@ -550,24 +550,11 @@ const ModalCreateProduct = ({ isShown, countries, onClose, onSubmit }) => {
         setPreviewImageButtonEnabled(false);
     }
 
-    // function handleImageFileChanged(e) {
-    //     setImageFile(e.target.files[0])
-    //     if (e.target.files.size > 3145728) {
-    //         document.getElementById('create-image-file-info').innerText = "Uploaded file must be smaller than 3 MB."
-    //     } else {
-    //         setUploadImageButtonEnabled(true);
-    //     }
-    // }
-
-    // function uploadImageClicked(e) {
-    //     e.preventDefault();
-    //     uploadImage(imageFile);
-    //     setUploadImageButtonEnabled(false);
-    // }
-
     function uploadImage(imageFile) {
         // Constructing the axios request parameters
-        const api_url = `https://api.imgbb.com/1/upload?key=${process.env.REACT_APP_IMGBB_API_KEY}&expiration=259200`;
+        let n_days = 30
+        let expiration_time = n_days * 86400
+        const api_url = `https://api.imgbb.com/1/upload?key=${process.env.REACT_APP_IMGBB_API_KEY}&expiration=${expiration_time}`;
         const formData = new FormData();
         formData.append('image', imageFile);
         const config = {
