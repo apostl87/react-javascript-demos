@@ -213,7 +213,6 @@ function ProductPortfolioEditable() {
 
     function handleInputChange(e) {
         let { name, value } = e.target;
-        console.log(name, value)
         if (name == 'weight') {
             value = sanitizeNumeric(name, value, 1);
         }
