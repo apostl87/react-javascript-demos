@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { Tooltip } from 'react-tooltip';
 import PaginationBar from '../Components/PaginationBar';
 import SearchBar from '../Components/SearchBar';
+import NotificationBox from '../Components/NotificationBox';
 import request from '../services/request-service';
 
 const api_url = process.env.REACT_APP_BACKEND_API_URL;
@@ -32,6 +33,12 @@ function ProductPortfolioEditable() {
     const [isFiltered, setIsFiltered] = useState(false)
     const [searchString, setSearchString] = useState('')
     const [filteredProducts, setFilteredProducts] = useState([])
+
+    // Notification hook and functionality
+    const [notifications, setNotifications] = useState([])
+    function addNotification(notification) {
+        setNotifications([...notifications, [(notifications.length > 0) ? notifications[notifications.length - 1][0] + 1 : 0, notification]]);
+    }
 
     // Loading (products) hook
     let [loading, setLoading] = useState(false);
@@ -70,7 +77,10 @@ function ProductPortfolioEditable() {
         request.patch(url, editedProduct)
             .then(response => {
                 setEditingProductId(null);
-                getProducts(); // avoid this api call by correctly updating the array
+                let newProducts = [...products];
+                newProducts[editedProduct.index] = { ...editedProduct }
+                setProducts(newProducts);
+                addNotification(`"${editedProduct.p_name}" (ID: ${p_id}) modified.`);
             })
             .catch(error => {
                 console.error(error);
@@ -206,7 +216,7 @@ function ProductPortfolioEditable() {
     // Callback functions
     function handleEditClick(product) {
         setEditingProductId(product.p_id);
-        setEditedProduct(product);
+        setEditedProduct({ ...product, index: products.indexOf(product) });
     }
 
     function handleInputChange(e) {
@@ -254,7 +264,7 @@ function ProductPortfolioEditable() {
                 Product Portfolio
             </h3>
 
-            <div className='flex flex-row flex-wrap justify-center gap-4'>
+            <div className='flex flex-row flex-wrap justify-start gap-4'>
                 <SearchBar onInputChange={(val) => filterProducts(products, val, setIsFiltered)} />
             </div>
 
@@ -282,7 +292,7 @@ function ProductPortfolioEditable() {
                                                     <p className='product-details-row'>
                                                         <strong>Product ID:</strong> {product.p_id}
                                                     </p>
-                                                    
+
                                                     <p className='product-details-row'>
                                                         <strong>Product Name:</strong>
                                                         {inputField('text', 'p_name', editedProduct.p_name)}
@@ -362,6 +372,9 @@ function ProductPortfolioEditable() {
             <Tooltip id={tooltipState[0]}
                 content={tooltipState[1]}
                 isOpen={isOpen} />
+
+            <NotificationBox notifications={notifications} setNotifications={setNotifications} className='fixed flex flex-col gap-1 top-20 w-1/2 right-2' />
+
         </div>
     );
 }

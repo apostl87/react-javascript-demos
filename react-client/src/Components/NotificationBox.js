@@ -1,7 +1,6 @@
 import React, { useEffect } from 'react'
 
-const NotificationBox = ({ notifications, setNotifications }) => {
-    let notificationContainer = document.getElementById('notification-container');
+const NotificationBox = ({ notifications, setNotifications, className }) => {
 
     const handleCloseClick = (index) => {
         console.log('notification' + index);
@@ -24,7 +23,7 @@ const NotificationBox = ({ notifications, setNotifications }) => {
     }, [notifications])
 
     return (
-        <div id='notification-container' className='fixed flex flex-col gap-1 top-20 w-1/2 right-2'>
+        <div id='notification-container' className={className} >
             {notifications.map((notification) => {
                 const index = notification[0];
                 const message = notification[1];
