@@ -3,7 +3,6 @@ import React, { useEffect } from 'react'
 const NotificationBox = ({ notifications, setNotifications, className }) => {
 
     const handleCloseClick = (index) => {
-        console.log('notification' + index);
         let banner = document.getElementById('notification' + index);
         banner.classList.add('hidden');
     }

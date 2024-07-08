@@ -58,7 +58,7 @@ function ProductPortfolioMerchant() {
 
     // Notification hook and functionality
     const [notifications, setNotifications] = useState([])
-    function addNotification(notification) { 
+    function addNotification(notification) {
         setNotifications([...notifications, [(notifications.length > 0) ? notifications[notifications.length - 1][0] + 1 : 0, notification]]);
     }
 
@@ -272,13 +272,25 @@ function ProductPortfolioMerchant() {
     }
 
     function handleInputChanged(e) {
-        let { name, value } = e.target;
-        if (name == 'mp_weight_kg') {
-            value = formatNumeric(name, value, 1, setTooltipIsOpen, setTooltipState);
+        let { id, value } = e.target;
+        let tooltipAnchorId = null;
+
+        if (id == 'mp_weight_kg') {
+            ({ value, formatInfo } = formatNumeric(value, 1));
+            tooltipAnchorId = id;
+        } else if (id == 'mp_price') {
+            ({ value, formatInfo } = formatNumeric(value, 2));
+            tooltipAnchorId = id;
         }
-        if (name == 'mp_price') {
-            value = formatNumeric(name, value, 2, setTooltipIsOpen, setTooltipState);
+
+        if (tooltipAnchorId) {
+            setTooltipState([tooltipAnchorId, formatInfo]);
+            setTooltipIsOpen(true);
+            setTimeout(() => {
+                setTooltipIsOpen(false)
+            }, 5000);
         }
+
         if (name == 'mp_c_id_production') {
             if (value == -1) {
                 value = 'null';
@@ -302,14 +314,14 @@ function ProductPortfolioMerchant() {
         )
     }
 
-    function inputField(type, name, value) {
+    function inputField(type, id, value) {
         let disabled, required
-        if (name == 'mp_color') {
+        if (id == 'mp_color') {
             disabled = true
         } else {
             disabled = false
         }
-        if (['mp_price', 'mp_weight_kg', 'mp_name'].includes(name)) {
+        if (['mp_price', 'mp_weight_kg', 'mp_name'].includes(id)) {
             required = true
         } else {
             required = false
@@ -317,7 +329,8 @@ function ProductPortfolioMerchant() {
         return (
             <input
                 type={type}
-                name={name}
+                id={id}
+                name={id}
                 value={value}
                 onChange={handleInputChanged}
                 data-tooltip-id={name}
@@ -481,17 +494,16 @@ function ProductPortfolioMerchant() {
 
 export default ProductPortfolioMerchant
 
-function formatNumeric(id, value, precision, setTooltipIsOpen, setTooltipState) {
+function formatNumeric(value, precision) {
+    let formatInfo = '';
+
     let regex = /^([0-9]+)(\.)([0-9]*)$/;
 
     if (!regex.test(value)) {
-        let ct = (value.match(/\./g) || []).length;
-        if (value.match(/[^\d\.]/g) || ct > 1) {
-            setTooltipState([id, "Format: " + String(Number(0).toFixed(precision))]);
-            setTooltipIsOpen(true);
-            setTimeout(() => {
-                setTooltipIsOpen(false)
-            }, 5000);
+        let nDots = (value.match(/\./g) || []).length;
+
+        if (value.match(/[^\d\.]/g) || nDots > 1) {
+            formatInfo = "Format: " + String(Number(0).toFixed(precision));
         }
 
         value = value.replace(/[^\d\.]/g, '');
@@ -500,15 +512,19 @@ function formatNumeric(id, value, precision, setTooltipIsOpen, setTooltipState) 
         if (idx == 0) {
             value = '0' + value;
         }
-        if (ct > 1) {
+        if (nDots > 1) {
             value = value.slice(0, idx) + "." + value.slice(idx).replaceAll('.', '')
         }
     }
+
     let idx = value.indexOf('.');
+
     if (idx != -1 && value.slice(idx + 1).length > precision) {
-        value = String(Number(value).toFixed(precision))
+        // value = String(Number(value).toFixed(precision)) // this rounds up or down
+        value = value.slice(0, idx + precision + 1); // this truncates the value
+        formatInfo = "Format: " + String(Number(0).toFixed(precision));
     }
-    return value
+    return { value: value, formatInfo: formatInfo }
 }
 
 const ModalCreateProduct = ({ isShown, countries, onClose, onSubmit }) => {
@@ -542,12 +558,24 @@ const ModalCreateProduct = ({ isShown, countries, onClose, onSubmit }) => {
 
     function handleInputChanged(e) {
         let { id, value } = e.target;
+        let tooltipAnchorId = null;
+
         if (id == 'create-mp_weight_kg') {
-            value = formatNumeric(id, value, 1, setTooltipIsOpen, setTooltipState);
+            ({ value, formatInfo } = formatNumeric(value, 1));
+            tooltipAnchorId = id;
+        } else if (id == 'create-mp_price') {
+            ({ value, formatInfo } = formatNumeric(value, 2));
+            tooltipAnchorId = id;
         }
-        if (id == 'create-mp_price') {
-            value = formatNumeric(id, value, 2, setTooltipIsOpen, setTooltipState);
+
+        if (tooltipAnchorId) {
+            setTooltipState([tooltipAnchorId, formatInfo]);
+            setTooltipIsOpen(true);
+            setTimeout(() => {
+                setTooltipIsOpen(false)
+            }, 5000);
         }
+
         document.getElementById(id).value = value;
         if (id.includes("color-picker")) {
             document.getElementById('create-mp_color').innerText = value;
