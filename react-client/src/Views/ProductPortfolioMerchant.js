@@ -707,7 +707,6 @@ const ModalCreateProduct = ({ isShown, countries, onClose, onSubmit }) => {
 
                             <span className='pb-1 self-center'>OR</span>
 
-                            {/* <div>{manualImageUrl}</div> */}
                             <input type="text" id="create-image-url-manual" value={manualImageUrl}
                                 placeholder='Enter or paste URL here (http://...)' onChange={handleManualImageUrlChanged} />
                             <button type="button" onClick={handleLoadImageClicked}
