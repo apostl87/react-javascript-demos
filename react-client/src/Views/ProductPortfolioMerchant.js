@@ -9,6 +9,7 @@ import { ModalCreateProductTemplate } from '../Templates/Modal';
 import { ModalConfirmCancel } from '../Components/ModalConfirmCancel';
 import Dropzone from '../Components/Dropzone';
 import { NotLoggedIn } from '../Components/Misc';
+import NotificationBox from '../Components/NotificationBox';
 import request from '../services/request-service';
 
 const api_url = process.env.REACT_APP_BACKEND_API_URL;
@@ -78,10 +79,15 @@ function ProductPortfolioMerchant() {
         filterProducts(products, searchString, setIsFiltered)
     }, [products]);
 
+    //
+    useEffect(() =>{
+        
+    }, [notification])
+
+    // Conditional returns
     if (isLoading) {
         return null;
     }
-
     if ((!isLoading && !user)) {
         return <NotLoggedIn />
     }
@@ -109,8 +115,9 @@ function ProductPortfolioMerchant() {
         request.patch(url, editedProduct)
             .then(response => {
                 let newProducts = [...products];
-                newProducts[editedProduct.index] = {...editedProduct}
+                newProducts[editedProduct.index] = { ...editedProduct }
                 setProducts(newProducts);
+                setNotification(`"${editedProduct.mp_name}" (ID: ${p_id}) modified.`);
                 setEditedProduct({});
             })
             .catch(error => {
@@ -127,7 +134,7 @@ function ProductPortfolioMerchant() {
                     setProducts(newProducts);
                     setCurrentPage(Math.ceil(newProducts.length / productsPerPage));
                     window.scrollTo(0, document.body.scrollHeight);
-                    setNotification('Product created successfully!');
+                    setNotification(`Product "${response.data.mp_name}" created.`);
                 } catch {
                     setNotification('Failed to create product. Please try again.');
                 }
@@ -143,7 +150,7 @@ function ProductPortfolioMerchant() {
             .then(response => {
                 let newProducts = [...products.filter(product => product.mp_id !== productToDelete.mp_id)];
                 setProducts(newProducts);
-                setNotification(`Product ${productToDelete.p_name} deleted successfully`)
+                setNotification(`"${productToDelete.mp_name}" (ID: ${productToDelete.mp_id}) was deleted.`)
             })
             .catch(error => {
                 console.error(error);
@@ -155,7 +162,7 @@ function ProductPortfolioMerchant() {
         request.delete(url)
             .then(response => {
                 processProductData([]);
-                setNotification(`All products deleted successfuly`)
+                setNotification(`All products were deleted.`)
             })
             .catch(error => {
                 console.error(error);
@@ -167,7 +174,7 @@ function ProductPortfolioMerchant() {
         request.get(url) // This is a pseudo GET endpoint; It creates ressources without transmitting a body - The backend carries the rest of the information.
             .then(response => {
                 processProductData(response.data);
-                // TODO: notification
+                setNotification(`Added ${response.data.length} products.`);
             })
             .catch(error => {
                 console.error(error);
@@ -208,7 +215,7 @@ function ProductPortfolioMerchant() {
     }
 
     function findCountryNameById(countries, c_id) {
-        if (countries) {
+        if (countries.length > 0) {
             return countries.filter(country => country.c_id === c_id)[0].c_name;
         } else {
             return "Loading...";
@@ -467,6 +474,7 @@ function ProductPortfolioMerchant() {
             <ModalCreateProduct isShown={createModalIsOpen} countries={countries}
                 onClose={() => setCreateModalIsOpen(false)} onSubmit={createProduct} />
 
+            <NotificationBox text={notification} setText={setNotification} />
         </div >
     );
 }

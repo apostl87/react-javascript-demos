@@ -334,6 +334,10 @@ textarea {
   vertical-align: bottom;
 }
 
+.button-new:hover {
+  background-color: #406992;
+}
+
 .button-disabled {
   background-color: #808080;
 }
@@ -441,4 +445,8 @@ textarea {
 .dropzone-container ul {
   text-align: center;
   font-size: smaller;
+}
+
+.notification {
+  background-color: rgba(0, 0, 0, 0.85);
 }

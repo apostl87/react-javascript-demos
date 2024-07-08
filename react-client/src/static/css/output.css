@@ -1164,6 +1164,10 @@ input[type="range"]::-ms-fill-lower {
   left: 50%;
 }
 
+.left-1\/4 {
+  left: 25%;
+}
+
 .left-2 {
   left: 0.5rem;
 }
@@ -1212,6 +1216,10 @@ input[type="range"]::-ms-fill-lower {
   right: 0.75rem;
 }
 
+.right-5 {
+  right: 1.25rem;
+}
+
 .right-\[10\%\] {
   right: 10%;
 }
@@ -1242,6 +1250,10 @@ input[type="range"]::-ms-fill-lower {
 
 .top-2\.5 {
   top: 0.625rem;
+}
+
+.top-20 {
+  top: 5rem;
 }
 
 .top-3 {
@@ -2734,6 +2746,10 @@ input[type="range"]::-ms-fill-lower {
   white-space: nowrap;
 }
 
+.text-wrap {
+  text-wrap: wrap;
+}
+
 .text-nowrap {
   text-wrap: nowrap;
 }
@@ -3205,6 +3221,11 @@ input[type="range"]::-ms-fill-lower {
 .border-secondary {
   --tw-border-opacity: 1;
   border-color: hsl(var(--nextui-secondary) / var(--nextui-secondary-opacity, var(--tw-border-opacity)));
+}
+
+.border-slate-900 {
+  --tw-border-opacity: 1;
+  border-color: rgb(15 23 42 / var(--tw-border-opacity));
 }
 
 .border-success {
@@ -4193,6 +4214,10 @@ input[type="range"]::-ms-fill-lower {
   padding-bottom: 1rem;
 }
 
+.pb-8 {
+  padding-bottom: 2rem;
+}
+
 .pe-2 {
   padding-inline-end: 0.5rem;
 }
@@ -4299,6 +4324,10 @@ input[type="range"]::-ms-fill-lower {
 
 .pt-5 {
   padding-top: 1.25rem;
+}
+
+.pt-8 {
+  padding-top: 2rem;
 }
 
 .text-left {
@@ -6239,6 +6268,10 @@ textarea {
 .dropzone-container ul {
   text-align: center;
   font-size: smaller;
+}
+
+.notification {
+  background-color: rgba(0, 0, 0, 0.85);
 }
 
 .placeholder\:text-danger::placeholder {
