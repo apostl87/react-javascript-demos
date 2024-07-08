@@ -274,13 +274,14 @@ function ProductPortfolioMerchant() {
     function handleInputChanged(e) {
         let { id, value } = e.target;
         let tooltipAnchorId = null;
+        let formatInfo = null;
 
         if (id == 'mp_weight_kg') {
             ({ value, formatInfo } = formatNumeric(value, 1));
-            tooltipAnchorId = id;
+            if (formatInfo !== '') tooltipAnchorId = id;
         } else if (id == 'mp_price') {
             ({ value, formatInfo } = formatNumeric(value, 2));
-            tooltipAnchorId = id;
+            if (formatInfo !== '') tooltipAnchorId = id;
         }
 
         if (tooltipAnchorId) {
@@ -291,14 +292,14 @@ function ProductPortfolioMerchant() {
             }, 5000);
         }
 
-        if (name == 'mp_c_id_production') {
+        if (id == 'mp_c_id_production') {
             if (value == -1) {
                 value = 'null';
             } else {
                 value = parseInt(value);
             }
         }
-        setEditedProduct({ ...editedProduct, [name]: value });
+        setEditedProduct({ ...editedProduct, [id]: value });
     }
 
     // Helper functions
@@ -333,7 +334,7 @@ function ProductPortfolioMerchant() {
                 name={id}
                 value={value}
                 onChange={handleInputChanged}
-                data-tooltip-id={name}
+                data-tooltip-id={id}
                 disabled={disabled}
                 required={required}
             />
@@ -558,14 +559,15 @@ const ModalCreateProduct = ({ isShown, countries, onClose, onSubmit }) => {
 
     function handleInputChanged(e) {
         let { id, value } = e.target;
+        let formatInfo = null;
         let tooltipAnchorId = null;
 
         if (id == 'create-mp_weight_kg') {
             ({ value, formatInfo } = formatNumeric(value, 1));
-            tooltipAnchorId = id;
+            if (formatInfo !== '') tooltipAnchorId = id;
         } else if (id == 'create-mp_price') {
             ({ value, formatInfo } = formatNumeric(value, 2));
-            tooltipAnchorId = id;
+            if (formatInfo !== '') tooltipAnchorId = id;
         }
 
         if (tooltipAnchorId) {
