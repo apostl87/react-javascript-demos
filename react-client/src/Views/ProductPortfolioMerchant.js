@@ -390,12 +390,9 @@ function ProductPortfolioMerchant() {
 
     return (
         <div className='p-5'>
-            <div className='flex flex-row justify-between'>
-                <h3 className='p-2 pl-0 text-left'>
-                    Retailer Product Portfolio
-                </h3>
-
-            </div>
+            <h3 className='p-2 pl-0 text-left'>
+                Retailer Product Portfolio
+            </h3>
 
             <div className='flex flex-row flex-wrap justify-start gap-4'>
                 <button onClick={() => setCreateModalIsOpen(true)} className='button-new flex justify-between items-center my-auto'>
@@ -549,7 +546,7 @@ function ProductPortfolioMerchant() {
                 onConfirm={() => { deleteAllProducts(); setDeleteAllModalIsOpen(false); }} onCancel={() => { setDeleteAllModalIsOpen(false) }} />
 
             <ModalConfirmCancel isShown={dismissChangesToEditAnotherModal >= 0} title='Dismiss unsaved changes' text={dismissModalText}
-                onConfirm={() => { setEditedProduct({...products[dismissChangesToEditAnotherModal]}); setDismissChangesToEditAnotherModal(-1); }}
+                onConfirm={() => { setEditedProduct({ ...products[dismissChangesToEditAnotherModal] }); setDismissChangesToEditAnotherModal(-1); }}
                 onCancel={() => { setDismissChangesToEditAnotherModal(-1) }} />
 
             <ModalCreateProduct isShown={createModalIsOpen} countries={countries}

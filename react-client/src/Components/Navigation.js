@@ -12,6 +12,7 @@ export default function Navigation() {
   let menuItems = [
     { label: "Home", to: "home" },
     { label: "Retailer product portfolio", to: "merchant-product-portfolio" },
+    { label: "Store", to: "store" },
     {
       label: "Other Demos", to: "demos",
       subMenu: [

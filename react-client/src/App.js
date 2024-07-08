@@ -7,6 +7,7 @@ import Home from './Views/Home';
 import SpaceGame from './Views/SpaceGame';
 import Profile from './Views/Profile';
 import Contact from './Views/Contact';
+import Store from './Views/Store';
 import DevView01 from './Views/DevView01';
 import DevView02 from './Views/DevView02';
 
@@ -17,8 +18,9 @@ function App() {
       <Routes>
         <Route exact path='/' element={<Home />} />
         <Route exact path='/home' element={<Home />} />
-        <Route exact path='/demos/product-portfolio' element={<ProductPortfolio />} />
         <Route exact path='/merchant-product-portfolio' element={<ProductPortfolioMerchant />} />
+        <Route exact path='/store' element={<Store />} />
+        <Route exact path='/demos/product-portfolio' element={<ProductPortfolio />} />
         <Route exact path='/demos/space-game' element={<SpaceGame />} />
         <Route exact path='/contact' element={<Contact />} />
         <Route exact path='/profile' element={<Profile />} />
