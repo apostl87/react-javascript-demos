@@ -47,9 +47,6 @@ function ProductPortfolioMerchant() {
     const [searchString, setSearchString] = useState('')
     const [filteredProducts, setFilteredProducts] = useState([])
 
-    // Hook for color picker
-    const [selectedColor, setSelectedColor] = useState("#000000");
-
     // Delete hooks
     const [deleteOneModalIsOpen, setDeleteOneModalIsOpen] = useState(false);
     const [deleteAllModalIsOpen, setDeleteAllModalIsOpen] = useState(false);
@@ -59,8 +56,11 @@ function ProductPortfolioMerchant() {
     // Create hooks
     const [createModalIsOpen, setCreateModalIsOpen] = useState(false);
 
-    // Notification hook
-    const [notification, setNotification] = useState('')
+    // Notification hook and functionality
+    const [notifications, setNotifications] = useState([])
+    function addNotification(notification) { 
+        setNotifications([...notifications, [(notifications.length > 0) ? notifications[notifications.length - 1][0] + 1 : 0, notification]]);
+    }
 
     // Loading (products) hook
     let [loading, setLoading] = useState(false);
@@ -78,11 +78,6 @@ function ProductPortfolioMerchant() {
     useEffect(() => {
         filterProducts(products, searchString, setIsFiltered)
     }, [products]);
-
-    //
-    useEffect(() =>{
-        
-    }, [notification])
 
     // Conditional returns
     if (isLoading) {
@@ -117,7 +112,7 @@ function ProductPortfolioMerchant() {
                 let newProducts = [...products];
                 newProducts[editedProduct.index] = { ...editedProduct }
                 setProducts(newProducts);
-                setNotification(`"${editedProduct.mp_name}" (ID: ${p_id}) modified.`);
+                addNotification(`"${editedProduct.mp_name}" (ID: ${p_id}) modified.`);
                 setEditedProduct({});
             })
             .catch(error => {
@@ -134,9 +129,9 @@ function ProductPortfolioMerchant() {
                     setProducts(newProducts);
                     setCurrentPage(Math.ceil(newProducts.length / productsPerPage));
                     window.scrollTo(0, document.body.scrollHeight);
-                    setNotification(`Product "${response.data.mp_name}" created.`);
+                    addNotification(`Product "${response.data.mp_name}" created.`);
                 } catch {
-                    setNotification('Failed to create product. Please try again.');
+                    addNotification('Failed to create product. Please try again.');
                 }
             })
             .catch(error => {
@@ -150,7 +145,7 @@ function ProductPortfolioMerchant() {
             .then(response => {
                 let newProducts = [...products.filter(product => product.mp_id !== productToDelete.mp_id)];
                 setProducts(newProducts);
-                setNotification(`"${productToDelete.mp_name}" (ID: ${productToDelete.mp_id}) was deleted.`)
+                addNotification(`"${productToDelete.mp_name}" (ID: ${productToDelete.mp_id}) was deleted.`)
             })
             .catch(error => {
                 console.error(error);
@@ -162,7 +157,7 @@ function ProductPortfolioMerchant() {
         request.delete(url)
             .then(response => {
                 processProductData([]);
-                setNotification(`All products were deleted.`)
+                addNotification(`All products were deleted.`)
             })
             .catch(error => {
                 console.error(error);
@@ -174,7 +169,7 @@ function ProductPortfolioMerchant() {
         request.get(url) // This is a pseudo GET endpoint; It creates ressources without transmitting a body - The backend carries the rest of the information.
             .then(response => {
                 processProductData(response.data);
-                setNotification(`Added ${response.data.length} products.`);
+                addNotification(`Added ${response.data.length} products.`);
             })
             .catch(error => {
                 console.error(error);
@@ -474,7 +469,7 @@ function ProductPortfolioMerchant() {
             <ModalCreateProduct isShown={createModalIsOpen} countries={countries}
                 onClose={() => setCreateModalIsOpen(false)} onSubmit={createProduct} />
 
-            <NotificationBox text={notification} setText={setNotification} />
+            <NotificationBox notifications={notifications} setNotifications={setNotifications} />
         </div >
     );
 }
