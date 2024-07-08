@@ -141,8 +141,9 @@ function ProductPortfolioMerchant() {
         const url = `${api_url}/merchant-products/${user.sub}/${productToDelete.mp_id}`
         request.delete(url)
             .then(response => {
-                getProducts(); // #TODO: avoid this extra api call by updating the product in the frontend
-                // TODO: notification
+                let newProducts = [...products.filter(product => product.mp_id !== productToDelete.mp_id)];
+                setProducts(newProducts);
+                setNotification(`Product ${productToDelete.p_name} deleted successfully`)
             })
             .catch(error => {
                 console.error(error);
@@ -154,7 +155,7 @@ function ProductPortfolioMerchant() {
         request.delete(url)
             .then(response => {
                 processProductData([]);
-                // TODO: notification
+                setNotification(`All products deleted successfuly`)
             })
             .catch(error => {
                 console.error(error);
@@ -248,26 +249,10 @@ function ProductPortfolioMerchant() {
         setProductToDelete(product);
     }
 
-    function handleSaveClick(e, p_id) {
+    function handleSubmit(e) {
         e.preventDefault();
         let empty_var = null;
-        if (!editedProduct.mp_name) {
-            empty_var = 'Product Name'
-        } else if (!editedProduct.mp_weight_kg) {
-            empty_var = 'Weight'
-        } else if (!editedProduct.mp_price) {
-            empty_var = 'Price'
-        }
-        if (empty_var) {
-            setTooltipState([empty_var.replace(" ", "_").toLowerCase(), empty_var + " cannot be empty"]);
-            // Show tooltip for two seconds
-            setTooltipIsOpen(true);
-            setTimeout(() => {
-                setTooltipIsOpen(false)
-            }, 2000);
-        } else {
-            updateProduct(p_id);
-        }
+        updateProduct(editedProduct.mp_id);
     }
 
     function handleCancelClick() {
@@ -311,11 +296,16 @@ function ProductPortfolioMerchant() {
     }
 
     function inputField(type, name, value) {
-        let disabled
+        let disabled, required
         if (name == 'mp_color') {
             disabled = true
         } else {
             disabled = false
+        }
+        if (['mp_price', 'mp_weight_kg', 'mp_name'].includes(name)) {
+            required = true
+        } else {
+            required = false
         }
         return (
             <input
@@ -325,6 +315,7 @@ function ProductPortfolioMerchant() {
                 onChange={handleInputChanged}
                 data-tooltip-id={name}
                 disabled={disabled}
+                required={required}
             />
         );
     }
@@ -361,9 +352,7 @@ function ProductPortfolioMerchant() {
                             <div key={product.mp_id} className="product-item">
                                 <div className='w-full flex flex-shrink'>
                                     {editedProduct.mp_id === product.mp_id ? (
-                                        <form onSubmit={(e) => {
-                                            handleSaveClick(e, editedProduct.mp_id);
-                                        }}>
+                                        <form onSubmit={handleSubmit}>
                                             <div className='w-full flex flex-shrink gap-1'>
                                                 <div className='flex-shrink'>
                                                     <img src={product.mp_image_url} alt={product.mp_name} className="product-image" />
@@ -404,7 +393,7 @@ function ProductPortfolioMerchant() {
                                                         </p>
                                                     </div>
                                                     <div className='flex flex-row-reverse gap-1'>
-                                                        <button type='submit' onClick={(e) => handleSaveClick(e, editedProduct.mp_id)} className='button-standard'>Save</button>
+                                                        <button type='submit' className='button-standard'>Save</button>
                                                         <button type='button' onClick={() => handleCancelClick()} className='button-standard-blue-grey'>Cancel</button>
                                                     </div>
                                                 </div>
@@ -643,9 +632,8 @@ const ModalCreateProduct = ({ isShown, countries, onClose, onSubmit }) => {
                             <label htmlFor="create-mp_name">
                                 Product Name*
                             </label>
-
                             <input type="text" id="create-mp_name"
-                                data-tooltip-id='create-product-name' placeholder='Enter product name' required />
+                                data-tooltip-id='create-mp_name' placeholder='Enter product name' required />
 
                             <label htmlFor="create-mp_c_id_production">
                                 Production Country
@@ -658,7 +646,7 @@ const ModalCreateProduct = ({ isShown, countries, onClose, onSubmit }) => {
                                 })}
                             </select>
 
-                            <label htmlFor="create-mp_weight_kg">
+                            <label htmlFor="create-mp_color">
                                 Color
                             </label>
                             <div className='flex flex-row items-center'>

@@ -20,7 +20,7 @@ export function ModalTemplate({ isShown, children, onClose }) {
 export function ModalCreateProductTemplate({ isShown, children }) {
   if (isShown) {
     return (
-      <div style={styles.overlay} className='z-50 overflow-y-scroll'>
+      <div style={styles.overlay} className='z-40 overflow-y-scroll'>
         <div style={styles.modalCreateProduct}>
           {children}
         </div>
