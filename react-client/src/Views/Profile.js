@@ -1,39 +1,105 @@
 import { useAuth0 } from "@auth0/auth0-react";
 import { React, useEffect, useState } from "react";
-import { getUser, updateUser } from "../services/auth0-management-service";
+import { Tooltip } from "react-tooltip";
 import { ModalConfirmCancel } from '../Components/ModalConfirmCancel';
+import NotificationBox from '../Components/NotificationBox';
+import { NotLoggedIn } from "../Components/Misc";
+import { getUser, updateUser } from "../services/auth0-management-service";
 
 const Profile = () => {
   const { user, isAuthenticated, isLoading } = useAuth0();
-  const [notification, setNotification] = useState("")
 
   // Hook for the user data retreived from the management API
   const [userData, setUserData] = useState(null);
+
+  // Editing hooks
+  const [editing, setEditing] = useState(false)
+  const [editedUserData, setEditedUserData] = useState({})
+
+  // Modal hooks
+  const [changeEmailModalOpen, setChangeEmailModalOpen] = useState(false)
+
+  // Notification hook
+  const [notifications, setNotifications] = useState([])
+
+  // Tooltip hook
+  const [tooltipIsOpen, setTooltipIsOpen] = useState(false);
+
+  // Notification functions
+  function addNotification(notification) {
+    setNotifications([...notifications, notification]);
+  }
+
+  // #TODO finish notification functionality. Is this function needed?
+  function handleDismissNotification(index) {
+    setNotifications(notifications.filter((_, i) => i !== index));
+  }
+
+  // If user data has been updated, update the local state
+  useEffect(() => {
+    if (userData && userData.email !== user.email) {
+      setUserData({ ...userData, ['email']: user.email });
+    }
+  }, [user, userData]);
+
+  // Get user data from the management API
   useEffect(() => {
     if (user) {
       getUser(user.sub, setUserData)
     }
   }, [user]);
 
-  // Editing hooks
-  const [editing, setEditing] = useState(false)
-  const [editedUserData, setEditedUserData] = useState(null)
-
-  // Modal hooks
-  const [changeEmailModalOpen, setChangeEmailModalOpen] = useState(false)
-  //const [modalText, setModalText] = useState("")
+  // Hide tooltip after appearTimeTooltip milliseconds
+  const appearTimeTooltip = 5000;
+  useEffect(() => {
+    if (tooltipIsOpen) setTimeout(() => setTooltipIsOpen(false), appearTimeTooltip)
+  }, [tooltipIsOpen])
 
   // Stop rendering when data from Auth0 has not been loaded yet
   if (isLoading) {
-    return null; // #Todo: add Loading spinner
+    return null; // #TODO: add Loading spinner
   }
-
   // Show minimal information if user is not logged in
   if (!isAuthenticated) {
-    return <div className="flex justify-center pt-10">You are not logged in.</div>
+    return <NotLoggedIn />
   }
 
-  // Helper function to get the authentication method
+  // Callback functions
+  function handleEditClick() {
+    setEditing(true);
+    setEditedUserData(userData);
+  }
+
+  function handleSubmit(e) {
+    //   #TODO
+    //  Sanitization of input in helper function
+    //  - Meaningful values for all fields
+    e.preventDefault();
+    if (editedUserData.email !== userData.email) {
+      if (editedUserData.email !== editedUserData.email2) {
+        setTooltipIsOpen(true);
+      } else {
+        setChangeEmailModalOpen(true);
+      }
+    } else {
+      updateUserWrapper({ changedEmail: false });
+    }
+  }
+
+  function handleCancelClick() {
+    setEditing(false);
+    setEditedUserData({});
+  }
+
+  function handleInputChanged(e) {
+    let { name, value } = e.target;
+    if (name === 'email' && value === userData.email) {
+      setEditedUserData({ ...editedUserData, ['email2']: '' });
+    }
+    setEditedUserData({ ...editedUserData, [name]: value });
+  }
+
+  // Helper functions
   function authMethod(userData) {
     if (userData) {
       return userData['identities'][0]['provider']
@@ -73,64 +139,64 @@ const Profile = () => {
     setEditing(false)
   }
 
-  // Callback functions
-  function handleEditClick() {
-    setEditing(true);
-    setEditedUserData(userData);
-  }
-
-  function handleSubmit(e) {
-    //   #TODO
-    //  Sanitization of input in helper function
-    //  - Meaningful values for all fields
-    //  - Both mmail addresses equal ("email" and "email_control"), if editedUserData.email != userData.email
-    e.preventDefault();
-    if (editedUserData.email != userData.email) {
-      setChangeEmailModalOpen(true)
-    } else {
-      updateUserWrapper({ changedEmail: false });
-    }
-  }
-
-  function handleCancelClick() {
-    setEditing(false);
-    setEditedUserData({});
-  }
-
-  function handleInputChanged(e) {
-    let { name, value } = e.target;
-    setEditedUserData({ ...editedUserData, [name]: value });
-  }
-
-  // #TODO finalization
-  const NotificationBox = () => {
-    return (
-      <div className={`notification ${notification ? 'show' : 'hide'}`}>
-        <p>{notification}</p>
-      </div>
-    );
-  }
-
   function renderRows() {
     if (!userData) {
       return null;
     }
 
-    let values = [userData.nickname, userData.given_name, userData.family_name, userData.email, (userData.email_verified ? 'Yes' : 'No'), authMethod(userData)]
-    let fieldNames = ['nickname', 'given_name', 'family_name', 'email', 'email_verified', 'auth_method']
-    let labels = ["Nickname", "First Name", "Last Name", "Email", "Email is verified", "Authentication Method"]
-    let editable = [true, true, true, true, false, false]
+    let fieldNames = ['nickname', 'given_name', 'family_name', 'email', 'email2', 'email_verified', 'auth_method']
+    let labels = ["Nickname", "First Name", "Last Name", "Email", "Email (Confirmation)", "Email is verified", "Authentication Method"]
+    let values = [userData.nickname, userData.given_name, userData.family_name, userData.email, '', (userData.email_verified ? 'Yes' : 'No'), authMethod(userData)]
+    let types = ["text", "text", "text", "email", "email", "text", "text"];
+    let editable = [true, true, true, true, true, false, false];
+    let required = [false, false, false, true, true, false, false];
 
-    return values.map((value, index) => (
-      <tr key={index} className="tr-profile">
-        <td className="text-nowrap font-bold text-right"><span>{labels[index]}:</span></td>
-        <td className="pl-2 ">
-          {(editing && editable[index]) ?
-            <input type="text" name={fieldNames[index]} defaultValue={value} onChange={handleInputChanged} className="input-profile" /> :
-            value}
-        </td>
-      </tr>
-    ))
+    return values.map((value, index) => {
+      if (fieldNames[index] === 'email2') {
+        return renderEmail2(fieldNames[index], labels[index], values[index], types[index], required[index]);
+      } else {
+        return (
+          <tr key={index} className="tr-profile">
+            <td className="text-nowrap font-bold text-right align=middle">
+              <span>{labels[index]}:</span>
+            </td>
+            <td className="pl-2 ">
+              {(editing && editable[index]) ?
+                <input type={types[index]} name={fieldNames[index]} defaultValue={value}
+                  onChange={handleInputChanged} className="input-profile" required={required[index]} /> :
+                value}
+            </td>
+            <td>
+              {editing && editable[index] && editedUserData[fieldNames[index]] !== userData[fieldNames[index]] &&
+              <em>changed</em>}
+            </td>
+          </tr>
+        )
+      }
+    })
+  }
+
+  function renderEmail2(fieldName, label, value, type, required) {
+    let disabled = (editing && editedUserData.email === userData.email)
+
+    if (editing) {
+      return (
+        <tr className="tr-profile">
+          <td className="text-nowrap font-bold text-right align-middle">
+            <span>{label}:</span>
+          </td>
+          <td className="pl-2 ">
+            <input type={type} name={fieldName} value={value} placeholder={disabled ? "Email address unchanged" : "Retype new email address"}
+              className={(disabled ? "bg-slate-300" : "") + " input-profile"}
+              onChange={handleInputChanged} required={required} disabled={disabled} data-tooltip-id={fieldName} />
+          </td>
+          <td>
+          </td>
+        </tr>
+      )
+    } else {
+      return <></>;
+    }
   }
 
   return (
@@ -181,17 +247,22 @@ const Profile = () => {
         </div>
       </form>
 
-      <NotificationBox />
-
       {/* Overlay components */}
+      <Tooltip id={'email2'}
+        content={"Email addresses must match."}
+        isOpen={tooltipIsOpen} />
+
       <ModalConfirmCancel
         isShown={changeEmailModalOpen}
         title="Changing Email Address"
         text={modalText()}
-        onConfirm={() => {updateUserWrapper({ changedEmail: true }); window.location.reload();}}
+        onConfirm={() => { updateUserWrapper({ changedEmail: true }); window.location.reload(); }}
         onCancel={() => setChangeEmailModalOpen(false)} />
+
+      <NotificationBox notifications={notifications} setNotifications={setNotifications} />
 
     </div >
   );
 };
+
 export default Profile;

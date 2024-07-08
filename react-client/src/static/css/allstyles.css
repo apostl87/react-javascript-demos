@@ -199,6 +199,9 @@ code {
   border: none;
   border-bottom: 2px solid rgb(0, 0, 0);
   border-color: rgb(157, 157, 157);
+  vertical-align: middle;
+  padding-top: 3px;
+  border-radius: 3px;
 }
 
 .input-profile:focus {

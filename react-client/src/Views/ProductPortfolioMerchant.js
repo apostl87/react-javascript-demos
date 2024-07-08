@@ -104,6 +104,12 @@ function ProductPortfolioMerchant() {
         if (imageUrl) doAsync();
     }, [editedProduct.mp_image_url]);
 
+    // Hide tooltip after appearTimeTooltip milliseconds
+    const appearTimeTooltip = 3500;
+    useEffect(() => {
+        if (tooltipIsOpen) setTimeout(() => setTooltipIsOpen(false), appearTimeTooltip)
+    }, [tooltipIsOpen])
+
     // Conditional returns
     if (isLoading) {
         return null;
@@ -318,9 +324,6 @@ function ProductPortfolioMerchant() {
         if (tooltipAnchorId) {
             setTooltipState([tooltipAnchorId, formatInfo]);
             setTooltipIsOpen(true);
-            setTimeout(() => {
-                setTooltipIsOpen(false)
-            }, 3500);
         }
 
         if (id == 'mp_c_id_production') {

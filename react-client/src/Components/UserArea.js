@@ -44,7 +44,7 @@ export default function UserArea() {
             </NavbarContent>)
     } else if (!isLoading && user) {
         return (
-            <NavbarContent justify="end" className="text-white pt-3 flex-shrink-0" onMouseLeave={() => setTimeout(setUserAreaOpen(false), 2500)}>
+            <NavbarContent justify="end" className="text-white pt-3 flex-shrink-0" onMouseLeave={() => setTimeout(() => setUserAreaOpen(false), 2500)}>
                 <div ref={userAreaIcon} className="flex flex-col flex-shrink-0" onClick={toggleUserArea} onMouseEnter={() => setUserAreaOpen(true)}>
                     <img src={iconUser} alt="icon-user" className="h-10 cursor-pointer"></img>
                 </div>

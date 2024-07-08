@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from "react";
+import React, { useState, useEffect } from "react";
 import { Tooltip } from 'react-tooltip';
 import { useAuth0 } from "@auth0/auth0-react";
 import axios from 'axios';
@@ -33,6 +33,13 @@ const ModalCreateProduct = ({ isShown, countries, onClose, onSubmit }) => {
         if (imageUrl) doAsync();
     }, [imageUrl])
 
+    // Hide tooltip after appearTimeTooltip milliseconds
+    const appearTimeTooltip = 3500;
+    useEffect(() => {
+        if (tooltipIsOpen) setTimeout(() => setTooltipIsOpen(false), appearTimeTooltip)
+    }, [tooltipIsOpen])
+
+    // Callback functions
     function handleInputChanged(e) {
         let { id, value } = e.target;
         let formatInfo = null;
@@ -49,9 +56,6 @@ const ModalCreateProduct = ({ isShown, countries, onClose, onSubmit }) => {
         if (tooltipAnchorId) {
             setTooltipState([tooltipAnchorId, formatInfo]);
             setTooltipIsOpen(true);
-            setTimeout(() => {
-                setTooltipIsOpen(false)
-            }, 3500);
         }
 
         document.getElementById(id).value = value;
@@ -68,44 +72,6 @@ const ModalCreateProduct = ({ isShown, countries, onClose, onSubmit }) => {
     function handleLoadImageClicked(e) {
         setImageUrl(manualImageUrl);
         setPreviewImageButtonEnabled(false);
-    }
-
-    function uploadImae(imageFile, setUploadProgress) {
-        // Constructing the axios request parameters
-        let n_days = 30
-        let expiration_time = n_days * 86400
-        const api_url = `https://api.imgbb.com/1/upload?key=${process.env.REACT_APP_IMGBB_API_KEY}&expiration=${expiration_time}`;
-        const formData = new FormData();
-        formData.append('image', imageFile);
-        const config = {
-            headers: {
-                'content-type': 'multipart/form-data',
-            },
-            onUploadProgress: (progressEvent) => {
-                const percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total);
-                setUploadProgress(percentCompleted);
-            }
-        };
-
-        axios.post(api_url, formData, config)
-            .then((response) => {
-                console.log("IMGBB API response");
-                console.log(response);
-                onUploadComplete(response.data.data.url);
-            })
-            .catch((err) => {
-                console.log("IMGBB API error");
-                console.log(err);
-                if (err.response.data.error) {
-                    console.log(err.response.data.error);
-                }
-            });
-    }
-
-    function onUploadComplete(url) {
-        setImageUrl(url);
-        setManualImageUrl(url);
-        setUploadProgress(-1);
     }
 
     function handleClose(onClose) {
@@ -133,6 +99,13 @@ const ModalCreateProduct = ({ isShown, countries, onClose, onSubmit }) => {
         }
         onSubmit(requestBody);
         handleClose(onClose);
+    }
+
+    // Helper functions
+    function onUploadComplete(url) {
+        setImageUrl(url);
+        setManualImageUrl(url);
+        setUploadProgress(-1);
     }
 
     return (
