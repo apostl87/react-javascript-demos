@@ -3,6 +3,7 @@ excluded
 testdata
 .testdata
 config.js
+*/build
 
 _devel-scripts
 
