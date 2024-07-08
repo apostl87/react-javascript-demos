@@ -371,82 +371,94 @@ function ProductPortfolioMerchant() {
                 (
                     <div className="product-list">
                         {currentProducts.map((product) => (
-                            <div key={product.mp_id} className="product-item">
-                                <div className='w-full flex flex-shrink'>
-                                    {editedProduct.mp_id === product.mp_id ? (
-                                        <form onSubmit={handleSubmit}>
-                                            <div className='w-full flex flex-shrink gap-1'>
-                                                <div className='flex-shrink'>
-                                                    <img src={product.mp_image_url} alt={product.mp_name} className="product-image" />
-                                                </div>
-                                                <div className='flex flex-col'>
-
-                                                    <div align='left' className='w-full'>
-                                                        <p className='product-details-row'>
-                                                            <strong>Product ID:</strong> {editedProduct.mp_id}
-                                                        </p>
-                                                        <p className='product-details-row'>
-                                                            <strong>Product Name:</strong>
-                                                            {inputField('text', 'mp_name', editedProduct.mp_name)}
-                                                        </p>
-
-                                                        <p className='product-details-row'>
-                                                            <strong>Production&nbsp;Country:</strong>
-                                                            {selectCountry(countries)}
-                                                        </p>
-
-                                                        <p className='product-details-row'>
-                                                            <strong>Color:</strong>
-                                                            &nbsp;&nbsp;Pick
-                                                            <input type="color" className='my-auto' value={editedProduct.mp_color} name='mp_color' id="colorPicker" onChange={handleInputChanged} />
-                                                            {inputField('text', 'mp_color', editedProduct.mp_color)}
-                                                        </p>
-
-                                                        <p className='product-details-row'>
-                                                            <strong>Weight:</strong>
-                                                            {inputField('text', 'mp_weight_kg', editedProduct.mp_weight_kg)}
-                                                            <label>{WEIGHT_UNIT}</label>
-                                                        </p>
-
-                                                        <p className='product-details-row'>
-                                                            <strong>Price:</strong>
-                                                            {inputField('text', 'mp_price', editedProduct.mp_price)}
-                                                            <label>{editedProduct.mp_currency}</label>
-                                                        </p>
-                                                    </div>
-                                                    <div className='flex flex-row-reverse gap-1'>
-                                                        <button type='submit' className='button-standard'>Save</button>
-                                                        <button type='button' onClick={() => handleCancelClick()} className='button-standard-blue-grey'>Cancel</button>
-                                                    </div>
+                            (editedProduct.mp_id === product.mp_id) ? (
+                                <div key={product.mp_id} id="product-item-editing" className="product-item overflow-scroll w-full flex flex-col flex-shrink">
+                                    <form onSubmit={handleSubmit}>
+                                        <p className='product-details-row'>
+                                            <strong>Product ID:</strong> {editedProduct.mp_id}
+                                        </p>
+                                        <div className='w-full flex flex-row flex-shrink gap-2 border-1 border-gray-600 p-2 rounded-sm mr-9'>
+                                            <div className='product-details-row flex-grow flex flex-col'>
+                                                <strong>Image</strong>
+                                                <Dropzone uploadImage={() => { }} showLargeIcon={false} />
+                                                <span className='pb-1 text-center'>OR</span>
+                                                <div className='flex flex-row'>
+                                                    <input type="textarea" rows="2" cols="5" id="mp_image_url" className='overflow-scroll h-40' placeholder="Enter or paste URL here (http://...)" />
+                                                    <button type="button" onClick={() =>{}} className='button-standard-inline pb-0.5'>Load</button>
                                                 </div>
                                             </div>
-                                        </form>
-                                    ) : (
-                                        <div className='w-full flex flex-shrink gap-1'>
-                                            <div className=''>
+                                            <div className='flex-shrink'>
                                                 <img src={product.mp_image_url} alt={product.mp_name} className="product-image" />
                                             </div>
-                                            <div className='flex flex-col flex-grow'>
-                                                <div align='left' className='float-left w-full'>
-                                                    <p><strong>Product ID:</strong> {product.mp_id}</p>
-                                                    <p><strong>Product Name:</strong> {product.mp_name}</p>
-                                                    <p><strong>Production&nbsp;Country:</strong> {findCountryNameById(countries, product.mp_c_id_production)}</p>
-                                                    <p><strong>Color:</strong>
-                                                        <span className='color-show' style={{ display: 'inline-block', backgroundColor: product.mp_color }}></span>
-                                                        {product.mp_color}
-                                                    </p>
-                                                    <p><strong>Weight:</strong> {product.mp_weight_kg ? product.mp_weight_kg : '-'} {WEIGHT_UNIT}</p>
-                                                    <p><strong>Price:</strong> {product.mp_price ? product.mp_price : '-'} {product.mp_currency}</p>
-                                                </div>
-                                                <div className="flex flex-row-reverse gap-1">
-                                                    <button onClick={() => handleEditClick(product)} className='button-standard'>Edit</button>
-                                                    <button onClick={() => handleDeleteOneClick(product)} className='button-standard-blue-grey'>Delete</button>
-                                                </div>
+                                        </div>
+
+
+                                        <div align='left' className='w-full'>
+
+                                            <p className='product-details-row'>
+                                                <strong>Product Name:</strong>
+                                                {inputField('text', 'mp_name', editedProduct.mp_name)}
+                                            </p>
+
+                                            <p className='product-details-row'>
+                                                <strong>Production&nbsp;Country:</strong>
+                                                {selectCountry(countries)}
+                                            </p>
+
+                                            <p className='product-details-row'>
+                                                <strong>Color:</strong>
+                                                &nbsp;&nbsp;Pick
+                                                <input type="color" className='my-auto' value={editedProduct.mp_color} name='mp_color' id="colorPicker" onChange={handleInputChanged} />
+                                                {inputField('text', 'mp_color', editedProduct.mp_color)}
+                                            </p>
+
+                                            <p className='product-details-row'>
+                                                <strong>Weight:</strong>
+                                                {inputField('text', 'mp_weight_kg', editedProduct.mp_weight_kg)}
+                                                <label>{WEIGHT_UNIT}</label>
+                                            </p>
+
+                                            <p className='product-details-row'>
+                                                <strong>Price:</strong>
+                                                {inputField('text', 'mp_price', editedProduct.mp_price)}
+                                                <label>{editedProduct.mp_currency}</label>
+                                            </p>
+                                        </div>
+                                        <div className='flex flex-row-reverse gap-1'>
+                                            <button type='submit' className='button-standard'>Save</button>
+                                            <button type='button' onClick={() => handleCancelClick()} className='button-standard-blue-grey'>Cancel</button>
+                                        </div>
+
+                                    </form>
+
+                                </div>
+                            ) : (
+                                <div key={product.mp_id} className="product-item overflow-scroll w-full flex flex-shrink">
+
+                                    <div className='w-full flex flex-shrink gap-1'>
+                                        <div className='flex flex-col flex-grow'>
+                                            <div align='left' className='float-left w-full'>
+                                                <p><strong>Product ID:</strong> {product.mp_id}</p>
+                                                <p><strong>Product Name:</strong> {product.mp_name}</p>
+                                                <p><strong>Production&nbsp;Country:</strong> {findCountryNameById(countries, product.mp_c_id_production)}</p>
+                                                <p><strong>Color:</strong>
+                                                    <span className='color-show' style={{ display: 'inline-block', backgroundColor: product.mp_color }}></span>
+                                                    {product.mp_color}
+                                                </p>
+                                                <p><strong>Weight:</strong> {product.mp_weight_kg ? product.mp_weight_kg : '-'} {WEIGHT_UNIT}</p>
+                                                <p><strong>Price:</strong> {product.mp_price ? product.mp_price : '-'} {product.mp_currency}</p>
+                                            </div>
+                                            <div className="flex flex-row gap-1">
+                                                <button onClick={() => handleEditClick(product)} className='button-standard'>Edit</button>
+                                                <button onClick={() => handleDeleteOneClick(product)} className='button-standard-blue-grey'>Delete</button>
                                             </div>
                                         </div>
-                                    )}
+                                        <div className=''>
+                                            <img src={product.mp_image_url} alt={product.mp_name} className="product-image" />
+                                        </div>
+                                    </div>
                                 </div>
-                            </div>
+                            )
                         ))}
                     </div>
                 ) : (
@@ -469,7 +481,8 @@ function ProductPortfolioMerchant() {
 
             <hr />
 
-            {filteredProducts.length > 0 &&
+            {
+                filteredProducts.length > 0 &&
                 <div className='flex flex-row justify-center'>
                     <button onClick={() => handleDeleteAllClick()} className='button-standard-blue-grey'>Delete all products</button>
                 </div>

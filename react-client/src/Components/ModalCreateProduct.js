@@ -17,9 +17,7 @@ const ModalCreateProduct = ({ isShown, countries, onClose, onSubmit }) => {
     // Image hooks
     const [imageUrl, setImageUrl] = useState(''); // Actually used image url
     const [manualImageUrl, setManualImageUrl] = useState(''); // Manually input image url
-    // const [imageFile, setImageFile] = useState({});
     const [previewImageButtonEnabled, setPreviewImageButtonEnabled] = useState(false);
-    // const [uploadImageButtonEnabled, setUploadImageButtonEnabled] = useState(false);
     const [uploadProgress, setUploadProgress] = useState(-1);
 
     useEffect(() => {

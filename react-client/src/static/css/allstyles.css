@@ -226,16 +226,20 @@ code {
 }
 
 .product-item {
-  background: #e9e9e9;
-  border: 1px solid #ddd;
+  background: #e5e5e5;
+  border: 1px solid #838383;
   border-radius: 5px;
   padding: 15px;
   width: 425px;
+  height: 225px;
   flex: 0 0 auto;
-  height: auto;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   display: flex;
   gap: 15px;
+}
+
+#product-item-editing {
+  height: auto;
 }
 
 .product-image {
@@ -264,8 +268,7 @@ code {
 }
 
 .product-details-row input,
-select,
-textarea {
+select {
   margin: 0 5px 0px 5px;
   flex: 1 1 auto;
   min-height: 15px;
@@ -277,7 +280,8 @@ textarea {
 }
 
 .product-details-row select {
-  max-width: 140px;
+  width: auto;
+  max-width: 253px;
 }
 
 .product-item p {
@@ -302,7 +306,7 @@ textarea {
   vertical-align: bottom;
 }
 
-.button-standard:hover {
+.button-standard:hover, button-standard-inline:hover {
   background-color: #406992;
 }
 
@@ -319,6 +323,17 @@ textarea {
 
 .button-standard-blue-grey:hover {
   background-color: #406992;
+}
+
+.button-standard-inline {
+  padding: 0px 8px;
+  border: none;
+  border-radius: 5px;
+  background-color: #007bff;
+  color: white;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  vertical-align: bottom;
 }
 
 .button-new {
@@ -430,8 +445,10 @@ textarea {
   padding-bottom: 10px;
   margin: 10px 0 4px 0;
   display: flex;
+  width: 100%;
   flex-direction: column;
-  align-items: center;
+  text-align: center;
+  cursor: pointer;
 }
 
 .dropzone-container aside{
@@ -449,4 +466,13 @@ textarea {
 
 .notification {
   background-color: rgba(0, 0, 0, 0.85);
+}
+
+.product-item hr {
+  height: 2;
+  /* 1 */
+  color: black;
+  /* 2 */
+  border-top-width: 1px;
+  /* 3 */
 }

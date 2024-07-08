@@ -67,7 +67,7 @@ export default function Dropzone(props) {
         <section className="dropzone-container">
             <div {...getRootProps({ className: 'dropzone', style })}>
                 <input {...getInputProps()} />
-                <img src={iconPhoto} className={props.boxIsLarge ? 'w-28' : 'hidden'} />
+                <img src={iconPhoto} className={props.showLargeIcon ? 'w-28' : 'hidden'} />
                 <p className='pb-2'>Drag an image here or click to select</p>
                 <em>Supported formats: JPEG, PNG, GIF</em>
                 <em>Maximum size: 3 MB</em>
