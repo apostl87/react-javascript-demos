@@ -2,10 +2,11 @@ import React, {useState, useEffect} from "react";
 import { Tooltip } from 'react-tooltip';
 import { useAuth0 } from "@auth0/auth0-react";
 import axios from 'axios';
-import $ from 'jquery';
 import { ModalCreateProductTemplate } from '../Templates/Modal';
 import Dropzone from '../Components/Dropzone';
 import formatNumeric from '../lib/formatNumeric';
+import uploadImage from "../lib/uploadImage";
+import verifyUrlImage from '../lib/verifyUrlImage';
 
 const ModalCreateProduct = ({ isShown, countries, onClose, onSubmit }) => {
     const { user } = useAuth0();
@@ -20,19 +21,17 @@ const ModalCreateProduct = ({ isShown, countries, onClose, onSubmit }) => {
     const [previewImageButtonEnabled, setPreviewImageButtonEnabled] = useState(false);
     const [uploadProgress, setUploadProgress] = useState(-1);
 
+    // Verify image url whenever imageUrl changes to value unequal to ''
     useEffect(() => {
         async function doAsync() {
             const isValid = await verifyUrlImage(imageUrl);
             if (!isValid) {
-                setImageUrl('');
+                setImageUrl('invalid');
+                console.log('Invalid image url');
             }
         }
-        doAsync();
+        if (imageUrl) doAsync();
     }, [imageUrl])
-
-    // useEffect(() => {
-    //     setUploadImageButtonEnabled(true)
-    // }, [imageFile])
 
     function handleInputChanged(e) {
         let { id, value } = e.target;
@@ -71,7 +70,7 @@ const ModalCreateProduct = ({ isShown, countries, onClose, onSubmit }) => {
         setPreviewImageButtonEnabled(false);
     }
 
-    function uploadImage(imageFile) {
+    function uploadImae(imageFile, setUploadProgress) {
         // Constructing the axios request parameters
         let n_days = 30
         let expiration_time = n_days * 86400
@@ -92,7 +91,7 @@ const ModalCreateProduct = ({ isShown, countries, onClose, onSubmit }) => {
             .then((response) => {
                 console.log("IMGBB API response");
                 console.log(response);
-                handleUploadComplete(response.data.data.url);
+                onUploadComplete(response.data.data.url);
             })
             .catch((err) => {
                 console.log("IMGBB API error");
@@ -103,7 +102,7 @@ const ModalCreateProduct = ({ isShown, countries, onClose, onSubmit }) => {
             });
     }
 
-    function handleUploadComplete(url) {
+    function onUploadComplete(url) {
         setImageUrl(url);
         setManualImageUrl(url);
         setUploadProgress(-1);
@@ -193,17 +192,17 @@ const ModalCreateProduct = ({ isShown, countries, onClose, onSubmit }) => {
 
                             <div className='create-image-preview mx-auto mt-2'>
                                 {imageUrl ?
-                                    <img className='create-image-preview-img' src={imageUrl} alt="No product image linked." />
+                                    <img className='create-image-preview-img' src={imageUrl} alt="Invalid image URL" />
                                     :
                                     <p>(No image to preview)</p>}
                             </div>
 
 
-                            {(uploadProgress >= 0 && uploadProgress < 100) ?
+                            {(uploadProgress >= 0 && uploadProgress < 1) ?
                                 <span className='self-center pt-2'>Uploading image: {uploadProgress}%</span> : <></>}
 
                             <div className='create-image-upload-area pt-2 pb-2'>
-                                <Dropzone uploadImage={uploadImage} boxIsLarge={!imageUrl} />
+                                <Dropzone uploadImage={(x) => uploadImage(x, setUploadProgress, onUploadComplete)} showLargeIcon={!imageUrl} />
 
                                 {/* Alternative solution without Dropzone */}
                                 {/* <input type="file" id="create-image-file" onChange={handleImageFileChanged}
@@ -247,18 +246,3 @@ const ModalCreateProduct = ({ isShown, countries, onClose, onSubmit }) => {
 }
 
 export default ModalCreateProduct;
-
-async function verifyUrlImage(url) {
-    try {
-        let resp = $.ajax(url);
-        await resp;
-        let headers = resp.getAllResponseHeaders().split(/\n/g);
-        for (let i = 0; i <= headers.length; i++) {
-            let hd = headers[i].split(': ')
-            if (hd[0] == 'content-type' && hd[1].indexOf('image') == 0)
-                return true;
-        }
-    }
-    catch { }
-    return false;
-}

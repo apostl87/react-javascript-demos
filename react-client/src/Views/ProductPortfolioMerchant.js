@@ -10,8 +10,11 @@ import { NotLoggedIn } from '../Components/Misc';
 import NotificationBox from '../Components/NotificationBox';
 import ModalCreateProduct from '../Components/ModalCreateProduct';
 import Dropzone from '../Components/Dropzone';
+import ProgressBar from '../Components/ProgressBar';
 import request from '../services/request-service';
 import formatNumeric from '../lib/formatNumeric';
+import uploadImage from '../lib/uploadImage';
+import verifyUrlImage from '../lib/verifyUrlImage';
 
 const api_url = process.env.REACT_APP_BACKEND_API_URL;
 
@@ -36,8 +39,12 @@ function ProductPortfolioMerchant() {
     // Constants for displaying
     const WEIGHT_UNIT = 'kg';
 
-    // Editing hook
+    // Editing hooks
     const [editedProduct, setEditedProduct] = useState({});
+    // Image
+    const [manualImageUrl, setManualImageUrl] = useState(''); // Manually input image url
+    const [previewImageButtonEnabled, setPreviewImageButtonEnabled] = useState(false);
+    const [uploadProgress, setUploadProgress] = useState(-1);
 
     // Tooltip hooks
     const [tooltipIsOpen, setTooltipIsOpen] = useState(null);
@@ -79,6 +86,19 @@ function ProductPortfolioMerchant() {
     useEffect(() => {
         filterProducts(products, searchString, setIsFiltered)
     }, [products]);
+
+    // Verify image url whenever imageUrl changes to value unequal to ''
+    useEffect(() => {
+        let imageUrl = editedProduct.mp_image_url
+        async function doAsync() {
+            const isValid = await verifyUrlImage(imageUrl);
+            if (!isValid) {
+                setEditedProduct({...editedProduct, mp_image_url: 'invalid'});
+                console.log('Invalid image url');
+            }
+        }
+        if (imageUrl) doAsync();
+    }, [editedProduct.mp_image_url]);
 
     // Conditional returns
     if (isLoading) {
@@ -303,6 +323,16 @@ function ProductPortfolioMerchant() {
         setEditedProduct({ ...editedProduct, [id]: value });
     }
 
+    function handleManualImageUrlChanged(e) {
+        setManualImageUrl(e.target.value)
+        setPreviewImageButtonEnabled(!!e.target.value);
+    }
+
+    function handleLoadImageClicked(e) {
+        setEditedProduct({ ...editedProduct, mp_image_url: manualImageUrl });
+        setPreviewImageButtonEnabled(false);
+    }
+
     // Helper functions
     function selectCountry(countries) {
         return (
@@ -342,8 +372,13 @@ function ProductPortfolioMerchant() {
         );
     }
 
-    return (
+    function onUploadComplete(url) {
+        setEditedProduct({ ...editedProduct, mp_image_url: url });
+        setManualImageUrl(url);
+        setUploadProgress(-1);
+    }
 
+    return (
         <div className='p-5'>
             <div className='flex flex-row justify-between'>
                 <h3 className='p-2 pl-0 text-left'>
@@ -379,16 +414,26 @@ function ProductPortfolioMerchant() {
                                         </p>
                                         <div className='w-full flex flex-row flex-shrink gap-2 border-1 border-gray-600 p-2 rounded-sm mr-9'>
                                             <div className='product-details-row flex-grow flex flex-col'>
-                                                <strong>Image</strong>
-                                                <Dropzone uploadImage={() => { }} showLargeIcon={false} />
+                                                <div className='flex flex-row items-center gap-2'>
+                                                    <strong>Image</strong>
+                                                    {uploadProgress >= 0 && uploadProgress < 1 &&
+                                                        <ProgressBar value={uploadProgress} text="Uploading: " />
+                                                    }
+                                                </div>
+                                                <Dropzone uploadImage={(x) => uploadImage(x, setUploadProgress, onUploadComplete)} showLargeIcon={false} />
                                                 <span className='pb-1 text-center'>OR</span>
                                                 <div className='flex flex-row'>
-                                                    <input type="textarea" rows="2" cols="5" id="mp_image_url" className='overflow-scroll h-40' placeholder="Enter or paste URL here (http://...)" />
-                                                    <button type="button" onClick={() => { }} className='button-standard-inline pb-0.5'>Load</button>
+                                                    <input type="textarea" rows="2" id="mp_image_url" className='overflow-scroll h-40'
+                                                        value={manualImageUrl} onChange={handleManualImageUrlChanged}
+                                                        placeholder="Enter or paste URL here (http://...)" />
+                                                    <button type="button" onClick={handleLoadImageClicked} disabled={previewImageButtonEnabled ? false : true}
+                                                        className={(!previewImageButtonEnabled ? 'button-disabled ' : '') + 'button-standard-inline pb-0.5'}>
+                                                        Load
+                                                    </button>
                                                 </div>
                                             </div>
                                             <div className='flex-shrink'>
-                                                <img src={product.mp_image_url} alt={product.mp_name} className="product-image mt-1.5" />
+                                                <img src={editedProduct.mp_image_url} alt="Invalid image URL" className="product-image mt-1.5" />
                                             </div>
                                         </div>
 

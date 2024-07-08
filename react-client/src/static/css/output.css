@@ -6059,9 +6059,11 @@ code {
 
 .product-list {
   display: flex;
+  flex-direction: row;
   flex-wrap: wrap;
   gap: 20px;
   justify-content: center;
+  /* align-items: last baseline; */
 }
 
 .product-item {
@@ -6145,7 +6147,7 @@ select {
   vertical-align: bottom;
 }
 
-.button-standard:hover {
+.button-standard:hover, button-standard-inline:hover {
   background-color: #406992;
 }
 
@@ -6162,6 +6164,17 @@ select {
 
 .button-standard-blue-grey:hover {
   background-color: #406992;
+}
+
+.button-standard-inline {
+  padding: 0px 6px;
+  border: none;
+  border-radius: 5px;
+  background-color: #007bff;
+  color: white;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  vertical-align: bottom;
 }
 
 .button-new {
@@ -6303,6 +6316,36 @@ select {
   /* 2 */
   border-top-width: 1px;
   /* 3 */
+}
+
+.progress-bar {
+  background-color: rgb(134, 134, 134);
+  border-radius: 6px;
+  /* (height of inner div) / 2 + padding */
+  padding: 5px;
+  width: 100%;
+  color: white;
+  text-align: center;
+  display: grid;
+  grid-template-columns: 1fr;
+}
+
+.progress-bar>div {
+  background-color: rgb(37, 56, 200);
+  border-radius: 3px;
+  /* Adjust with JavaScript */
+  width: 80%;
+  height: 20px;
+  grid-row-start: 1;
+  grid-column-start: 1;
+}
+
+.progress-bar>span {
+  width: 100%;
+  height: 20px;
+  grid-row-start: 1;
+  grid-column-start: 1;
+  color: white;
 }
 
 .placeholder\:text-danger::placeholder {
