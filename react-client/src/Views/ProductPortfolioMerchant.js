@@ -289,7 +289,7 @@ function ProductPortfolioMerchant() {
             setTooltipIsOpen(true);
             setTimeout(() => {
                 setTooltipIsOpen(false)
-            }, 5000);
+            }, 3500);
         }
 
         if (id == 'mp_c_id_production') {
@@ -488,7 +488,7 @@ function ProductPortfolioMerchant() {
             <ModalCreateProduct isShown={createModalIsOpen} countries={countries}
                 onClose={() => setCreateModalIsOpen(false)} onSubmit={createProduct} />
 
-            <NotificationBox notifications={notifications} setNotifications={setNotifications} className='fixed flex flex-col gap-1 top-20 w-1/2 right-2' />
+            <NotificationBox notifications={notifications} setNotifications={setNotifications} className='fixed flex flex-col gap-1 top-16 w-1/2 right-4' />
         </div >
     );
 }
@@ -575,7 +575,7 @@ const ModalCreateProduct = ({ isShown, countries, onClose, onSubmit }) => {
             setTooltipIsOpen(true);
             setTimeout(() => {
                 setTooltipIsOpen(false)
-            }, 5000);
+            }, 3500);
         }
 
         document.getElementById(id).value = value;

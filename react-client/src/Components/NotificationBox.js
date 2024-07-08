@@ -29,7 +29,7 @@ const NotificationBox = ({ notifications, setNotifications, className }) => {
                 return (
                     <div id={'notification' + index} key={index} className='notification flex flex-col justify-center min-h-10 max-h-30 h-10
                     overflow-scroll text-center z-10 border-slate-900 border-2 rounded-lg
-                    text-wrap font-bold text-medium text-white pb-8 pt-8'>
+                    text-wrap font-bold text-medium text-white pb-6 pt-6 pr-2 pl-2'>
                         {message}
                         <button onClick={() => handleCloseClick(index)} className='absolute left-5 text-2xl'>
                             X
