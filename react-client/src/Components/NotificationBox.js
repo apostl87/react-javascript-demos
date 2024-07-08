@@ -24,7 +24,7 @@ const NotificationBox = ({ notifications, setNotifications }) => {
     }, [notifications])
 
     return (
-        <div id='notification-container' className='fixed flex flex-col gap-2 top-20 w-1/2 left-1/4'>
+        <div id='notification-container' className='fixed flex flex-col gap-1 top-20 w-1/2 right-2'>
             {notifications.map((notification) => {
                 const index = notification[0];
                 const message = notification[1];
@@ -33,7 +33,7 @@ const NotificationBox = ({ notifications, setNotifications }) => {
                     overflow-scroll text-center z-10 border-slate-900 border-2 rounded-lg
                     text-wrap font-bold text-medium text-white pb-8 pt-8'>
                         {message}
-                        <button onClick={() => handleCloseClick(index)} className='absolute right-5 text-2xl'>
+                        <button onClick={() => handleCloseClick(index)} className='absolute left-5 text-2xl'>
                             X
                         </button>
                     </div>

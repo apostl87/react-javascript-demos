@@ -332,7 +332,7 @@ function ProductPortfolioMerchant() {
 
             </div>
 
-            <div className='flex flex-row flex-wrap justify-center gap-4'>
+            <div className='flex flex-row flex-wrap justify-start gap-4'>
                 <button onClick={() => setCreateModalIsOpen(true)} className='button-new flex justify-between items-center my-auto'>
                     <span>+</span>
                     <span>New product</span>
