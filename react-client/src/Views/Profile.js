@@ -79,12 +79,12 @@ const Profile = () => {
     setEditedUserData(userData);
   }
 
-  function handleSubmit() {
+  function handleSubmit(e) {
     //   #TODO
     //  Sanitization of input in helper function
     //  - Meaningful values for all fields
     //  - Both mmail addresses equal ("email" and "email_control"), if editedUserData.email != userData.email
-
+    e.preventDefault();
     if (editedUserData.email != userData.email) {
       setChangeEmailModalOpen(true)
     } else {
@@ -188,7 +188,7 @@ const Profile = () => {
         isShown={changeEmailModalOpen}
         title="Changing Email Address"
         text={modalText()}
-        onConfirm={() => { updateUserWrapper({ changedEmail: true }); window.location.reload(); }}
+        onConfirm={() => {updateUserWrapper({ changedEmail: true }); window.location.reload();}}
         onCancel={() => setChangeEmailModalOpen(false)} />
 
     </div >

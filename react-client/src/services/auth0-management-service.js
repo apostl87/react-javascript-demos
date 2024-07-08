@@ -32,7 +32,7 @@ export const updateUser = (id, userData, onSuccess) => {
     let config = {
         method: 'patch',
         maxBodyLength: Infinity,
-        url: `${baseUrl}/api/v2/users/${id}`,
+        url: `https://${baseUrl}/api/v2/users/${id}`,
         headers: {
             'Content-Type': 'application/json',
             'Accept': 'application/json',
