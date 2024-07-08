@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
+import { DownCaret, UpCaret } from './Misc.js';
 
 const NavmenuItemCustom = ({ label, to, subMenu }) => {
   const [isOpen, setIsOpen] = useState(isActive(to));
@@ -26,8 +27,13 @@ const NavmenuItemCustom = ({ label, to, subMenu }) => {
     subItems = null
   } else {
     mainItem =
-      <div className={"navmenu-item cursor-pointer"} onClick={toggleIsOpen} onMouseEnter={() => setIsOpen(true)}>
-        {label}
+      <div className="navmenu-item flex flex-row justify-between" onClick={toggleIsOpen} onMouseEnter={() => setIsOpen(true)}>
+        <span>
+          {label}
+        </span>
+        {isOpen ? <UpCaret size='6' color={isActive(to) ? 'black' : 'white'} className="mt-2 ml-2" />
+          : <DownCaret size='6' color={isActive(to) ? 'black' : 'white'} className="mt-2 ml-2" />
+        }
       </div>;
 
     subItems =

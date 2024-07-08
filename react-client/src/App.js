@@ -18,7 +18,7 @@ function App() {
         <Route exact path='/' element={<Home />} />
         <Route exact path='/home' element={<Home />} />
         <Route exact path='/demos/product-portfolio' element={<ProductPortfolio />} />
-        <Route exact path='/demos/merchant-product-portfolio' element={<ProductPortfolioMerchant />} />
+        <Route exact path='/merchant-product-portfolio' element={<ProductPortfolioMerchant />} />
         <Route exact path='/demos/space-game' element={<SpaceGame />} />
         <Route exact path='/contact' element={<Contact />} />
         <Route exact path='/profile' element={<Profile />} />

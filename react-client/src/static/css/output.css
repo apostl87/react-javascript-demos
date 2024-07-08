@@ -3411,11 +3411,6 @@ input[type="range"]::-ms-fill-lower {
   background-color: hsl(var(--nextui-background) / 0.8);
 }
 
-.bg-black {
-  --tw-bg-opacity: 1;
-  background-color: rgb(0 0 0 / var(--tw-bg-opacity));
-}
-
 .bg-blue-100 {
   --tw-bg-opacity: 1;
   background-color: rgb(225 239 254 / var(--tw-bg-opacity));
@@ -3588,11 +3583,6 @@ input[type="range"]::-ms-fill-lower {
 
 .bg-gray-900\/50 {
   background-color: rgb(17 24 39 / 0.5);
-}
-
-.bg-gray-950 {
-  --tw-bg-opacity: 1;
-  background-color: rgb(3 7 18 / var(--tw-bg-opacity));
 }
 
 .bg-green-100 {
@@ -5875,18 +5865,22 @@ code {
   }
 }
 
+.navbar {
+  background-color: rgb(15 23 42);
+}
+
 .navbar-item {
   position: relative;
   display: inline-block;
   padding: 8px 10px;
-  border: 3px solid #000000;
+  border: 3px solid rgb(15 23 42);
   cursor: pointer;
   text-wrap: nowrap;
 }
 
 .navbar-item-active {
   background-color: #ffffff;
-  border: 3px solid #000000;
+  border: 3px solid rgb(15 23 42);
   color: black;
 }
 
@@ -5896,13 +5890,14 @@ code {
 }
 
 .navbar-item:hover .dropdown-menu {
-  display: block;
   color: white;
+  display: block;
 }
 
 .navbar-link {
   text-decoration: none;
   padding: 10px 20px;
+  z-index: 5;
 }
 
 .navbar-link:hover {
@@ -5915,9 +5910,9 @@ code {
   left: 0;
   margin-top: 2px;
   background-color: white;
-  border: 1px solid #ccc;
-  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
-  z-index: 1000;
+  border: 1px solid #000000;
+  box-shadow: 0 8px 16px rgba(97, 96, 96, 0.743);
+  z-index: 50;
   min-width: 150px;
   color: black;
   display: none;
@@ -5939,12 +5934,7 @@ code {
 }
 
 .dropdown-item-active {
-  border: 3px solid #333333;
-  color: black;
-}
-
-.dropdown-item-active:hover {
-  border: 3px solid rgb(75 85 99);
+  border: 0px solid #333333;
   color: black;
 }
 
@@ -5953,6 +5943,7 @@ code {
   border-radius: 0.375rem;
   color: black;
   background-color: rgb(157, 157, 157);
+  cursor: pointer;
 }
 
 .navmenu-item-active {
@@ -5982,7 +5973,7 @@ code {
   padding: 8px 12px;
   background-color: white;
   border: 1px solid #ccc;
-  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 8px 16px rgba(97, 96, 96, 0.743);
   z-index: 1000;
   max-width: 200px;
   min-width: 150px;
@@ -6014,6 +6005,10 @@ code {
   background-color: rgb(75 85 99);
   color: white;
   text-decoration: none;
+}
+
+.user-area-loading {
+  background-color: (15 23 42);
 }
 
 .input-profile {

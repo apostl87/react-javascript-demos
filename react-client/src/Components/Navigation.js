@@ -11,11 +11,11 @@ export default function Navigation() {
 
   let menuItems = [
     { label: "Home", to: "home" },
-    { label: "Fully manage a retailer product portfolio", to: "demos/merchant-product-portfolio" },
+    { label: "Retailer product portfolio", to: "merchant-product-portfolio" },
     {
       label: "Other Demos", to: "demos",
       subMenu: [
-        { label: "Edit product portfolio (no login required)", to: "product-portfolio" },
+        { label: "Public product portfolio (no login required)", to: "product-portfolio" },
         { label: "Space game", to: "space-game" },
       ]
     },
@@ -25,7 +25,8 @@ export default function Navigation() {
 
   if (process.env.NODE_ENV === 'development') {
     menuItems.push(
-      { label: "Developer area", to: "devarea",
+      {
+        label: "Developer area", to: "devarea",
         subMenu: [
           { label: "Token service and request service", to: "01" },
           { label: "Other", to: "02" }
@@ -35,25 +36,26 @@ export default function Navigation() {
   }
 
   return (
-    <Navbar onMenuOpenChange={setIsMenuOpen} className="bg-gray-950 text-white h-12">
+    <Navbar onMenuOpenChange={setIsMenuOpen} className="navbar text-white h-12">
 
       <NavbarContent>
         <NavbarMenuToggle
           aria-label={isMenuOpen ? "Close menu" : "Open menu"}
           className="sm:hidden bg-gray-900 hover:bg-gray-600 h-11 mt-3"
         />
-        <NavbarBrand>
-          {/* <img src={iconBrand} className="mt-2 w-7 animate-spin-slow" /> */}
-        </NavbarBrand>
+        {/* <NavbarBrand>
+          <img src={iconBrand} className="mt-2 w-7 animate-spin-slow" />
+        </NavbarBrand> */}
       </NavbarContent>
 
-      <NavbarContent className="hidden sm:flex gap-2 text-white pt-3" justify="center">
-        {menuItems.map((item, index) => {
-          return (
-            <NavbarItemCustom key={index} label={item.label} to={item.to} subMenu={item.subMenu} />
-          );
-        })}
-      </NavbarContent>
+      {menuItems.map((item, index) => {
+        return (
+          <NavbarContent key={index} className="hidden sm:flex gap-2 text-white pt-3">
+            <NavbarItemCustom label={item.label} to={item.to} subMenu={item.subMenu} />
+          </NavbarContent>
+        );
+      })}
+
 
       <div className="w-2"></div>
 

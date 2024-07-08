@@ -11,7 +11,7 @@ export default function UserArea() {
     const userArea = useRef(null)
     const userAreaIcon = useRef(null)
 
-    function toggleuserArea() {
+    function toggleUserArea() {
         setUserAreaOpen(!userAreaOpen)
     }
 
@@ -44,9 +44,10 @@ export default function UserArea() {
             </NavbarContent>)
     } else if (!isLoading && user) {
         return (
-            <NavbarContent justify="end" className="text-white pt-3">
-                <div ref={userAreaIcon} className="flex flex-col">
-                    <img src={iconUser} alt="icon-user" className="h-10 cursor-pointer" onClick={toggleuserArea}></img>
+            <NavbarContent justify="end" className="text-white pt-3 flex-shrink-0" onMouseLeave={() => setTimeout(setUserAreaOpen(false), 2500)}>
+                <div ref={userAreaIcon} className="flex flex-col" onClick={toggleUserArea}
+                    onMouseEnter={() => setUserAreaOpen(true)}>
+                    <img src={iconUser} alt="icon-user" className="h-10 cursor-pointer"></img>
                 </div>
                 {userAreaOpen &&
                     <div ref={userArea} className="user-area">
@@ -70,7 +71,7 @@ export default function UserArea() {
     } else if (isLoading) {
         return (
             <NavbarContent justify="end" className="text-white pt-3 gap-1">
-                <NavbarItem className="lg:flex bg-black pt-0 pb-0 pl-2 pr-2 rounded-md disabled nopointer">
+                <NavbarItem className="user-area-loading lg:flex pt-0 pb-0 pl-2 pr-2 rounded-md disabled nopointer">
                     Loading ...
                 </NavbarItem>
             </NavbarContent>
