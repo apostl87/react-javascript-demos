@@ -724,6 +724,7 @@ const ModalCreateProduct = ({ isShown, countries, onClose, onSubmit }) => {
             </ModalCreateProductTemplate >
             <Tooltip id={tooltipState[0]}
                 content={tooltipState[1]}
+                className='z-50'
                 isOpen={tooltipIsOpen} />
         </div >
     )
