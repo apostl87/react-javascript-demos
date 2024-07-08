@@ -37,7 +37,7 @@ export default function Navigation() {
   }
 
   return (
-    <Navbar onMenuOpenChange={setIsMenuOpen} className="navbar text-white h-12">
+    <Navbar onMenuOpenChange={setIsMenuOpen} className="navbar text-white h-12 ">
 
       <NavbarContent>
         <NavbarMenuToggle
