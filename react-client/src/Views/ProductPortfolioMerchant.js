@@ -596,6 +596,7 @@ const ModalCreateProduct = ({ isShown, countries, onClose, onSubmit }) => {
 
     function handleUploadComplete(url) {
         setImageUrl(url);
+        setManualImageUrl(url);
         setUploadProgress(-1);
     }
 
@@ -690,7 +691,7 @@ const ModalCreateProduct = ({ isShown, countries, onClose, onSubmit }) => {
 
 
                             {(uploadProgress >= 0 && uploadProgress < 100) ?
-                                <span className='self-center'>Uploading image: {uploadProgress}%</span> : <></>}
+                                <span className='self-center pt-2'>Uploading image: {uploadProgress}%</span> : <></>}
 
                             <div className='create-image-upload-area pt-2 pb-2'>
                                 <Dropzone uploadImage={uploadImage} boxIsLarge={!imageUrl} />
@@ -706,6 +707,7 @@ const ModalCreateProduct = ({ isShown, countries, onClose, onSubmit }) => {
 
                             <span className='pb-1 self-center'>OR</span>
 
+                            {/* <div>{manualImageUrl}</div> */}
                             <input type="text" id="create-image-url-manual" value={manualImageUrl}
                                 placeholder='Enter or paste URL here (http://...)' onChange={handleManualImageUrlChanged} />
                             <button type="button" onClick={handleLoadImageClicked}
