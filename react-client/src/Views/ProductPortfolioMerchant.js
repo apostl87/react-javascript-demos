@@ -679,7 +679,7 @@ const ModalCreateProduct = ({ isShown, countries, onClose, onSubmit }) => {
                                 {imageUrl ?
                                     <img className='create-image-preview-img' src={imageUrl} alt="No product image linked." />
                                     :
-                                    <p>(No image preview)</p>}
+                                    <p>(No image to preview)</p>}
                             </div>
 
 
