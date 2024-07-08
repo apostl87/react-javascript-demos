@@ -129,7 +129,7 @@ function ProductPortfolioMerchant() {
                     setProducts(newProducts);
                     setCurrentPage(Math.ceil(newProducts.length / productsPerPage));
                     window.scrollTo(0, document.body.scrollHeight);
-                    addNotification(`Product "${response.data.mp_name}" created.`);
+                    addNotification(`Product "${response.data[0].mp_name}" (ID: ${response.data[0].mp_id}) created.`);
                 } catch {
                     addNotification('Failed to create product. Please try again.');
                 }
@@ -211,7 +211,12 @@ function ProductPortfolioMerchant() {
 
     function findCountryNameById(countries, c_id) {
         if (countries.length > 0) {
-            return countries.filter(country => country.c_id === c_id)[0].c_name;
+            let matchingCountry = countries.filter(country => country.c_id === c_id)[0]
+            if (matchingCountry) {
+                return matchingCountry.c_name;
+            } else {
+                return "";
+            }
         } else {
             return "Loading...";
         }
