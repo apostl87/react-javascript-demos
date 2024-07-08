@@ -16,7 +16,7 @@ export const NotLoggedIn = () => {
                 appState: {
                     returnTo: window.location.pathname
                 }
-            })}>log in</a> to view this page.
+            })}>log in (Auth0, Google, Apple, or Microsoft)</a> to view this page.
         </div>
     )
 }

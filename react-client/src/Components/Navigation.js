@@ -11,10 +11,10 @@ export default function Navigation() {
 
   let menuItems = [
     { label: "Home", to: "home" },
+    { label: "Fully manage a retailer product portfolio", to: "demos/merchant-product-portfolio" },
     {
-      label: "Demos", to: "examples",
+      label: "Other Demos", to: "demos",
       subMenu: [
-        { label: "Fully manage retailer product portfolio", to: "merchant-product-portfolio" },
         { label: "Edit product portfolio (no login required)", to: "product-portfolio" },
         { label: "Space game", to: "space-game" },
       ]

@@ -487,15 +487,6 @@ select {
   background-color: rgba(0, 0, 0, 0.85);
 }
 
-.product-item hr {
-  height: 2;
-  /* 1 */
-  color: black;
-  /* 2 */
-  border-top-width: 1px;
-  /* 3 */
-}
-
 .progress-bar {
   background-color: rgb(134, 134, 134);
   border-radius: 6px;

@@ -17,9 +17,9 @@ function App() {
       <Routes>
         <Route exact path='/' element={<Home />} />
         <Route exact path='/home' element={<Home />} />
-        <Route exact path='/examples/product-portfolio' element={<ProductPortfolio />} />
-        <Route exact path='/examples/merchant-product-portfolio' element={<ProductPortfolioMerchant />} />
-        <Route exact path='/examples/space-game' element={<SpaceGame />} />
+        <Route exact path='/demos/product-portfolio' element={<ProductPortfolio />} />
+        <Route exact path='/demos/merchant-product-portfolio' element={<ProductPortfolioMerchant />} />
+        <Route exact path='/demos/space-game' element={<SpaceGame />} />
         <Route exact path='/contact' element={<Contact />} />
         <Route exact path='/profile' element={<Profile />} />
         {process.env.NODE_ENV === 'development' &&

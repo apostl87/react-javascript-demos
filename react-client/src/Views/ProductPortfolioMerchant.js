@@ -47,7 +47,7 @@ function ProductPortfolioMerchant() {
     const [uploadProgress, setUploadProgress] = useState(-1);
 
     // Tooltip hooks
-    const [tooltipIsOpen, setTooltipIsOpen] = useState(null);
+    const [tooltipIsOpen, setTooltipIsOpen] = useState(false);
     const [tooltipState, setTooltipState] = useState(['', '']); // [name of input field, tooltip text]
 
     // Search filter hooks
@@ -60,6 +60,10 @@ function ProductPortfolioMerchant() {
     const [deleteAllModalIsOpen, setDeleteAllModalIsOpen] = useState(false);
     const [deleteModalText, setDeleteModalText] = useState('');
     const [productToDelete, setProductToDelete] = useState({});
+
+    // Dismiss changes hooks
+    const [dismissChangesToEditAnotherModal, setDismissChangesToEditAnotherModal] = useState(-1);
+    const [dismissModalText, setDismissModalText] = useState('');
 
     // Create hooks
     const [createModalIsOpen, setCreateModalIsOpen] = useState(false);
@@ -93,7 +97,7 @@ function ProductPortfolioMerchant() {
         async function doAsync() {
             const isValid = await verifyUrlImage(imageUrl);
             if (!isValid) {
-                setEditedProduct({...editedProduct, mp_image_url: 'invalid'});
+                setEditedProduct({ ...editedProduct, mp_image_url: 'invalid' });
                 console.log('Invalid image url');
             }
         }
@@ -268,12 +272,18 @@ function ProductPortfolioMerchant() {
 
     // Callback functions
     function handleEditClick(product) {
-        setEditedProduct({ ...product, index: products.indexOf(product) });
+        // Open modal if user is currently editing another product
+        if (Object.keys(editedProduct).length > 0) {
+            setDismissModalText(`Are you sure you want to dismiss your unsaved changes to the product "${editedProduct.mp_name}" (Product ID: ${editedProduct.mp_id})?`);
+            setDismissChangesToEditAnotherModal(products.indexOf(product));
+        } else {
+            setEditedProduct({ ...product, index: products.indexOf(product) });
+        }
     }
 
     function handleDeleteOneClick(product) {
-        setDeleteOneModalIsOpen(true);
         setDeleteModalText(`Are you sure you want to delete the product "${product.mp_name}" (Product ID: ${product.mp_id})?`);
+        setDeleteOneModalIsOpen(true);
         setProductToDelete(product);
     }
 
@@ -288,8 +298,8 @@ function ProductPortfolioMerchant() {
     }
 
     function handleDeleteAllClick() {
-        setDeleteAllModalIsOpen(true);
         setDeleteModalText(`Are you sure you want to delete all products?`);
+        setDeleteAllModalIsOpen(true);
     }
 
     function handleInputChanged(e) {
@@ -537,6 +547,10 @@ function ProductPortfolioMerchant() {
 
             <ModalConfirmCancel isShown={deleteAllModalIsOpen} title='Confirm deletion' text={deleteModalText}
                 onConfirm={() => { deleteAllProducts(); setDeleteAllModalIsOpen(false); }} onCancel={() => { setDeleteAllModalIsOpen(false) }} />
+
+            <ModalConfirmCancel isShown={dismissChangesToEditAnotherModal >= 0} title='Dismiss unsaved changes' text={dismissModalText}
+                onConfirm={() => { setEditedProduct({...products[dismissChangesToEditAnotherModal]}); setDismissChangesToEditAnotherModal(-1); }}
+                onCancel={() => { setDismissChangesToEditAnotherModal(-1) }} />
 
             <ModalCreateProduct isShown={createModalIsOpen} countries={countries}
                 onClose={() => setCreateModalIsOpen(false)} onSubmit={createProduct} />
