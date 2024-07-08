@@ -61,5 +61,31 @@ export const UpCaret = (props) => {
     borderRight: `${size}px solid transparent`,
     borderBottom: `${size}px solid ${color}`
   }
-  return <div className={props.className + ' down-caret'} style={style}></div>
+  return <div className={props.className + ' up-caret'} style={style}></div>
+}
+
+export const RightCaret = (props) => {
+  const size = props.size ? props.size : 10;
+  const color = props.color? props.color : 'black';
+  const style = {
+    width: 0,
+    height: 0,
+    borderTop: `${size}px solid transparent`,
+    borderBottom: `${size}px solid transparent`,
+    borderLeft: `${size}px solid ${color}`
+  }
+  return <div className={props.className + ' right-caret'} style={style}></div>
+}
+
+export const LeftCaret = (props) => {
+  const size = props.size ? props.size : 10;
+  const color = props.color? props.color : 'black';
+  const style = {
+    width: 0,
+    height: 0,
+    borderTop: `${size}px solid transparent`,
+    borderBottom: `${size}px solid transparent`,
+    borderRight: `${size}px solid ${color}`
+  }
+  return <div className={props.className + ' left-caret'} style={style}></div>
 }
