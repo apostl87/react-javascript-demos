@@ -119,18 +119,23 @@ code {
 }
 
 .navmenu-item-active {
-  border: 3px solid #333333;
+  border: 2px solid #333333;
+  background-color: rgb(219, 219, 219);
+  color: black;
 }
 
 .navmenu-subitem {
   padding: 8px 12px;
   border-radius: 0.375rem;
   color: black;
-  background-color: rgb(205, 204, 204);
+  background-color: rgb(219, 219, 219);
+
 }
 
 .navmenu-subitem-active {
-  border: 3px solid #333333;
+  border: 2px solid #333333;
+  background-color: rgb(255, 255, 255);
+  color: black;
 }
 
 .navmenu-item:hover,

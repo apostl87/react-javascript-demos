@@ -5933,8 +5933,9 @@ code {
   background-color: rgb(75 85 99);
 }
 
-.dropdown-item-active {
-  border: 0px solid #333333;
+.dropdown-item-active .navmenu-item-active {
+  border: 1px solid #333333;
+  background-color: rgb(219, 219, 219);
   color: black;
 }
 
@@ -5946,9 +5947,9 @@ code {
   cursor: pointer;
 }
 
-.navmenu-item-active {
-  border: 3px solid #333333;
-}
+/* .navmenu-item-active {
+  border: 1px solid #333333;
+} */
 
 .navmenu-subitem {
   padding: 8px 12px;
@@ -5992,10 +5993,10 @@ code {
 }
 
 .user-area-link {
-  background-color: #eeeeee;
+  background-color: #d2d2d2;
   text-align: right;
   padding: 2px 8px;
-  border-radius: 0.375rem;
+  border-radius: 3px;
   cursor: pointer;
   color: inherit
   /* <NavbarItem className="lg:flex bg-white hover:bg-gray-600 pt-0 pb-0 mb-2 pl-2 pr-2 rounded-md"> */

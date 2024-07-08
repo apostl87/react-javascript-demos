@@ -26,8 +26,8 @@ const NavbarItemCustom = ({ label, to, subMenu }) => {
                     <span>
                         {label}
                     </span>
-                    {isOpen ? <UpCaret size='6' color={isActive(to) ? (isHovered ? 'white' : 'black') : 'white'} className="mt-2 ml-2" />
-                        : <DownCaret size='6' color={isActive(to) ? (isHovered ? 'white' : 'black') : 'white'} className="mt-2 ml-2" />
+                    {isOpen ? <UpCaret size='6' color={isHovered ? 'white' : (isActive(to) ? 'black' : 'white')} className="mt-2 ml-2" />
+                        : <DownCaret size='6' color={isHovered ? 'white' : (isActive(to) ? 'black' : 'white')} className="mt-2 ml-2" />
                     }
                 </div>
             }

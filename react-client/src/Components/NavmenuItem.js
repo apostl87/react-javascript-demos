@@ -4,6 +4,7 @@ import { DownCaret, UpCaret } from './Misc.js';
 
 const NavmenuItemCustom = ({ label, to, subMenu }) => {
   const [isOpen, setIsOpen] = useState(isActive(to));
+  const [isHovered, setIsHovered] = useState(false);
 
   function toggleIsOpen() {
     setIsOpen(!isOpen)
@@ -27,12 +28,13 @@ const NavmenuItemCustom = ({ label, to, subMenu }) => {
     subItems = null
   } else {
     mainItem =
-      <div className="navmenu-item flex flex-row justify-between" onClick={toggleIsOpen} onMouseEnter={() => setIsOpen(true)}>
+      <div className="navmenu-item flex flex-row justify-between" onClick={toggleIsOpen}
+        onMouseEnter={() => { setIsHovered(true); }} onMouseLeave={() => { setIsHovered(false); }}>
         <span>
           {label}
         </span>
-        {isOpen ? <UpCaret size='6' color={isActive(to) ? 'black' : 'white'} className="mt-2 ml-2" />
-          : <DownCaret size='6' color={isActive(to) ? 'black' : 'white'} className="mt-2 ml-2" />
+        {isOpen ? <UpCaret size='6' color={isHovered ? 'white' : 'black'} className="mt-2 ml-2" />
+          : <DownCaret size='6' color={isHovered ? 'white' : 'black'} className="mt-2 ml-2" />
         }
       </div>;
 
@@ -49,7 +51,7 @@ const NavmenuItemCustom = ({ label, to, subMenu }) => {
   }
 
   return (
-    <div onMouseLeave={() => setIsOpen(isActive(to))}>
+    <div> {/* onMouseLeave={() => setIsOpen(isActive(to))}> */}
       {mainItem}
       {isOpen ? subItems : null}
     </div>

@@ -41,7 +41,7 @@ export default function Navigation() {
       <NavbarContent>
         <NavbarMenuToggle
           aria-label={isMenuOpen ? "Close menu" : "Open menu"}
-          className="sm:hidden bg-gray-900 hover:bg-gray-600 h-11 mt-3"
+          className="sm:hidden bg-gray-900 hover:bg-gray-600 h-11 mt-3 w-12"
         />
         {/* <NavbarBrand>
           <img src={iconBrand} className="mt-2 w-7 animate-spin-slow" />

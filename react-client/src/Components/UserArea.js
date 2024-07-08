@@ -15,9 +15,9 @@ export default function UserArea() {
         setUserAreaOpen(!userAreaOpen)
     }
 
-    const closeUserArea = (e)=>{
-        if(userAreaOpen && !userArea.current?.contains(e.target) && !userAreaIcon.current?.contains(e.target)){
-          setUserAreaOpen(false)
+    const closeUserArea = (e) => {
+        if (userAreaOpen && !userArea.current?.contains(e.target) && !userAreaIcon.current?.contains(e.target)) {
+            setUserAreaOpen(false)
         }
     }
     document.addEventListener('mousedown', closeUserArea)
@@ -45,8 +45,7 @@ export default function UserArea() {
     } else if (!isLoading && user) {
         return (
             <NavbarContent justify="end" className="text-white pt-3 flex-shrink-0" onMouseLeave={() => setTimeout(setUserAreaOpen(false), 2500)}>
-                <div ref={userAreaIcon} className="flex flex-col" onClick={toggleUserArea}
-                    onMouseEnter={() => setUserAreaOpen(true)}>
+                <div ref={userAreaIcon} className="flex flex-col" onClick={toggleUserArea} onMouseEnter={() => setUserAreaOpen(true)}>
                     <img src={iconUser} alt="icon-user" className="h-10 cursor-pointer"></img>
                 </div>
                 {userAreaOpen &&
