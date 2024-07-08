@@ -77,7 +77,10 @@ export default function Dropzone(props) {
                     {/* <h4>Accepted files</h4>
                     <ul>{acceptedFileItems}</ul> */}
                     <b>Rejected upload</b>
-                    <ul>{fileRejectionItems}</ul>
+                    <ul>{fileRejectionItems.slice(0, 3)}</ul>
+                    {fileRejections.length > 3 && (
+                        <ul>+{fileRejections.length - 3} more rejected files</ul>
+                    )}
                 </aside>
             }
         </section>
