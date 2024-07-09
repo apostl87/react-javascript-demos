@@ -94,9 +94,10 @@ const Profile = () => {
   function handleInputChanged(e) {
     let { name, value } = e.target;
     if (name === 'email' && value === userData.email) {
-      setEditedUserData({ ...editedUserData, ['email2']: '' });
+      setEditedUserData({ ...editedUserData, [name]: value, ['email2']: "" });
+    } else {
+      setEditedUserData({ ...editedUserData, [name]: value });
     }
-    setEditedUserData({ ...editedUserData, [name]: value });
   }
 
   // Helper functions
@@ -113,6 +114,7 @@ const Profile = () => {
       return (
         <span>If you proceed, you will be logged out
           and a verification mail will be sent to <b>{editedUserData.email}</b>.
+          <br />
           <br />
           <u>Important</u>: You will need to login using the <b>new email address</b>, even if you opt to not verify it.
         </span>
@@ -156,7 +158,7 @@ const Profile = () => {
         return renderEmail2(fieldNames[index], labels[index], values[index], types[index], required[index]);
       } else {
         return (
-          <tr key={index} className="tr-profile">
+          <tr key={fieldNames[index]} className="tr-profile">
             <td className="text-nowrap font-bold text-right align=middle">
               <span>{labels[index]}:</span>
             </td>
@@ -166,9 +168,9 @@ const Profile = () => {
                   onChange={handleInputChanged} className="input-profile" required={required[index]} /> :
                 value}
             </td>
-            <td>
+            <td className="w-16 pl-2">
               {editing && editable[index] && editedUserData[fieldNames[index]] !== userData[fieldNames[index]] &&
-              <em>changed</em>}
+                <em>changed</em>}
             </td>
           </tr>
         )
@@ -181,12 +183,12 @@ const Profile = () => {
 
     if (editing) {
       return (
-        <tr className="tr-profile">
-          <td className="text-nowrap font-bold text-right align-middle">
+        <tr className="tr-profile" key={fieldName}>
+          <td className="text-wrap font-bold text-right align-middle">
             <span>{label}:</span>
           </td>
           <td className="pl-2 ">
-            <input type={type} name={fieldName} value={value} placeholder={disabled ? "Email address unchanged" : "Retype new email address"}
+            <input type={type} name={fieldName} value={editedUserData.email2} placeholder={disabled ? "Email address unchanged" : "Retype new email address"}
               className={(disabled ? "bg-slate-300" : "") + " input-profile"}
               onChange={handleInputChanged} required={required} disabled={disabled} data-tooltip-id={fieldName} />
           </td>
@@ -195,7 +197,7 @@ const Profile = () => {
         </tr>
       )
     } else {
-      return <></>;
+      return <tr key={fieldName}></tr>;
     }
   }
 
