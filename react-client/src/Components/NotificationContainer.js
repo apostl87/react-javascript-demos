@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react'
 
-const NotificationBox = ({ notifications, setNotifications, className }) => {
+const NotificationContainer = ({ notifications, setNotifications, className }) => {
 
     const handleCloseClick = (index) => {
         let banner = document.getElementById('notification' + index);
@@ -41,4 +41,4 @@ const NotificationBox = ({ notifications, setNotifications, className }) => {
     )
 }
 
-export default NotificationBox
+export default NotificationContainer
