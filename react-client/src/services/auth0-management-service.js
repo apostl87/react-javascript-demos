@@ -43,7 +43,7 @@ export const updateUser = (id, userData, onSuccess) => {
 
     axios.request(config)
     .then((response) => {
-        // console.lgo(response)
+        console.log(response)
         onSuccess(response.data);
     })
     .catch((error) => {

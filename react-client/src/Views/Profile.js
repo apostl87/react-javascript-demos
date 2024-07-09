@@ -19,20 +19,13 @@ const Profile = () => {
   // Modal hooks
   const [changeEmailModalOpen, setChangeEmailModalOpen] = useState(false)
 
-  // Notification hook
-  const [notifications, setNotifications] = useState([])
-
   // Tooltip hook
   const [tooltipIsOpen, setTooltipIsOpen] = useState(false);
 
-  // Notification functions
+  // Notification hook and functionality
+  const [notifications, setNotifications] = useState([])
   function addNotification(notification) {
-    setNotifications([...notifications, notification]);
-  }
-
-  // #TODO finish notification functionality. Is this function needed?
-  function handleDismissNotification(index) {
-    setNotifications(notifications.filter((_, i) => i !== index));
+    setNotifications([...notifications, [(notifications.length > 0) ? notifications[notifications.length - 1][0] + 1 : 0, notification]]);
   }
 
   // If user data has been updated, update the local state
@@ -258,7 +251,8 @@ const Profile = () => {
         isShown={changeEmailModalOpen}
         title="Changing Email Address"
         text={modalText()}
-        onConfirm={() => { updateUserWrapper({ changedEmail: true }); window.location.reload(); }}
+        // onConfirm={() => { updateUserWrapper({ changedEmail: true }); window.location.reload(); }}
+        onConfirm={() => { updateUserWrapper({ changedEmail: true }) }}
         onCancel={() => setChangeEmailModalOpen(false)} />
 
       <NotificationBox notifications={notifications} setNotifications={setNotifications} />
