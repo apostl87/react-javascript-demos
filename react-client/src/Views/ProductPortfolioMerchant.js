@@ -16,6 +16,7 @@ import request from '../services/request-service';
 import formatNumeric from '../lib/formatNumeric';
 import uploadImage from '../lib/uploadImage';
 import verifyUrlImage from '../lib/verifyUrlImage';
+import config from '../config';
 
 const api_url = process.env.REACT_APP_BACKEND_API_URL;
 
@@ -68,6 +69,7 @@ function ProductPortfolioMerchant() {
 
     // Creating (products)
     const [createModalIsOpen, setCreateModalIsOpen] = useState(false);
+    const maxProductsReached = (products.length >= config.maxProductsReached);
 
     // Notification
     const [notifications, setNotifications] = useState([])
@@ -437,7 +439,9 @@ function ProductPortfolioMerchant() {
             </h3>
 
             <div className='flex flex-row flex-wrap justify-start gap-4'>
-                <button onClick={handleCreateClicked} className='button-new flex justify-between items-center my-auto'>
+                <button onClick={handleCreateClicked} disabled={maxProductsReached}
+                        title={maxProductsReached ? `You reached the maximum number of products (limit: ${config.maxProductsPerUser}` : ''}
+                        className='button-new flex justify-between items-center my-auto'>
                     <span>+</span>
                     <span>New product</span>
                 </button>
