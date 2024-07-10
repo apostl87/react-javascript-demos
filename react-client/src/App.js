@@ -16,21 +16,31 @@ function App() {
     <div className="App h-full">
       <Navigation />
       <Routes>
-        <Route exact path='/' element={<Home />} />
-        <Route exact path='/home' element={<Home />} />
-        <Route exact path='/merchant-product-portfolio' element={<ProductPortfolioMerchant />} />
-        <Route exact path='/merchant-product-portfolio/public-test-mode' element={<ProductPortfolioMerchant />} />
-        <Route exact path='/store' element={<Store />} />
-        <Route exact path='/demos/product-portfolio' element={<ProductPortfolio />} />
-        <Route exact path='/demos/space-game' element={<SpaceGame />} />
+        <Route path='/' element={<Home />} />
+        <Route path='/home' element={<Home />} />
+
+        <Route path='/merchant-product-portfolio' element={<ProductPortfolioMerchant />}>
+          <Route path='public-test-mode' element={<ProductPortfolioMerchant />} />
+        </Route>
+
+        <Route path='/store' element={<Store />} />
+
+        <Route path='/demos'>
+          <Route path='product-portfolio' element={<ProductPortfolio />} />
+          <Route path='space-game' element={<SpaceGame />} />
+        </Route>
+
         <Route exact path='/contact' element={<Contact />} />
+
         <Route exact path='/profile' element={<Profile />} />
+
         {process.env.NODE_ENV === 'development' &&
           <>
             <Route exact path='/devarea/01' element={<DevView01 />} />
             <Route exact path='/devarea/02' element={<DevView02 />} />
           </>
         }
+
         <Route path='*' element={<NotFound />} />
       </Routes>
     </div>
