@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { Tooltip } from 'react-tooltip';
 import PaginationBar from '../Components/PaginationBar';
 import SearchBar from '../Components/SearchBar';
-import NotificationBox from '../Components/NotificationBox';
+import NotificationContainer from '../Components/NotificationContainer';
 import request from '../services/request-service';
 
 const api_url = process.env.REACT_APP_BACKEND_API_URL;
@@ -73,8 +73,10 @@ function ProductPortfolioEditable() {
     }
 
     function updateProduct(p_id) {
+        const body = {...editedProduct, ['p_c_id_production']: editedProduct.p_c_id_production != 'null' ? editedProduct.p_c_id_production : null};
         const url = `${api_url}/products/${p_id}`
-        request.patch(url, editedProduct)
+
+        request.patch(url, body)
             .then(response => {
                 setEditingProductId(null);
                 let newProducts = [...products];
@@ -142,6 +144,8 @@ function ProductPortfolioEditable() {
     function selectCountry(countries) {
         return (
             <select id="p_c_id_production" name="p_c_id_production" onChange={handleInputChange} value={editedProduct.p_c_id_production}>
+                <option value="null">Choose country...</option>
+                <option disabled>──────────</option>
                 {countries.map((country, idx) => {
                     return (<option key={idx} value={country.c_id}>{country.c_name}</option>)
                 })}
@@ -373,7 +377,7 @@ function ProductPortfolioEditable() {
                 content={tooltipState[1]}
                 isOpen={isOpen} />
 
-            <NotificationBox notifications={notifications} setNotifications={setNotifications} className='fixed flex flex-col gap-1 top-20 w-1/2 right-2' />
+            <NotificationContainer notifications={notifications} setNotifications={setNotifications} className='fixed flex flex-col gap-1 top-20 w-1/2 right-2' />
 
         </div>
     );

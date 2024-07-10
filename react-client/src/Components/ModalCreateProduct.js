@@ -8,7 +8,7 @@ import formatNumeric from '../lib/formatNumeric';
 import uploadImage from "../lib/uploadImage";
 import verifyUrlImage from '../lib/verifyUrlImage';
 
-const ModalCreateProduct = ({ isShown, countries, onClose, onSubmit }) => {
+const ModalCreateProduct = ({ isShown, countries, onClose, onCreate }) => {
     const { user } = useAuth0();
 
     // Tooltip hooks
@@ -89,7 +89,7 @@ const ModalCreateProduct = ({ isShown, countries, onClose, onSubmit }) => {
         const mp_price = document.querySelector('#create-mp_price').value
         const requestBody = {
             mp_name: mp_name,
-            mp_c_id_production: mp_c_id_production == -1 ? 'null' : mp_c_id_production,
+            mp_c_id_production: mp_c_id_production != 'null' ? mp_c_id_production : null,
             mp_color: mp_color,
             mp_weight_kg: mp_weight_kg,
             mp_price: mp_price,
@@ -97,7 +97,7 @@ const ModalCreateProduct = ({ isShown, countries, onClose, onSubmit }) => {
             mp_image_url: imageUrl,
             mp_merchant_user_id: user.sub,
         }
-        onSubmit(requestBody);
+        onCreate(requestBody);
         handleClose(onClose);
     }
 
@@ -127,7 +127,7 @@ const ModalCreateProduct = ({ isShown, countries, onClose, onSubmit }) => {
                                 Production Country
                             </label>
                             <select id="create-mp_c_id_production" defaultValue="-1">
-                                <option value="-1">Choose country...</option>
+                                <option value="null">Choose country...</option>
                                 <option disabled>──────────</option>
                                 {countries.map((country, idx) => {
                                     return (<option key={idx} value={country.c_id}>{country.c_name}</option>)

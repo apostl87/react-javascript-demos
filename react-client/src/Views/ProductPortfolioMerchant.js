@@ -7,7 +7,7 @@ import PaginationBar from '../Components/PaginationBar';
 import SearchBar from '../Components/SearchBar';
 import { ModalConfirmCancel } from '../Components/ModalConfirmCancel';
 import { NotLoggedIn } from '../Components/Misc';
-import NotificationBox from '../Components/NotificationBox';
+import NotificationContainer from '../Components/NotificationContainer';
 import ModalCreateProduct from '../Components/ModalCreateProduct';
 import Dropzone from '../Components/Dropzone';
 import ProgressBar from '../Components/ProgressBar';
@@ -137,8 +137,10 @@ function ProductPortfolioMerchant() {
     }
 
     function updateProduct(p_id) {
+        const body = {...editedProduct, ['mp_c_id_production']: editedProduct.mp_c_id_production != 'null' ? editedProduct.mp_c_id_production : null};
         const url = `${api_url}/merchant-products/${user.sub}/${p_id}`;
-        request.patch(url, editedProduct)
+
+        request.patch(url, body)
             .then(response => {
                 let newProducts = [...products];
                 newProducts[editedProduct.index] = { ...editedProduct }
@@ -166,6 +168,7 @@ function ProductPortfolioMerchant() {
                 }
             })
             .catch(error => {
+                addNotification('Failed to create product. Please try again.');
                 console.error(error);
             });
     }
@@ -197,7 +200,7 @@ function ProductPortfolioMerchant() {
 
     function initProducts() {
         const url = `${api_url}/merchant-products/${user.sub}/init`
-        request.get(url) // This is a pseudo GET endpoint; It creates ressources without transmitting a body - The backend carries the rest of the information.
+        request.post(url) // This is a pseudo POST endpoint; It creates ressources without transmitting a body - The backend carries the rest of the information.
             .then(response => {
                 processProductData(response.data);
                 addNotification(`Added ${response.data.length} products.`);
@@ -234,7 +237,7 @@ function ProductPortfolioMerchant() {
                 mp_currency: data.mp_currency,
                 mp_price: data.mp_price,
                 mp_weight_kg: data.mp_weight_kg,
-                mp_c_id_production: data.mp_c_id_production ? data.mp_c_id_production : -1,
+                mp_c_id_production: data.mp_c_id_production ? data.mp_c_id_production : "null",
             };
         });
         return (products);
@@ -295,7 +298,6 @@ function ProductPortfolioMerchant() {
 
     function handleSubmit(e) {
         e.preventDefault();
-        let empty_var = null;
         updateProduct(editedProduct.mp_id);
     }
 
@@ -326,13 +328,6 @@ function ProductPortfolioMerchant() {
             setTooltipIsOpen(true);
         }
 
-        if (id == 'mp_c_id_production') {
-            if (value == -1) {
-                value = 'null';
-            } else {
-                value = parseInt(value);
-            }
-        }
         setEditedProduct({ ...editedProduct, [id]: value });
     }
 
@@ -350,7 +345,7 @@ function ProductPortfolioMerchant() {
     function selectCountry(countries) {
         return (
             <select id="mp_c_id_production" name="mp_c_id_production" onChange={handleInputChanged} value={editedProduct.mp_c_id_production}>
-                <option value="-1">Choose country...</option>
+                <option value="null">Choose country...</option>
                 <option disabled>──────────</option>
                 {countries.map((country, idx) => {
                     return (<option key={idx} value={country.c_id}>{country.c_name}</option>)
@@ -485,7 +480,7 @@ function ProductPortfolioMerchant() {
 
                                 </div>
                             ) : (
-                                <div key={product.mp_id} className="product-item overflow-scroll w-full flex flex-row flex-shrink">
+                                <div key={product.mp_id} className="product-item h-auto flex flex-row flex-shrink">
                                     <div className='flex flex-col flex-grow'>
                                         <div align='left' className='float-left w-full'>
                                             <p><strong>Product ID:</strong> {product.mp_id}</p>
@@ -503,7 +498,7 @@ function ProductPortfolioMerchant() {
                                             <button onClick={() => handleDeleteOneClick(product)} className='button-standard-blue-grey'>Delete</button>
                                         </div>
                                     </div>
-                                    <div className=''>
+                                    <div className='flex-shrink-0'>
                                         <img src={product.mp_image_url} alt={product.mp_name} className="product-image" />
                                     </div>
                                 </div>
@@ -553,9 +548,9 @@ function ProductPortfolioMerchant() {
                 onCancel={() => { setDismissChangesToEditAnotherModal(-1) }} />
 
             <ModalCreateProduct isShown={createModalIsOpen} countries={countries}
-                onClose={() => setCreateModalIsOpen(false)} onSubmit={createProduct} />
+                onClose={() => setCreateModalIsOpen(false)} onCreate={createProduct} />
 
-            <NotificationBox notifications={notifications} setNotifications={setNotifications} className='fixed flex flex-col gap-1 top-16 w-1/2 right-4' />
+            <NotificationContainer notifications={notifications} setNotifications={setNotifications} className='fixed flex flex-col gap-1 top-16 w-1/2 right-4' />
         </div >
     );
 }
