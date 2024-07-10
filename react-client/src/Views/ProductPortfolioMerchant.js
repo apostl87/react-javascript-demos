@@ -1,4 +1,5 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
+import { Navigate, useNavigate } from 'react-router-dom';
 import { Tooltip } from 'react-tooltip';
 import { useAuth0 } from "@auth0/auth0-react";
 import axios from 'axios';
@@ -19,10 +20,8 @@ import verifyUrlImage from '../utils/verifyUrlImage';
 import { hexToRgb } from '../utils/generic';
 import config from '../config';
 
-console.log();
-
-
 const api_url = process.env.REACT_APP_BACKEND_API_URL;
+const publicTestUserNickname = process.env.REACT_APP_PUBLIC_TEST_USER;
 
 // Code needs a major overhaul
 // - Refactoring of Components
@@ -31,6 +30,12 @@ const api_url = process.env.REACT_APP_BACKEND_API_URL;
 function ProductPortfolioMerchant() {
     // Auth0 hook
     const { user, isLoading } = useAuth0();
+
+    // Navigator
+    const navigate = useNavigate();
+
+    // State for switching between public test mode user and actually logged in user
+    const [usedUser, setUsedUser] = useState(null);
 
     //// Variables, hooks, and basic functionality
     // Data from API calls
@@ -93,14 +98,24 @@ function ProductPortfolioMerchant() {
     const WEIGHT_UNIT = 'kg';
 
     //// Effects
+    // Use public test mode user or actually logged in user
+    useEffect(() => {
+        const pathParts = window.location.pathname.split('/');
+        if (pathParts.length == 3 && pathParts[2] == 'public-test-mode') {
+            setUsedUser({ 'sub': publicTestUserNickname })
+        } else {
+            setUsedUser(user)
+        }
+    }, [user, window.location.pathname])
+
     // Loading data
     useEffect(() => {
-        if (user) {
+        if (usedUser) {
             setLoading(true)
             getProducts();
             getCountries();
         }
-    }, [user])
+    }, [usedUser])
 
     // Apply filter whenever Array products changes
     useEffect(() => {
@@ -130,13 +145,20 @@ function ProductPortfolioMerchant() {
     if (isLoading) {
         return null;
     }
-    if ((!isLoading && !user)) {
-        return <NotLoggedIn />
+    if ((!isLoading && !usedUser)) {
+        return (
+            <div className='flex flex-col items-center'>
+                <NotLoggedIn additionalHtml="For demonstration purposes, you can enter the page as a <strong>public test user</strong> by clicking the button below." />
+                <div className='pt-7'>
+                    <button type="button" onClick={() => { navigate("public-test-mode") }} className='button-test-mode'>Enter public test mode</button>
+                </div>
+            </div>
+        )
     }
 
     //// API calls
     function getProducts() {
-        const url = `${api_url}/merchant-products/${user.sub}`
+        const url = `${api_url}/merchant-products/${usedUser.sub}`
         request.get(url)
             .then(response => {
                 processProductData(response.data);
@@ -150,7 +172,7 @@ function ProductPortfolioMerchant() {
     function updateProduct(p_id) {
 
         const body = { ...editedProduct, ['mp_c_id_production']: editedProduct.mp_c_id_production != 'null' ? editedProduct.mp_c_id_production : null };
-        const url = `${api_url}/merchant-products/${user.sub}/${p_id}`;
+        const url = `${api_url}/merchant-products/${usedUser.sub}/${p_id}`;
 
         request.patch(url, body)
             .then(response => {
@@ -188,7 +210,7 @@ function ProductPortfolioMerchant() {
     }
 
     function deleteProduct() {
-        const url = `${api_url}/merchant-products/${user.sub}/${productToDelete.mp_id}`
+        const url = `${api_url}/merchant-products/${usedUser.sub}/${productToDelete.mp_id}`
         request.delete(url)
             .then(response => {
                 let newProducts = [...products.filter(product => product.mp_id !== productToDelete.mp_id)];
@@ -201,7 +223,7 @@ function ProductPortfolioMerchant() {
     }
 
     function deleteAllProducts() {
-        const url = `${api_url}/merchant-products/${user.sub}`
+        const url = `${api_url}/merchant-products/${usedUser.sub}`
         request.delete(url)
             .then(response => {
                 processProductData([]);
@@ -213,7 +235,7 @@ function ProductPortfolioMerchant() {
     }
 
     function initProducts() {
-        const url = `${api_url}/merchant-products/${user.sub}/init`
+        const url = `${api_url}/merchant-products/${usedUser.sub}/init`
         request.post(url) // This is a pseudo POST endpoint; It creates ressources without transmitting a body - The backend carries the rest of the information.
             .then(response => {
                 processProductData(response.data);
@@ -296,7 +318,7 @@ function ProductPortfolioMerchant() {
     //// Callback functions
     function handleEditClick(product, force = false) {
         if (unsavedChanges()) {
-            // Open modal if user is user has unsaved changes on a product
+            // Open modal if usedUser is usedUser has unsaved changes on a product
             setPendingActionOnDismiss(() => () => startEditingProduct(product));
             setDismissModalIsOpen(true);
         } else {
@@ -378,7 +400,7 @@ function ProductPortfolioMerchant() {
 
     function handleCreateClicked(e) {
         if (unsavedChanges()) {
-            // Open modal if user is user has unsaved changes on a product
+            // Open modal if usedUser is usedUser has unsaved changes on a product
             setPendingActionOnDismiss(() => () => setCreateModalIsOpen(true));
             setDismissModalIsOpen(true)
         } else {
@@ -407,7 +429,6 @@ function ProductPortfolioMerchant() {
     function colorText(colorHex) {
         colorHex = colorHex.trim();
         if (colorHex != '') {
-            console.log(colorHex);
             return (colorHex != '' ? (`HEX: ${colorHex}, RGB: (${Object.values(hexToRgb(colorHex)).join(',')})`) : '');
         } else {
             return '';
@@ -462,10 +483,17 @@ function ProductPortfolioMerchant() {
     }
 
     return (
-        <div className='p-5 bg-slate-300'>
-            <h3 className='p-2 pl-0 text-left'>
-                Retailer Product Portfolio
-            </h3>
+        <div className='p-5'>
+            <div className='flex flex-row justify-between items-center'>
+                <h3 className='p-2 pl-0 text-left'>
+                    Retailer Product Portfolio
+                </h3>
+                {usedUser.sub == publicTestUserNickname &&
+                    <div>
+                        <button type="button" onClick={() => { navigate(".") }} className='button-test-mode text-wrap'>Leave public test mode</button>
+                    </div>
+                }
+            </div>
 
             <div className='flex flex-row flex-wrap justify-start gap-4'>
                 <button onClick={handleCreateClicked} disabled={maxProductsReached}

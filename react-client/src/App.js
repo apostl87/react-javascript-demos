@@ -13,12 +13,13 @@ import DevView02 from './Views/DevView02';
 
 function App() {
   return (
-    <div className="App">
+    <div className="App h-full">
       <Navigation />
       <Routes>
         <Route exact path='/' element={<Home />} />
         <Route exact path='/home' element={<Home />} />
         <Route exact path='/merchant-product-portfolio' element={<ProductPortfolioMerchant />} />
+        <Route exact path='/merchant-product-portfolio/public-test-mode' element={<ProductPortfolioMerchant />} />
         <Route exact path='/store' element={<Store />} />
         <Route exact path='/demos/product-portfolio' element={<ProductPortfolio />} />
         <Route exact path='/demos/space-game' element={<SpaceGame />} />

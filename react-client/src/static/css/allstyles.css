@@ -2,13 +2,15 @@
 @tailwind components;
 @tailwind utilities;
 
-body {
+#body {
   margin: 0;
   font-family: 'Segoe UI', 'Roboto', 'Oxygen',
     'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  background-color: rgb(203 213 225);
+  min-height: 100vh;
 }
 
 .textcontent {
@@ -303,7 +305,8 @@ code {
   vertical-align: bottom;
 }
 
-.product-details-row input, .product-details-row select {
+.product-details-row input,
+.product-details-row select {
   margin: 0 5px 0px 5px;
   flex: 1 1 auto;
   min-height: 15px;
@@ -361,6 +364,21 @@ button-standard-inline:hover {
 
 .button-standard-blue-grey:hover {
   background-color: #406992;
+}
+
+.button-test-mode {
+  padding: 6px 20px;
+  border: 2px solid black;
+  border-radius: 2px;
+  background-color: black;
+  color: white;
+  cursor: pointer;
+  transition: background-color 0.1s;
+  vertical-align: bottom;
+}
+
+.button-test-mode:hover {
+  background-color: rgb(68, 68, 68);
 }
 
 .button-standard-inline {

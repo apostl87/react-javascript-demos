@@ -7,16 +7,21 @@ export const NoDeveloper = () => {
   )
 }
 
-export const NotLoggedIn = () => {
+export const NotLoggedIn = (props) => {
   const { loginWithRedirect } = useAuth0()
 
   return (
-    <div className='text-center mt-10'>
-      You need to <a href="" onClick={() => loginWithRedirect({
-        appState: {
-          returnTo: window.location.pathname
-        }
-      })}>log in (Auth0, Google, Apple, or Microsoft)</a> to view this page.
+    <div className='flex flex-col items-center w-2/3 gap-5'>
+      <div className='text-center mt-10'>
+        You need to <a href="" onClick={() => loginWithRedirect({
+          appState: {
+            returnTo: window.location.pathname
+          }
+        })}>log in (Auth0, Google, Apple, or Microsoft)</a> to view this page.
+      </div>
+      {props.additionalHtml &&
+        <div className='text-center mt-2' dangerouslySetInnerHTML={{ __html: props.additionalHtml }} />
+      }
     </div>
   )
 }
@@ -40,7 +45,7 @@ export const NotFound = () => {
 
 export const DownCaret = (props) => {
   const size = props.size ? props.size : 10;
-  const color = props.color? props.color : 'black';
+  const color = props.color ? props.color : 'black';
   const style = {
     width: 0,
     height: 0,
@@ -53,7 +58,7 @@ export const DownCaret = (props) => {
 
 export const UpCaret = (props) => {
   const size = props.size ? props.size : 10;
-  const color = props.color? props.color : 'black';
+  const color = props.color ? props.color : 'black';
   const style = {
     width: 0,
     height: 0,
@@ -66,7 +71,7 @@ export const UpCaret = (props) => {
 
 export const RightCaret = (props) => {
   const size = props.size ? props.size : 10;
-  const color = props.color? props.color : 'black';
+  const color = props.color ? props.color : 'black';
   const style = {
     width: 0,
     height: 0,
@@ -79,7 +84,7 @@ export const RightCaret = (props) => {
 
 export const LeftCaret = (props) => {
   const size = props.size ? props.size : 10;
-  const color = props.color? props.color : 'black';
+  const color = props.color ? props.color : 'black';
   const style = {
     width: 0,
     height: 0,

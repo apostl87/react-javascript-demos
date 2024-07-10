@@ -13,7 +13,7 @@ function SearchBar({ onInputChange }) {
 
             <div className='my-auto pl-2'>
                 <a onClick={ () => {document.getElementById('searchStringInput').value = '' ; onInputChange('')} } className='cursor-pointer'>
-                    Clear filter
+                    <strong>Clear filter</strong>
                 </a>
             </div>
         </div>
