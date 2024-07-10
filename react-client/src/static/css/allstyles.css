@@ -296,21 +296,19 @@ code {
 }
 
 .product-details-row {
-  display: flex;
-  flex-wrap: nowrap;
+  padding: 0px 0px 4px 0px;
 }
 
 .product-details-row strong {
-  flex: 0 1 auto;
   vertical-align: bottom;
 }
 
-.product-details-row input,
-select {
+.product-details-row input, .product-details-row select {
   margin: 0 5px 0px 5px;
   flex: 1 1 auto;
   min-height: 15px;
   max-height: 22px;
+  min-width: 40px;
   font-size: small;
   padding: 0 2px 0 4px;
   border: none;

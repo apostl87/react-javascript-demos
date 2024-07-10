@@ -6158,8 +6158,7 @@ code {
   vertical-align: bottom;
 }
 
-.product-details-row input,
-select {
+.product-details-row select {
   margin: 0 5px 0px 5px;
   flex: 1 1 auto;
   min-height: 15px;
@@ -6169,9 +6168,6 @@ select {
   border: none;
   border-bottom: 2px solid #666666;
   background-color: transparent;
-}
-
-.product-details-row select {
   width: auto;
   max-width: 253px;
 }
@@ -6404,10 +6400,11 @@ button-standard-inline:hover {
   color: white;
 }
 
-hr {
-  background-color: red;
+.hr {
+  background-color: rgb(126, 126, 126);
   height: 1px;
   border: 0;
+  margin: 16px 6px;
 }
 
 .placeholder\:text-danger::placeholder {

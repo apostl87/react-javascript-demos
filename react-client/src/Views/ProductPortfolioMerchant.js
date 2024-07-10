@@ -13,10 +13,14 @@ import ModalCreateProduct from '../Components/ModalCreateProduct';
 import Dropzone from '../Components/Dropzone';
 import ProgressBar from '../Components/ProgressBar';
 import request from '../services/request-service';
-import formatNumeric from '../lib/formatNumeric';
-import uploadImage from '../lib/uploadImage';
-import verifyUrlImage from '../lib/verifyUrlImage';
+import formatNumeric from '../utils/formatNumeric';
+import uploadImage from '../utils/uploadImage';
+import verifyUrlImage from '../utils/verifyUrlImage';
+import { hexToRgb } from '../utils/generic';
 import config from '../config';
+
+console.log();
+
 
 const api_url = process.env.REACT_APP_BACKEND_API_URL;
 
@@ -400,21 +404,51 @@ function ProductPortfolioMerchant() {
         )
     }
 
-    function inputField(type, id, value) {
-        let disabled, required
-        if (id == 'mp_color') {
+    function colorText(colorHex) {
+        colorHex = colorHex.trim();
+        if (colorHex != '') {
+            console.log(colorHex);
+            return (colorHex != '' ? (`HEX: ${colorHex}, RGB: (${Object.values(hexToRgb(colorHex)).join(',')})`) : '');
+        } else {
+            return '';
+        }
+    }
+
+    function onUploadComplete(url) {
+        setEditedProduct({ ...editedProduct, mp_image_url: url });
+        setManualImageUrl(url);
+        setUploadProgress(-1);
+    }
+
+    // Rendering functions
+    function renderInputField(type, id, value) {
+        let disabled, style;
+        if (id == 'mp_color_code') {
             disabled = true
+            style = { border: 'none' }
         } else {
             disabled = false
+            style = {}
         }
+
+        let required;
         if (['mp_price', 'mp_weight_kg', 'mp_name'].includes(id)) {
             required = true
         } else {
             required = false
         }
+
+        let step = ""
+        if (type.includes('number')) {
+            step = type.slice(6);
+            type = type.slice(0, 6);
+            style = { textAlign: "right" }
+        }
+
         return (
             <input
                 type={type}
+                step={step}
                 id={id}
                 name={id}
                 value={value}
@@ -422,14 +456,9 @@ function ProductPortfolioMerchant() {
                 data-tooltip-id={id}
                 disabled={disabled}
                 required={required}
+                style={style}
             />
         );
-    }
-
-    function onUploadComplete(url) {
-        setEditedProduct({ ...editedProduct, mp_image_url: url });
-        setManualImageUrl(url);
-        setUploadProgress(-1);
     }
 
     return (
@@ -440,8 +469,8 @@ function ProductPortfolioMerchant() {
 
             <div className='flex flex-row flex-wrap justify-start gap-4'>
                 <button onClick={handleCreateClicked} disabled={maxProductsReached}
-                        title={maxProductsReached ? `You reached the maximum number of products (limit: ${config.maxProductsPerUser}` : ''}
-                        className='button-new flex justify-between items-center my-auto'>
+                    title={maxProductsReached ? `You reached the maximum number of products (limit: ${config.maxProductsPerUser}` : ''}
+                    className='button-new flex justify-between items-center my-auto'>
                     <span>+</span>
                     <span>New product</span>
                 </button>
@@ -492,7 +521,7 @@ function ProductPortfolioMerchant() {
 
                                         <p className='product-details-row'>
                                             <strong>Product Name:</strong>
-                                            {inputField('text', 'mp_name', editedProduct.mp_name)}
+                                            {renderInputField('text', 'mp_name', editedProduct.mp_name)}
                                         </p>
 
                                         <p className='product-details-row'>
@@ -502,22 +531,22 @@ function ProductPortfolioMerchant() {
 
                                         <p className='product-details-row'>
                                             <strong>Color:</strong>
-                                            &nbsp;&nbsp;Pick
-                                            <input type="color" className='my-auto' value={editedProduct.mp_color} name='colorPicker' id="mp_color" onChange={handleInputChanged} />
-                                            {inputField('text', 'mp_color', editedProduct.mp_color)}
+                                            <input type="color" className='my-auto w-10' value={editedProduct.mp_color} name='colorPicker' id="mp_color" onChange={handleInputChanged} />
+                                            {renderInputField('text', 'mp_color_code', colorText(editedProduct.mp_color))}
                                         </p>
 
-                                        <p className='product-details-row'>
-                                            <strong>Weight:</strong>
-                                            {inputField('text', 'mp_weight_kg', editedProduct.mp_weight_kg)}
-                                            <label>{WEIGHT_UNIT}</label>
-                                        </p>
-
-                                        <p className='product-details-row'>
-                                            <strong>Price:</strong>
-                                            {inputField('text', 'mp_price', editedProduct.mp_price)}
-                                            <label>{editedProduct.mp_currency}</label>
-                                        </p>
+                                        <div className='product-details-row justify-between flex flex-row gap-5'>
+                                            <div className='flex flex-row flex-grow w-40'>
+                                                <div className='font-bold'>Weight:</div>
+                                                {renderInputField('number0.1', 'mp_weight_kg', editedProduct.mp_weight_kg)}
+                                                <div>{WEIGHT_UNIT}</div>
+                                            </div>
+                                            <div className='flex flex-row flex-grow w-40'>
+                                                <div className='font-bold'>Price:</div>
+                                                {renderInputField('number0.01', 'mp_price', editedProduct.mp_price)}
+                                                <label>{editedProduct.mp_currency}</label>
+                                            </div>
+                                        </div>
 
                                         <div className='flex flex-row gap-1'>
                                             <button type='submit' className='button-standard'>Save</button>
@@ -536,7 +565,7 @@ function ProductPortfolioMerchant() {
                                             <p><strong>Production&nbsp;Country:</strong> {findCountryNameById(countries, product.mp_c_id_production)}</p>
                                             <p><strong>Color:</strong>
                                                 <span className='color-show' style={{ display: 'inline-block', backgroundColor: product.mp_color }}></span>
-                                                {product.mp_color}
+                                                <span className='text-xs'>{colorText(product.mp_color)}</span>
                                             </p>
                                             <p><strong>Weight:</strong> {product.mp_weight_kg ? product.mp_weight_kg : '-'} {WEIGHT_UNIT}</p>
                                             <p><strong>Price:</strong> {product.mp_price ? product.mp_price : '-'} {product.mp_currency}</p>

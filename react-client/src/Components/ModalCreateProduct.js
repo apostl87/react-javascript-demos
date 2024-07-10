@@ -4,9 +4,9 @@ import { useAuth0 } from "@auth0/auth0-react";
 import axios from 'axios';
 import { ModalCreateProductTemplate } from '../Templates/Modal';
 import Dropzone from '../Components/Dropzone';
-import formatNumeric from '../lib/formatNumeric';
-import uploadImage from "../lib/uploadImage";
-import verifyUrlImage from '../lib/verifyUrlImage';
+import formatNumeric from '../utils/formatNumeric';
+import uploadImage from "../utils/uploadImage";
+import verifyUrlImage from '../utils/verifyUrlImage';
 
 const ModalCreateProduct = ({ isShown, countries, onClose, onCreate }) => {
     const { user } = useAuth0();
@@ -112,7 +112,7 @@ const ModalCreateProduct = ({ isShown, countries, onClose, onCreate }) => {
         <div className='w-3/4'>
             <ModalCreateProductTemplate isShown={isShown}>
                 <h4>Create product</h4>
-                <hr />
+                <div className='hr' />
                 <form onSubmit={handleSubmit} id='createform'>
                     <div className='modal-create-product flex flex-row flex-wrap justify-between gap-4 items-start'>
                         <div className='grid grid-rows-1 w-auto flex-grow overflow-scroll'>
