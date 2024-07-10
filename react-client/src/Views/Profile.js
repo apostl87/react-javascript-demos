@@ -2,8 +2,9 @@ import { useAuth0 } from "@auth0/auth0-react";
 import { React, useEffect, useState } from "react";
 import { Tooltip } from "react-tooltip";
 import { ModalConfirmCancel } from '../Components/ModalConfirmCancel';
-import NotificationBox from '../Components/NotificationBox';
+import NotificationContainer from '../Components/NotificationContainer';
 import { NotLoggedIn } from "../Components/Misc";
+import Infobox from "../Components/Infobox";
 import { getUser, updateUser } from "../services/auth0-management-service";
 
 const Profile = () => {
@@ -22,6 +23,10 @@ const Profile = () => {
   // Tooltip hook
   const [tooltipIsOpen, setTooltipIsOpen] = useState(false);
 
+  // Infobox
+  const [infoboxMessage, setInfoboxMessage] = useState("")
+  const [responseStatusCode, setResponseStatusCode] = useState(-1)
+
   // Notification hook and functionality
   const [notifications, setNotifications] = useState([])
   function addNotification(notification) {
@@ -38,7 +43,11 @@ const Profile = () => {
   // Get user data from the management API
   useEffect(() => {
     if (user) {
-      getUser(user.sub, setUserData)
+      const caller = async () => {
+        let response = await getUser(user.sub);
+        setUserData(response.data)
+      }
+      caller();
     }
   }, [user]);
 
@@ -55,6 +64,35 @@ const Profile = () => {
   // Show minimal information if user is not logged in
   if (!isAuthenticated) {
     return <NotLoggedIn />
+  }
+
+  // Wrapper for the management-API-calling function
+  async function updateUserWrapper({ changedEmail = false } = {}) {
+    let data = {
+      nickname: editedUserData.nickname,
+      given_name: editedUserData.given_name,
+      family_name: editedUserData.family_name,
+      name: editedUserData.given_name + " " + editedUserData.family_name,
+    }
+    if (changedEmail) {
+      data = {
+        ...data,
+        ['email']: editedUserData.email, ['email_verified']: false, ['verify_email']: true
+      }
+    }
+
+    let response = await updateUser(user.sub, data);
+
+    // Processing response
+    setResponseStatusCode(response.status);
+    if (response.status == 200) {
+      setUserData(response.data);
+      setInfoboxMessage("User data updated successfully.");
+    } else if (response.status == 400) {
+      setInfoboxMessage(`${response.data.message}. Updating user data denied. `);
+    } else {
+      setInfoboxMessage(`Unknown response status. Response message: ${response.data.message}`);
+    }
   }
 
   // Callback functions
@@ -75,6 +113,7 @@ const Profile = () => {
         setChangeEmailModalOpen(true);
       }
     } else {
+      setEditing(false)
       updateUserWrapper({ changedEmail: false });
     }
   }
@@ -115,23 +154,6 @@ const Profile = () => {
     } else {
       return;
     }
-  }
-
-  function updateUserWrapper({ changedEmail = false } = {}) {
-    let data = {
-      nickname: editedUserData.nickname,
-      given_name: editedUserData.given_name,
-      family_name: editedUserData.family_name,
-      name: editedUserData.given_name + " " + editedUserData.family_name,
-    }
-    if (changedEmail) {
-      data = {
-        ...data,
-        ['email']: editedUserData.email, ['email_verified']: false, ['verify_email']: true
-      }
-    }
-    updateUser(user.sub, data, setUserData);
-    setEditing(false)
   }
 
   function renderRows() {
@@ -194,53 +216,66 @@ const Profile = () => {
     }
   }
 
+
+
   return (
-    <div className="p-5">
+    <div className="p-5 flex flex-col items-center">
       <div className="p-2 page-title">
         Your Profile
       </div>
-      <form onSubmit={handleSubmit}>
-        <div className="profile-content flex justify-center flex-row gap-5 flex-wrap">
-          <div>
-            <img
-              src={user.picture}
-              alt="Profile"
-              className="flex-shrink-0 flex-grow-0"
-            />
+
+      <div id="profile-content" className="flex justify-center flex-row gap-5 flex-wrap">
+        <div className="flex flex-col gap-3">
+          <div className="flex flex-row gap-5 flex-wrap border-2 border-slate-400 rounded-lg p-3">
+            <div>
+              <img
+                src={user.picture}
+                alt="Profile"
+                className="flex-shrink-0 flex-grow-0"
+              />
+            </div>
+            <form onSubmit={handleSubmit}>
+              <table className="table-profile">
+                <thead></thead>
+                <tbody>
+                  {renderRows()}
+                  <tr className="tr-profile">
+                    <td colSpan="2" className="text-center">
+                      {authMethod(userData) === "auth0"
+                        ?
+                        editing
+                          ?
+                          <div className="flex flex-row-reverse gap-1 w-full">
+                            <button type="submit" className="button-standard w-1/2" onClick={handleSubmit}>
+                              Save changes
+                            </button>
+                            <button type="button" className="button-standard w-1/2" onClick={handleCancelClick}>
+                              Cancel
+                            </button>
+                          </div>
+                          :
+                          <button type="button" className="button-standard w-full" onClick={handleEditClick}>
+                            Edit profile
+                          </button>
+                        :
+                        <button type="button" className="button-standard button-disabled w-full" title="Not available for social login" disabled>
+                          Edit profile
+                        </button>
+                      }
+                    </td>
+                    <td>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </form>
           </div>
-          <table className="table-profile">
-            <thead></thead>
-            <tbody>
-              {renderRows()}
-            </tbody>
-          </table>
+          <div className="w-full">
+            <Infobox message={infoboxMessage} statusCode={responseStatusCode} />
+          </div>
         </div>
+      </div>
 
-        <div className="pt-2 flex flex-row justify-center">
-
-          {authMethod(userData) === "auth0"
-            ?
-            editing
-              ?
-              <div className="flex flex-row-reverse gap-1 w-2/3">
-                <button type="submit" className="button-standard w-1/2" onClick={handleSubmit}>
-                  Save changes
-                </button>
-                <button type="button" className="button-standard w-1/2" onClick={handleCancelClick}>
-                  Cancel
-                </button>
-              </div>
-              :
-              <button type="button" className="button-standard w-2/3" onClick={handleEditClick}>
-                Edit profile
-              </button>
-            :
-            <button type="button" className="button-standard button-disabled w-full" title="Not available for social login" disabled>
-              Edit profile
-            </button>
-          }
-        </div>
-      </form>
 
       {/* Overlay components */}
       <Tooltip id={'email2'}
@@ -252,10 +287,10 @@ const Profile = () => {
         title="Changing Email Address"
         text={modalText()}
         // onConfirm={() => { updateUserWrapper({ changedEmail: true }); window.location.reload(); }}
-        onConfirm={() => { updateUserWrapper({ changedEmail: true }) }}
+        onConfirm={() => { updateUserWrapper({ changedEmail: true }); setChangeEmailModalOpen(false); setEditing(false); }}
         onCancel={() => setChangeEmailModalOpen(false)} />
 
-      <NotificationBox notifications={notifications} setNotifications={setNotifications} />
+      <NotificationContainer notifications={notifications} setNotifications={setNotifications} />
 
     </div >
   );
