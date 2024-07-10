@@ -39,7 +39,7 @@ const SpaceGame = () => {
                     </tbody>
                 </table>
             </div>
-            <hr />
+            <div className='hr' />
             <div>
                 The development of this game is the result of a typical instructive JavaScript <a href="https://www.youtube.com/watch?v=eWLDAAMsD-c">tutorial</a>.
             </div>

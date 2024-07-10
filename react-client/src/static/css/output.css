@@ -6113,6 +6113,7 @@ code {
 
 #product-item-editing {
   height: auto;
+  background: #ffffff;
 }
 
 .product-image {
@@ -6167,6 +6168,7 @@ select {
   padding: 0 2px 0 4px;
   border: none;
   border-bottom: 2px solid #666666;
+  background-color: transparent;
 }
 
 .product-details-row select {
@@ -6196,7 +6198,8 @@ select {
   vertical-align: bottom;
 }
 
-.button-standard:hover, button-standard-inline:hover {
+.button-standard:hover,
+button-standard-inline:hover {
   background-color: #406992;
 }
 
@@ -6260,8 +6263,19 @@ select {
 
 .button-pagination {
   margin-right: 4px;
-  padding: 5px 10px;
+  padding: 3px 10px 2px 10px;
   border: 2px solid #111111;
+  border-radius: 3px;
+  background-color: #ffffff;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.button-pagination-disabled {
+  margin-right: 4px;
+  padding: 5px 10px;
+  /* border: 2px dotted #7c7c7c; */
+  color: #7c7c7c;
   border-radius: 3px;
   background-color: #ffffff;
   cursor: pointer;
@@ -6284,7 +6298,9 @@ select {
   margin: 0 5px;
 }
 
-.modal-create-product input[type='text'], .modal-create-product input[type='file'], .modal-create-product select {
+.modal-create-product input[type='text'],
+.modal-create-product input[type='file'],
+.modal-create-product select {
   margin: 0 0px 0px 0px;
   flex: 1 1 auto;
   min-height: 40px;
@@ -6341,7 +6357,7 @@ select {
   cursor: pointer;
 }
 
-.dropzone-container aside{
+.dropzone-container aside {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -6386,6 +6402,12 @@ select {
   grid-row-start: 1;
   grid-column-start: 1;
   color: white;
+}
+
+hr {
+  background-color: red;
+  height: 1px;
+  border: 0;
 }
 
 .placeholder\:text-danger::placeholder {

@@ -7,8 +7,8 @@ export function ModalConfirmCancel({ isShown, title, text, onConfirm, onCancel }
             <hr />
             <p>{text}</p>
             <div className="flex justify-between mt-3">
-                <button className="button-standard-blue-grey" onClick={onCancel}>Cancel</button>
-                <button className="button-standard" onClick={onConfirm}>Confirm</button>
+                <button type="button" className="button-standard-blue-grey" onClick={onCancel}>Cancel</button>
+                <button type="submit" className="button-standard" onClick={onConfirm}>Confirm</button>
             </div>
         </ModalTemplate>
     );

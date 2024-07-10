@@ -73,7 +73,7 @@ function ProductPortfolioEditable() {
     }
 
     function updateProduct(p_id) {
-        const body = {...editedProduct, ['p_c_id_production']: editedProduct.p_c_id_production != 'null' ? editedProduct.p_c_id_production : null};
+        const body = { ...editedProduct, ['p_c_id_production']: editedProduct.p_c_id_production != 'null' ? editedProduct.p_c_id_production : null };
         const url = `${api_url}/products/${p_id}`
 
         request.patch(url, body)
@@ -272,7 +272,7 @@ function ProductPortfolioEditable() {
                 <SearchBar onInputChange={(val) => filterProducts(products, val, setIsFiltered)} />
             </div>
 
-            <hr />
+            <div className='hr' />
 
             <PaginationBar currentPage={currentPage} switchPageFn={setCurrentPage}
                 startIdx={indexOfFirstProduct} endIdx={indexOfLastProduct}
@@ -370,7 +370,7 @@ function ProductPortfolioEditable() {
                 startIdx={indexOfFirstProduct} endIdx={indexOfLastProduct}
                 nProducts={filteredProducts.length} isFiltered={isFiltered} />
 
-            <hr />
+            <div className='hr' />
 
             {/* Overlay components */}
             <Tooltip id={tooltipState[0]}
