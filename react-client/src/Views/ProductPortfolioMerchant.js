@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Navigate, useNavigate } from 'react-router-dom';
+import { Navigate, useNavigate, useLocation } from 'react-router-dom';
 import { Tooltip } from 'react-tooltip';
 import { useAuth0 } from "@auth0/auth0-react";
 import axios from 'axios';
@@ -31,8 +31,9 @@ function ProductPortfolioMerchant() {
     // Auth0 hook
     const { user, isLoading } = useAuth0();
 
-    // Navigator
+    // Navigation
     const navigate = useNavigate();
+    const location = useLocation();
 
     // State for switching between public test mode user and actually logged in user
     const [usedUser, setUsedUser] = useState(null);
@@ -98,13 +99,19 @@ function ProductPortfolioMerchant() {
     const WEIGHT_UNIT = 'kg';
 
     //// Effects
-    // Use public test mode user or actually logged in user
+    // Use actually logged in user, or public test mode user, or use falsy user
     useEffect(() => {
-        const pathParts = window.location.pathname.split('/');
-        if (pathParts.length == 3 && pathParts[2] == 'public-test-mode') {
+        const pathParts = location.pathname.split('/');
+        if (user) {
+            setUsedUser(user)
+            // Public test mode is not intended for logged in users
+            if (pathParts[2] == 'public-test-mode') {
+                navigate("./");
+            }
+        } else if (pathParts.length == 3 && pathParts[2] == 'public-test-mode') {
             setUsedUser({ 'sub': publicTestUserNickname })
         } else {
-            setUsedUser(user)
+            setUsedUser(user) // Here, usedUser is falsy
         }
     }, [user, window.location.pathname])
 
@@ -488,11 +495,12 @@ function ProductPortfolioMerchant() {
                 <h3 className='p-2 pl-0 text-left'>
                     Retailer Product Portfolio
                 </h3>
-                {usedUser.sub == publicTestUserNickname &&
-                    <div>
+
+                <div>
+                    {location.pathname.includes('public-test-mode') &&
                         <button type="button" onClick={() => { navigate(".") }} className='button-test-mode text-wrap'>Leave public test mode</button>
-                    </div>
-                }
+                    }
+                </div>
             </div>
 
             <div className='flex flex-row flex-wrap justify-start gap-4'>
