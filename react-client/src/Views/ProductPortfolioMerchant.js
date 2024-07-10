@@ -106,7 +106,8 @@ function ProductPortfolioMerchant() {
             setUsedUser(user)
             // Public test mode is not intended for logged in users
             if (pathParts[2] == 'public-test-mode') {
-                navigate("./");
+                navigate(".");
+                addNotification('Automatically left public test mode (You are logged in).')
             }
         } else if (pathParts.length == 3 && pathParts[2] == 'public-test-mode') {
             setUsedUser({ 'sub': publicTestUserNickname })
@@ -514,7 +515,7 @@ function ProductPortfolioMerchant() {
                     </button>
                 </div>
 
-                <div className='flex-shrink'>
+                <div>
                     <SearchBar onInputChange={(val) => filterProducts(products, val, setIsFiltered)} />
                 </div>
 

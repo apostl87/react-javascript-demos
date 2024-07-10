@@ -27,13 +27,15 @@ const NotificationContainer = ({ notifications, setNotifications, className }) =
                 const index = notification[0];
                 const message = notification[1];
                 return (
-                    <div id={'notification' + index} key={index} className='notification flex flex-col justify-center min-h-10 max-h-30 h-10
-                    overflow-scroll text-center z-10 border-slate-900 border-2 rounded-lg
-                    text-wrap font-bold text-medium text-white pb-6 pt-6 pr-2 pl-2'>
-                        {message}
-                        <button onClick={() => handleCloseClick(index)} className='absolute left-5 text-2xl'>
+                    <div id={'notification' + index} key={index}
+                        className='notification flex flex-row gap-2 items-center min-h-10 max-h-30 h-10
+                                    overflow-scroll text-center z-10 border-slate-900 border-2 rounded-lg
+                                    text-wrap font-bold text-medium text-white pb-6 pt-6 pr-2 pl-3 flex-nowrap'>
+
+                        <button onClick={() => handleCloseClick(index)} className='text-xl font-bold pr-2'>
                             X
                         </button>
+                        <div className='text-small text-wrap'>{message}</div>
                     </div>
                 )
             })}
