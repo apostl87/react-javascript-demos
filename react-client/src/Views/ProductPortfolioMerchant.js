@@ -503,16 +503,22 @@ function ProductPortfolioMerchant() {
                 </div>
             </div>
 
-            <div className='flex flex-row flex-wrap justify-start gap-4'>
-                
-                <button onClick={handleCreateClicked} disabled={maxProductsReached}
-                    title={maxProductsReached ? `You reached the maximum number of products (limit: ${config.maxProductsPerUser}` : ''}
-                    className='button-new flex justify-between items-center my-auto'>
-                    <span>+</span>
-                    <span>New product</span>
-                </button>
+            <div className='flex flex-row flex-wrap justify-stretch items-center gap-2'>
 
-                <SearchBar onInputChange={(val) => filterProducts(products, val, setIsFiltered)} />
+                <div className='flex-auto w-32'>
+                    <button onClick={handleCreateClicked} disabled={maxProductsReached}
+                        title={maxProductsReached ? `You reached the maximum number of products (limit: ${config.maxProductsPerUser}` : ''}
+                        className='button-new flex justify-between items-center my-auto'>
+                        <span>+</span>
+                        <span>New product</span>
+                    </button>
+                </div>
+
+                <div className='flex-shrink'>
+                    <SearchBar onInputChange={(val) => filterProducts(products, val, setIsFiltered)} />
+                </div>
+
+                <div className='flex-auto w-32' />
             </div>
 
             <div className='hr' />
