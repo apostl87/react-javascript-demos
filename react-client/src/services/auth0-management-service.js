@@ -4,7 +4,7 @@ import React from 'react';
 let baseUrl = process.env.REACT_APP_AUTH0_DOMAIN;
 let apiToken = process.env.REACT_APP_AUTH0_MNGMT_TOKEN;
 
-export const getUser = (id, onSuccess) => {
+export const getUser = async (id) => {
     let config = {
         method: 'get',
         maxBodyLength: Infinity,
@@ -16,17 +16,18 @@ export const getUser = (id, onSuccess) => {
         }
     };
 
-    axios.request(config)
+    return axios.request(config)
     .then((response) => {
         //console.log(response)
-        onSuccess(response.data);
+        return (response)
     })
     .catch((error) => {
         console.log(error);
+        return (error.response)
     });
 }
 
-export const updateUser = (id, userData, onSuccess) => {
+export const updateUser = async (id, userData, onSuccess) => {
     let data = JSON.stringify(userData);
 
     let config = {
@@ -41,12 +42,13 @@ export const updateUser = (id, userData, onSuccess) => {
         data: data
     };
 
-    axios.request(config)
+    return axios.request(config)
     .then((response) => {
-        console.log(response)
-        onSuccess(response.data);
+        // console.log(response)
+        return (response)
     })
     .catch((error) => {
         console.log(error);
+        return (error.response)
     });
 }
