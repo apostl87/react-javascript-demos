@@ -6066,8 +6066,8 @@ code {
   height: 32px;
 }
 
-#profile-content {
-  background-color: #000000;
+#profile-content {
+  max-width: 67vw;
 }
 
 .table-space-game th,
@@ -6105,7 +6105,6 @@ code {
   border-radius: 5px;
   padding: 15px;
   width: 425px;
-  height: 225px;
   flex: 0 0 auto;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   display: flex;

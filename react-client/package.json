@@ -35,7 +35,7 @@
     "buildcss": "npx tailwindcss -i ./src/static/css/allstyles.css -o ./src/static/css/output.css",
     "watchcss": "npx tailwindcss -i ./src/static/css/allstyles.css -o ./src/static/css/output.css -w",
     "start": "npm run buildcss && react-scripts start",
-    "build": "react-scripts build",
+    "build": "npm run buildcss && react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
