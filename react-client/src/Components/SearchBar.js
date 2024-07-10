@@ -5,7 +5,7 @@ function SearchBar({ onInputChange }) {
         <div className='flex flex-row justify-center pb-2 pt-2'>
             <input
                 id="searchStringInput"
-                className='my-auto h-8 w-auto'
+                className='my-auto h-8 w-auto rounded-md'
                 type="text"
                 placeholder="Search"
                 onChange={(e) => onInputChange(e.target.value)}

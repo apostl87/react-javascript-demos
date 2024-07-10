@@ -504,6 +504,7 @@ function ProductPortfolioMerchant() {
             </div>
 
             <div className='flex flex-row flex-wrap justify-start gap-4'>
+                
                 <button onClick={handleCreateClicked} disabled={maxProductsReached}
                     title={maxProductsReached ? `You reached the maximum number of products (limit: ${config.maxProductsPerUser}` : ''}
                     className='button-new flex justify-between items-center my-auto'>
