@@ -22,18 +22,12 @@ export default function UserArea() {
     }
     document.addEventListener('mousedown', closeUserArea)
 
-    const logoutWithHistory = () => {
-        logout({
-            returnTo: window.location.pathname,
-        })
-    }
-
     if (!isLoading && !user) {
         return (
             <NavbarContent className="text-white pt-3 gap-1">
                 <Link onClick={() => loginWithRedirect({
                     appState: {
-                        returnTo: window.location.pathname
+                        returnTo: window.location.pathname,
                     }
                 })}
                     href="" className="text-black hover:text-gray-300 hover:no-underline">
