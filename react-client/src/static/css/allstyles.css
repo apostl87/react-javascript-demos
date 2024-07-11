@@ -225,11 +225,9 @@ code {
   padding: 2px 16px;
 }
 
-.product-portfolio {
-  font-family: Arial, sans-serif;
-  padding: 20px;
-  max-width: 1800px;
-  margin: 0 auto;
+#portfolio-header, #portfolio-footer {
+  background-color: rgb(168, 183, 203);
+  z-index: 10;
 }
 
 .page-title {
@@ -394,15 +392,13 @@ button-standard-inline:hover {
 
 .button-new {
   height: 32px;
-  width: 120px;
-  padding: 6px 10px;
+  padding: 6px 16px;
   border: 2px solid #000000;
   border-radius: 5px;
   background-color: #003c7d;
   color: white;
   cursor: pointer;
   transition: background-color 0.3s;
-  vertical-align: bottom;
 }
 
 .button-new:hover {
@@ -420,8 +416,8 @@ button-standard-inline:hover {
 .pagination {
   display: flex;
   justify-content: center;
-  margin-top: 15px;
-  margin-bottom: 15px;
+  margin-top: 10px;
+  margin-bottom: 10px;
 }
 
 .button-pagination {
@@ -571,5 +567,5 @@ button-standard-inline:hover {
   background-color: rgb(126, 126, 126);
   height: 1px;
   border: 0;
-  margin: 16px 6px;
+  margin: 12px 6px;
 }

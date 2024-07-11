@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Navigate, useNavigate, useLocation } from 'react-router-dom';
 import { Tooltip } from 'react-tooltip';
 import { useAuth0 } from "@auth0/auth0-react";
@@ -37,6 +37,10 @@ function ProductPortfolioMerchant() {
 
     // State for switching between public test mode user and actually logged in user
     const [usedUser, setUsedUser] = useState(null);
+
+    // Offset of content below header
+    const [offsetContent, setOffsetContent] = useState(0);
+    const headerRef = useRef(null);
 
     //// Variables, hooks, and basic functionality
     // Data from API calls
@@ -149,6 +153,14 @@ function ProductPortfolioMerchant() {
         if (tooltipIsOpen) setTimeout(() => setTooltipIsOpen(false), appearTimeTooltip)
     }, [tooltipIsOpen])
 
+    // Observe resizing and possible changes of the header height
+    useEffect(() => {
+        const resizeObserver = new ResizeObserver(onHeaderResize);
+        if (headerRef.current) {
+            resizeObserver.observe(headerRef.current);
+        }
+    })
+
     //// Conditional returns
     if (isLoading) {
         return null;
@@ -158,7 +170,9 @@ function ProductPortfolioMerchant() {
             <div className='flex flex-col items-center'>
                 <NotLoggedIn additionalHtml="For demonstration purposes, you can enter the page as a <strong>public test user</strong> by clicking the button below." />
                 <div className='pt-7'>
-                    <button type="button" onClick={() => { navigate("public-test-mode") }} className='button-test-mode'>Enter public test mode</button>
+                    <button type="button" onClick={() => { navigate("public-test-mode") }} className='button-test-mode'>
+                        Enter Public Test Mode
+                    </button>
                 </div>
             </div>
         )
@@ -449,7 +463,7 @@ function ProductPortfolioMerchant() {
         setUploadProgress(-1);
     }
 
-    // Rendering functions
+    //// Rendering functions
     function renderInputField(type, id, value) {
         let disabled, style;
         if (id == 'mp_color_code') {
@@ -490,39 +504,48 @@ function ProductPortfolioMerchant() {
         );
     }
 
+    function onHeaderResize(entries) {
+        const header = entries[0];
+        if (header.contentRect.height != offsetContent) {
+            setOffsetContent(header.contentRect.height);
+        }
+    }
+
     return (
-        <div className='p-5'>
-            <div className='flex flex-row justify-between items-center'>
-                <h3 className='p-2 pl-0 text-left'>
-                    Retailer Product Portfolio
-                </h3>
+        <>
+            <div id='portfolio-header' ref={headerRef} className='fixed w-full pr-5 pl-5'>
+                <div className='flex flex-row justify-between items-center'>
+                    <h3 className='p-2 pl-0 text-left'>
+                        Retailer Product Portfolio
+                        {location.pathname.includes('public-test-mode') && <span className='text-xs'> (Public Test Mode) </span>}
+                    </h3>
+                </div>
 
-                <div>
-                    {location.pathname.includes('public-test-mode') &&
-                        <button type="button" onClick={() => { navigate(".") }} className='button-test-mode text-wrap'>Leave public test mode</button>
-                    }
+                <div className='flex flex-row flex-wrap items-center justify-left gap-2 pb-2'>
+                    <div className='flex-auto w-32'>
+                        <button onClick={handleCreateClicked} disabled={maxProductsReached}
+                            title={maxProductsReached ? `You reached the maximum number of products (limit: ${config.maxProductsPerUser}` : ''}
+                            className='button-new flex justify-between items-center my-auto w-auto gap-2 text-nowrap'>
+                            <span>+</span>
+                            <span>New product</span>
+                        </button>
+                    </div>
+                    <div className='flex-auto flex flex-row justify-left'>
+                        <SearchBar onInputChange={(val) => filterProducts(products, val, setIsFiltered)} />
+                    </div>
+                    <div className='flex-auto w-32 flex flex-row justify-left'>
+                        {
+                            filteredProducts.length > 0 &&
+                            <button onClick={() => handleDeleteAllClick()}
+                                className='button-new flex items-center my-auto w-auto text-nowrap'>
+                                <span>Delete all products</span>
+                            </button>
+                        }
+                    </div>
                 </div>
             </div>
 
-            <div className='flex flex-row flex-wrap justify-stretch items-center gap-2'>
-
-                <div className='flex-auto w-32'>
-                    <button onClick={handleCreateClicked} disabled={maxProductsReached}
-                        title={maxProductsReached ? `You reached the maximum number of products (limit: ${config.maxProductsPerUser}` : ''}
-                        className='button-new flex justify-between items-center my-auto'>
-                        <span>+</span>
-                        <span>New product</span>
-                    </button>
-                </div>
-
-                <div>
-                    <SearchBar onInputChange={(val) => filterProducts(products, val, setIsFiltered)} />
-                </div>
-
-                <div className='flex-auto w-32' />
-            </div>
-
-            <div className='hr' />
+            <div style={{ marginTop: String(offsetContent - 24) + "px" }}>&nbsp;</div>
 
             <PaginationBar currentPage={currentPage} handleClick={handlePaginationBarClick}
                 startIdx={indexOfFirstProduct} endIdx={indexOfLastProduct}
@@ -640,18 +663,19 @@ function ProductPortfolioMerchant() {
                 )
             }
 
-            <PaginationBar currentPage={currentPage} handleClick={setCurrentPage}
-                startIdx={indexOfFirstProduct} endIdx={indexOfLastProduct}
-                nProducts={filteredProducts.length} isFiltered={isFiltered} />
+            <div id='portfolio-footer' className='fixed bottom-0 flex flex-col flex-wrap w-full items-center'>
+                <PaginationBar currentPage={currentPage} handleClick={setCurrentPage}
+                    startIdx={indexOfFirstProduct} endIdx={indexOfLastProduct}
+                    nProducts={filteredProducts.length} isFiltered={isFiltered} />
+                {location.pathname.includes('public-test-mode') &&
+                    <button type="button" onClick={() => { navigate(".") }}
+                        className='button-test-mode text-wrap'>
+                        Leave Public Test Mode
+                    </button>
+                }
+            </div>
 
-            <div className='hr' />
 
-            {
-                filteredProducts.length > 0 &&
-                <div className='flex flex-row justify-center'>
-                    <button onClick={() => handleDeleteAllClick()} className='button-standard-blue-grey'>Delete all products</button>
-                </div>
-            }
 
             {/* Overlay components */}
             <Tooltip id={tooltipState[0]}
@@ -671,8 +695,9 @@ function ProductPortfolioMerchant() {
             <ModalCreateProduct isShown={createModalIsOpen} countries={countries}
                 onClose={() => setCreateModalIsOpen(false)} onCreate={createProduct} />
 
-            <NotificationContainer notifications={notifications} setNotifications={setNotifications} className='fixed flex flex-col gap-1 top-16 w-1/2 right-4' />
-        </div >
+            <NotificationContainer notifications={notifications} setNotifications={setNotifications} className='fixed flex flex-col gap-1 top-16 w-1/2 right-4 z-20' />
+
+        </>
     );
 }
 
