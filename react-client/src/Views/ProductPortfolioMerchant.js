@@ -521,7 +521,7 @@ function ProductPortfolioMerchant() {
                     </h3>
                     {location.pathname.includes('public-test-mode') &&
                         <button type="button" onClick={() => { navigate(".") }}
-                            className='button-test-mode text-wrap'>
+                            className='button-test-mode text-wrap text-xs'>
                             Leave Public Test Mode
                         </button>
                     }

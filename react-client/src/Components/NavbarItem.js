@@ -22,7 +22,7 @@ const NavbarItemCustom = ({ label, to, subMenu }) => {
             }
 
             {subMenu &&
-                <div className='flex flex-rows flex-nowrap' onClick={() => setIsOpen(!isOpen)}>
+                <div className='flex flex-rows flex-nowrap z-50' onClick={() => setIsOpen(!isOpen)}>
                     <span>
                         {label}
                     </span>
@@ -33,7 +33,7 @@ const NavbarItemCustom = ({ label, to, subMenu }) => {
             }
 
             {subMenu && isOpen && (
-                <div className="dropdown-menu absolute rounded-md p-1">
+                <div className="dropdown-menu absolute rounded-md p-1 z-50">
                     {subMenu.map((subItem, index) => (
                         <Link key={subItem.to} to={to + "/" + subItem.to} onClick={window.location.reload}
                             className={(isActive(subItem.to) ? "dropdown-item-active " : "") + "dropdown-item rounded-md"}>

@@ -37,12 +37,12 @@ export default function Navigation() {
   }
 
   return (
-    <Navbar onMenuOpenChange={setIsMenuOpen} className="navbar text-white h-12 ">
+    <Navbar onMenuOpenChange={setIsMenuOpen} className="navbar text-white h-12">
 
       <NavbarContent>
         <NavbarMenuToggle
           aria-label={isMenuOpen ? "Close menu" : "Open menu"}
-          className="sm:hidden bg-gray-900 hover:bg-gray-600 h-11 mt-3 w-12"
+          className="md:hidden bg-gray-900 hover:bg-gray-600 h-11 mt-3 w-12"
         />
         {/* <NavbarBrand>
           <img src={iconBrand} className="mt-2 w-7 animate-spin-slow" />
@@ -51,7 +51,7 @@ export default function Navigation() {
 
       {menuItems.map((item, index) => {
         return (
-          <NavbarContent key={index} className="hidden sm:flex gap-2 text-white pt-3">
+          <NavbarContent key={index} className="hidden md:flex justify-start gap-2 text-white pt-3">
             <NavbarItemCustom label={item.label} to={item.to} subMenu={item.subMenu} />
           </NavbarContent>
         );
