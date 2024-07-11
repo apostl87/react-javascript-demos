@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from 'react'
 import UserArea from './UserArea';
 import NavigationBarItem from "./NavigationBarItem";
 import NavigationMenuItem from "./NavigationMenuItem";
-import { Breadcrumbs } from '@nextui-org/react';
+import { Breadcrumb } from './Breadcrumb';
 import '../static/css/navigation.css';
 
 // The following array defines the entries of the navigation bar and the menu
