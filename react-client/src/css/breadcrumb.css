@@ -1,0 +1,29 @@
+.breadcrumb {
+    padding: 10px 0;
+    background-color: #f8f9fa;
+    border-radius: 5px;
+}
+
+.breadcrumb-list {
+    display: flex;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.breadcrumb-item {
+    margin-right: 10px;
+}
+
+.breadcrumb-link {
+    color: #007bff;
+    text-decoration: none;
+}
+
+.breadcrumb-link:hover {
+    text-decoration: underline;
+}
+
+.breadcrumb-current {
+    color: #6c757d;
+}
