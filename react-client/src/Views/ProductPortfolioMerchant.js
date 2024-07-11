@@ -13,11 +13,11 @@ import NotificationContainer from '../Components/NotificationContainer';
 import ModalCreateProduct from '../Components/ModalCreateProduct';
 import Dropzone from '../Components/Dropzone';
 import ProgressBar from '../Components/ProgressBar';
-import request from '../services/request-service';
-import formatNumeric from '../utils/formatNumeric';
-import uploadImage from '../utils/uploadImage';
-import verifyUrlImage from '../utils/verifyUrlImage';
-import { hexToRgb } from '../utils/generic';
+import request from '../Services/request-service';
+import formatNumeric from '../Utils/formatNumeric';
+import uploadImage from '../Utils/uploadImage';
+import verifyUrlImage from '../Utils/verifyUrlImage';
+import { hexToRgb } from '../Utils/generic';
 import config from '../config';
 
 const api_url = process.env.REACT_APP_BACKEND_API_URL;

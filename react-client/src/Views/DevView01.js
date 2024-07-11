@@ -1,8 +1,8 @@
 import { React, useEffect, useState, useCallback } from 'react';
 import { useAuth0 } from "@auth0/auth0-react";
 import { NotLoggedIn, NoDeveloper, Loading } from '../Components/Misc.js';
-import TokenService from '../services/token-service.js';
-import request from "../services/request-service.js";
+import TokenService from '../Services/token-service.js';
+import request from "../Services/request-service.js";
 
 const api_url = process.env.REACT_APP_BACKEND_API_URL;
 

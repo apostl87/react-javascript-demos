@@ -4,9 +4,9 @@ import { useAuth0 } from "@auth0/auth0-react";
 import axios from 'axios';
 import { ModalCreateProductTemplate } from '../Templates/Modal';
 import Dropzone from '../Components/Dropzone';
-import formatNumeric from '../utils/formatNumeric';
-import uploadImage from "../utils/uploadImage";
-import verifyUrlImage from '../utils/verifyUrlImage';
+import formatNumeric from '../Utils/formatNumeric';
+import uploadImage from "../Utils/uploadImage";
+import verifyUrlImage from '../Utils/verifyUrlImage';
 
 const ModalCreateProduct = ({ isShown, countries, onClose, onCreate }) => {
     const { user } = useAuth0();

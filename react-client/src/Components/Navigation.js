@@ -2,8 +2,8 @@ import React, { useState, useRef, useEffect } from 'react'
 import UserArea from './UserArea';
 import NavigationBarItem from "./NavigationBarItem";
 import NavigationMenuItem from "./NavigationMenuItem";
-import { Breadcrumb } from './Breadcrumb';
-import '../static/css/navigation.css';
+import Breadcrumb from './Breadcrumb';
+import '../css/navigation.css';
 
 // The following array defines the entries of the navigation bar and the menu
 let pages = [
@@ -124,7 +124,7 @@ const Navigation = () => {
 
             <div className='navigation-breadcrumb'>
                 WHERE IS MY CONTENT
-                <Breadcrumb />
+                <Breadcrumb pages={pages} />
             </div>
         </>
     )

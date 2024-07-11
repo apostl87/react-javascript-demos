@@ -33,8 +33,8 @@
     "web-vitals": "^2.1.4"
   },
   "scripts": {
-    "buildcss": "npx tailwindcss -i ./src/static/css/allstyles.css -o ./src/static/css/output.css",
-    "watchcss": "npx tailwindcss -i ./src/static/css/allstyles.css -o ./src/static/css/output.css -w",
+    "buildcss": "npx tailwindcss -i ./src/css/allstyles.css -o ./src/css/output.css",
+    "watchcss": "npx tailwindcss -i ./src/css/allstyles.css -o ./src/css/output.css -w",
     "start": "npm run buildcss && react-scripts start",
     "build": "npm run buildcss && react-scripts build",
     "test": "react-scripts test",

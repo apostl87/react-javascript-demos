@@ -5,7 +5,7 @@ import { ModalConfirmCancel } from '../Components/ModalConfirmCancel';
 import NotificationContainer from '../Components/NotificationContainer';
 import { NotLoggedIn } from "../Components/Misc";
 import Infobox from "../Components/Infobox";
-import { getUser, updateUser } from "../services/auth0-management-service";
+import { getUser, updateUser } from "../Services/auth0-management-service";
 
 const Profile = () => {
   const { user, isAuthenticated, isLoading } = useAuth0();

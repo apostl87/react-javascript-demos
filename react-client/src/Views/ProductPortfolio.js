@@ -3,7 +3,7 @@ import { Tooltip } from 'react-tooltip';
 import PaginationBar from '../Components/PaginationBar';
 import SearchBar from '../Components/SearchBar';
 import NotificationContainer from '../Components/NotificationContainer';
-import request from '../services/request-service';
+import request from '../Services/request-service';
 
 const api_url = process.env.REACT_APP_BACKEND_API_URL;
 
