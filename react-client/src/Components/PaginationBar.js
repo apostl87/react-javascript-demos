@@ -58,7 +58,7 @@ const PaginationBar = ({ currentPage, handleClick, startIdx, endIdx, nProducts, 
         </>;
 
     return (
-        <div className="pagination flex flex-row flex-wrap gap-1 items-center">
+        <div className="pagination flex flex-row flex-wrap gap-1 items-center pb-2 pt-2">
             {nProducts > 0 ? output : ''}
         </div>
     )
