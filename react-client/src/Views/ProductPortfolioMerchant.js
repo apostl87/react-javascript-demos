@@ -529,8 +529,8 @@ function ProductPortfolioMerchant() {
                 
                 <div className='hr' />
 
-                <div className='flex lg:flex-row md:flex-col flex-wrap items-center justify-left gap-2 pb-2'>
-                    <div className='flex-auto w-32'>
+                <div className='flex flex-wrap flex-col sm:flex-row sm:items-center items-start pb-2'>
+                    <div className='flex-auto flex flex-row justify-start'>
                         <button onClick={handleCreateClicked} disabled={maxProductsReached}
                             title={maxProductsReached ? `You reached the maximum number of products (limit: ${config.maxProductsPerUser}` : ''}
                             className='button-new flex justify-between items-center my-auto w-auto gap-2 text-nowrap'>
@@ -538,10 +538,10 @@ function ProductPortfolioMerchant() {
                             <span>New product</span>
                         </button>
                     </div>
-                    <div className='flex-auto flex flex-row justify-left'>
+                    <div className='flex-auto flex flex-row justify-center'>
                         <SearchBar onInputChange={(val) => filterProducts(products, val, setIsFiltered)} />
                     </div>
-                    <div className='flex-auto w-32 flex flex-row justify-end'>
+                    <div className='flex-auto flex flex-row justify-end'>
                         {
                             filteredProducts.length > 0 &&
                             <button onClick={() => handleDeleteAllClick()}
