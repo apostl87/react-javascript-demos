@@ -1,0 +1,199 @@
+.navigation {
+    background-color: rgb(15 23 42);
+    position: fixed;
+    top: 0;
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    justify-content: space-between;
+    place-items: center;
+}
+
+.navigation a {
+    text-decoration: none;
+}
+
+.navigation-menu-toggle {
+    display: none;
+    font-size: 2rem;
+    cursor: pointer;
+    color: white;
+    transition: transform 0.3s ease;
+    margin-right: 1rem;
+    margin-left: 0.5rem;
+}
+
+.navigation-menu-toggle.open {
+    transform: rotate(90deg);
+}
+
+.navigation-bar-left {
+    padding: 0px 20px;
+    gap: 5px;
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.navigation-bar-left-item {
+    position: relative;
+    display: inline-block;
+    padding: 8px 20px;
+    border-radius: 5px;
+    border: 1px solid rgb(39, 52, 84);
+    white-space: nowrap;
+    color: white;
+}
+
+.navigation-bar-left-item.active {
+    white-space: nowrap;
+    background-color: #ffffff;
+    color: black;
+}
+
+.navigation-bar-left-item:hover,
+.navigation-bar-left-item.active:hover {
+    background-color: rgb(4, 36, 80);
+    color: white;
+    cursor: pointer;
+}
+
+.navigation-bar-left-item.open {
+    position: absolute;
+    padding: 2px 2px;
+    top: 95%;
+    left: -20px;
+    width: calc(100% + 60px);
+    margin-top: 2px;
+    border-radius: 8px;
+    background-color: white;
+    border: 1px solid #000000;
+    box-shadow: 0 8px 16px rgba(97, 96, 96, 0.743);
+    z-index: 50;
+    color: white;
+    display: block;
+}
+
+.navigation-bar-left-child {
+    display: block;
+    padding: 8px 12px;
+    margin: 2px;
+    border-radius: 5px;
+    color: black;
+    white-space: wrap;
+    margin-bottom: 3px;
+}
+
+.navigation-bar-left-child:hover {
+    color: white;
+    background-color: rgb(75 85 99);
+}
+
+.navigation-bar-left-child.active {
+    border: 1px solid #333333;
+    background-color: rgb(219, 219, 219);
+    color: black;
+}
+
+.navigation-bar-right {
+    padding-right: 10px;
+}
+
+.navigation-bar-right-item {
+    position: relative;
+    display: inline-block;
+    padding: 8px 10px;
+    border-radius: 5px;
+    background-color: rgb(39, 59, 107);
+    white-space: nowrap;
+    color: white;
+}
+
+.navigation-bar-right-item:hover {
+    background-color: rgb(4, 36, 80);
+    color: white;
+    cursor: pointer;
+}
+
+.navigation-menu {
+    display: none;
+}
+
+#navigation-menu-overlay {
+    display: none;
+}
+
+@media (max-width: 468px) {
+    .navigation-bar-left {
+        display: none;
+    }
+
+    .navigation-menu-toggle {
+        display: block;
+        /* Display hamburger toggle in responsive view */
+    }
+
+    #navigation-menu-overlay {
+        display: block;
+        position: fixed;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(168, 168, 168, 0);
+        z-index: 1000;
+        backdrop-filter: blur(6px);
+    }
+
+    .navigation-menu {
+        display: flex;
+        flex-direction: column;
+        position: fixed;
+        background-color: rgb(15 23 42);
+        border-bottom-right-radius: 1rem;
+        padding-right: 1rem;
+        padding-left: 0.2rem;
+        padding-bottom: 1rem;
+        max-width: 90vw;
+        min-width: 70vw;
+        z-index: 1000;
+    }
+
+    .navigation-menu a {
+        text-decoration: none;
+    }
+
+    .navigation-menu-item {
+        display: block;
+        padding: 8px 10px;
+        border-radius: 5px;
+        white-space: wrap;
+        color: white;
+    }
+
+    .navigation-menu-item:hover,
+    .navigation-menu-item.active:hover,
+    .navigation-menu-item-child:hover {
+        background-color: rgb(4, 36, 80);
+        color: white;
+        cursor: pointer;
+    }
+
+    .navigation-menu-item-child {
+        display: block;
+        padding: 8px 12px;
+        margin: 2px;
+        border-radius: 5px;
+        color: black;
+        white-space: wrap;
+        margin-bottom: 3px;
+        background-color: #88a9c7;
+    }
+
+    .navigation-menu-item-child.active,
+    .navigation-menu-item.active {
+        border: 1px solid #333333;
+        background-color: rgb(219, 219, 219);
+        color: black;
+    }
+
+
+}

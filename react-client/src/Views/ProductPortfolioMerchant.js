@@ -513,7 +513,7 @@ function ProductPortfolioMerchant() {
 
     return (
         <>
-            <div id='portfolio-header' ref={headerRef} className='fixed w-full pr-5 pl-5'>
+            <div id='portfolio-header' ref={headerRef} className='w-full pr-5 pl-5 pt-5'>
                 <div className='flex flex-wrap justify-between items-center'>
                     <h3 className='p-2 pl-0 text-left'>
                         Retailer Product Portfolio

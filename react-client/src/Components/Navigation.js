@@ -1,77 +1,133 @@
-import { React, useEffect, useState } from "react";
-import { useLocation } from "react-router-dom";
-import { Navbar, NavbarBrand, NavbarContent, NavbarItem, NavbarMenuToggle, NavbarMenu, NavbarMenuItem, Link, Button } from "@nextui-org/react";
-import iconBrand from '../media/icon-brand-small.png';
-import UserArea from "../Components/UserArea";
-import NavbarItemCustom from "./NavbarItem";
-import NavmenuItemCustom from "./NavmenuItem";
+import React, { useState, useRef, useEffect } from 'react'
+import UserArea from './UserArea';
+import NavigationBarItem from "./NavigationBarItem";
+import NavigationMenuItem from "./NavigationMenuItem";
+import { Breadcrumbs } from '@nextui-org/react';
+import '../static/css/navigation.css';
 
-export default function Navigation() {
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
-
-  let menuItems = [
-    { label: "Home", to: "home" },
-    { label: "Retailer product portfolio", to: "merchant-product-portfolio" },
-    { label: "Store", to: "store" },
+// The following array defines the entries of the navigation bar and the menu
+let pages = [
+    { label: "Home", path: "home", link: true },
+    { label: "Retailer product portfolio", path: "merchant-product-portfolio", link: true },
+    { label: "Store", path: "store", link: true },
     {
-      label: "Other Demos", to: "demos",
-      subMenu: [
-        { label: "Public product portfolio (no login required)", to: "product-portfolio" },
-        { label: "Space game", to: "space-game" },
-      ]
+        label: "Other Demos", path: "demos", link: false,
+        children: [
+            { label: "Public product portfolio (no login required)", path: "product-portfolio", link: true },
+            { label: "Space game", path: "space-game", link: true },
+        ]
     },
 
-    { label: "Contact", to: "contact" },
-  ];
-
-  if (process.env.NODE_ENV === 'development') {
-    menuItems.push(
-      {
-        label: "Developer area", to: "devarea",
-        subMenu: [
-          { label: "Token service and request service", to: "01" },
-          { label: "Other", to: "02" }
-        ]
-      },
+    { label: "Contact", path: "contact", link: true },
+];
+// Pages for development and testing purposes
+if (process.env.NODE_ENV === 'development') {
+    pages.push(
+        {
+            label: "Developer area", path: "devarea", link: false,
+            children: [
+                { label: "Token service and request service", path: "01", link: true },
+                { label: "Other", path: "02", link: true }
+            ]
+        },
     )
-  }
-
-  return (
-    <Navbar onMenuOpenChange={setIsMenuOpen} className="navbar text-white h-12">
-
-      <NavbarContent>
-        <NavbarMenuToggle
-          aria-label={isMenuOpen ? "Close menu" : "Open menu"}
-          className="md:hidden bg-gray-900 hover:bg-gray-600 h-11 mt-3 w-12"
-        />
-        {/* <NavbarBrand>
-          <img src={iconBrand} className="mt-2 w-7 animate-spin-slow" />
-        </NavbarBrand> */}
-      </NavbarContent>
-
-      {menuItems.map((item, index) => {
-        return (
-          <NavbarContent key={index} className="hidden md:flex justify-start gap-2 text-white pt-3">
-            <NavbarItemCustom label={item.label} to={item.to} subMenu={item.subMenu} />
-          </NavbarContent>
-        );
-      })}
-
-
-      <div className="w-2"></div>
-
-      {/* Auth section */}
-      <UserArea />
-
-      {/* Collapsable menu for mobile devices and small-width-screens */}
-      <NavbarMenu className="top-13 gap-1">
-        {menuItems.map((item, index) => {
-          return (
-            <NavmenuItemCustom key={index} label={item.label} to={item.to} subMenu={item.subMenu} />
-          );
-        })}
-      </NavbarMenu>
-
-    </Navbar>
-  );
 }
+
+const Navigation = () => {
+    const [isOpen, setIsOpen] = useState(false);
+    const navigationRef = useRef(null);
+    const menuRef = useRef(null);
+    const [height, setHeight] = useState(0);
+
+    // Open/close menu functions
+    const toggleMenu = () => { setIsOpen(!isOpen); };
+    const closeMenu = () => { setIsOpen(false); };
+    const openMenu = () => { setIsOpen(true); };
+
+    // Resize observer
+    useEffect(() => {
+        const resizeObserver = new ResizeObserver(onResize);
+        if (navigationRef.current) {
+            resizeObserver.observe(navigationRef.current);
+        }
+    })
+    function onResize(entries) {
+        const entry = entries[0];
+        if (entry.contentRect.height + 2 * paddingTB != height) {
+            setHeight(entry.contentRect.height + 2 * paddingTB);
+        }
+    }
+
+    // Styles that need to go here instead of the css files due to the resize observer
+    const paddingTB = 6
+    const extraStyles = {
+        paddingTop: `${paddingTB}px`,
+        paddingBottom: `${paddingTB}px`,
+    }
+
+    // Listener and callback function for closing the menu if clicked outside
+    const closeIfClickedOutside = (e) => {
+        if (!menuRef.current?.contains(e.target)) {
+            setIsOpen(false);
+        }
+    };
+    document.addEventListener("mousedown", closeIfClickedOutside);
+
+    return (
+        <>
+            <nav ref={navigationRef} className='navigation' style={extraStyles}>
+                <div className={`navigation-menu-toggle ${(isOpen ? 'open' : '')}`} onClick={toggleMenu}>
+                    {isOpen ? '✕' : '☰'}
+                </div>
+
+                {/* Left hand section of Navigation Bar */}
+                <div className='navigation-bar-left'>
+                    {pages.map((item, index) => {
+                        return (
+                            <NavigationBarItem key={index}
+                                label={item.label}
+                                path={item.path}
+                                link={item.link}
+                                children={item.children} />
+                        );
+                    })}
+                </div>
+
+                {/* Right hand section of Navigation Bar */}
+                <div className='navigation-bar-right'>
+                    <UserArea />
+                </div>
+
+            </nav >
+
+            {/* Divisor to block height used by the navigation bar */}
+            < div style={{ marginTop: `${height}px` }} onClick={closeMenu}>
+            </div>
+
+            {/* Navigation menu */}
+            {isOpen &&
+                <nav>
+                    <div id='navigation-menu-overlay' />
+                    <div ref={menuRef} className='navigation-menu'>
+                        {pages.map((item, index) => {
+                            return (
+                                <NavigationMenuItem key={index}
+                                    label={item.label}
+                                    path={item.path}
+                                    link={item.link}
+                                    children={item.children} />
+                            );
+                        })}
+                    </div>
+                </nav>
+            }
+
+            <div className='navigation-breadcrumb'>
+                WHERE IS MY CONTENT
+                <Breadcrumb />
+            </div>
+        </>
+    )
+}
+
+export default Navigation
