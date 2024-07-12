@@ -1516,10 +1516,6 @@ input[type="range"]::-ms-fill-lower {
   margin-right: 2.25rem;
 }
 
-.mt-0 {
-  margin-top: 0px;
-}
-
 .mt-1 {
   margin-top: 0.25rem;
 }
@@ -1625,10 +1621,6 @@ input[type="range"]::-ms-fill-lower {
 
 .h-10 {
   height: 2.5rem;
-}
-
-.h-11 {
-  height: 2.75rem;
 }
 
 .h-12 {
@@ -2412,6 +2404,10 @@ input[type="range"]::-ms-fill-lower {
 
 .resize-none {
   resize: none;
+}
+
+.resize {
+  resize: both;
 }
 
 .snap-x {
@@ -3638,11 +3634,6 @@ input[type="range"]::-ms-fill-lower {
   background-color: rgb(4 108 78 / var(--tw-bg-opacity));
 }
 
-.bg-green-800 {
-  --tw-bg-opacity: 1;
-  background-color: rgb(3 84 63 / var(--tw-bg-opacity));
-}
-
 .bg-indigo-100 {
   --tw-bg-opacity: 1;
   background-color: rgb(229 237 255 / var(--tw-bg-opacity));
@@ -4361,10 +4352,6 @@ input[type="range"]::-ms-fill-lower {
 
 .pt-2 {
   padding-top: 0.5rem;
-}
-
-.pt-3 {
-  padding-top: 0.75rem;
 }
 
 .pt-4 {
@@ -5895,9 +5882,20 @@ input[type="range"]::-ms-fill-lower {
   min-height: 100vh;
 }
 
-.textcontent {
-  padding-left: 10px;
-  padding-right: 10px;
+.mainly-text-contentt {
+  max-width: 1200px;
+  align-self: center;
+  text-align: justify;
+  margin: 1rem 100px 2rem 100px;
+}
+
+.mainly-text-contentt h3 {
+  padding-top: 24px;
+}
+
+.mainly-text-contentt h5 {
+  padding-top: 20px;
+  padding-bottom: 6px;
 }
 
 code {
@@ -5918,6 +5916,10 @@ code {
   }
 }
 
+a:focus {
+  text-decoration: none;
+}
+
 .user-area {
   position: absolute;
   top: 85%;
@@ -5934,11 +5936,12 @@ code {
   flex-direction: column;
   justify-items: right;
   gap: 4px;
-  right: 0;
+  right: 10px;
+  font-size: 1rem;
 }
 
 .user-area-info {
-  font-size: 10px;
+  font-size: 1rem;
   text-align: right;
   padding-bottom: 12px;
 }
@@ -5998,12 +6001,13 @@ code {
 }
 
 #portfolio-header, #portfolio-footer {
-  background-color: rgb(168, 183, 203);
+  /* background-color: rgb(168, 183, 203); */
+  background-color: rgb(203 213 225);
   z-index: 10;
 }
 
 .page-title {
-  font-size: 2.5rem;
+  font-size: 1.5rem;
   font-weight: bold;
   text-align: center;
   color: #333;
@@ -6340,6 +6344,10 @@ button-standard-inline:hover {
   height: 1px;
   border: 0;
   margin: 12px 6px;
+}
+
+.App {
+  min-height: 100vh;
 }
 
 .placeholder\:text-danger::placeholder {
@@ -7610,11 +7618,6 @@ button-standard-inline:hover {
   color: rgb(14 116 144 / var(--tw-text-opacity));
 }
 
-.hover\:text-gray-300:hover {
-  --tw-text-opacity: 1;
-  color: rgb(209 213 219 / var(--tw-text-opacity));
-}
-
 .hover\:text-gray-600:hover {
   --tw-text-opacity: 1;
   color: rgb(75 85 99 / var(--tw-text-opacity));
@@ -7637,10 +7640,6 @@ button-standard-inline:hover {
 
 .hover\:underline:hover {
   text-decoration-line: underline;
-}
-
-.hover\:no-underline:hover {
-  text-decoration-line: none;
 }
 
 .hover\:\!opacity-100:hover {
@@ -12691,10 +12690,6 @@ button-standard-inline:hover {
   .lg\:my-8 {
     margin-top: 2rem;
     margin-bottom: 2rem;
-  }
-
-  .lg\:flex {
-    display: flex;
   }
 }
 

@@ -1,6 +1,7 @@
 import { useAuth0 } from "@auth0/auth0-react";
 import { React, useEffect, useState } from "react";
 import { Tooltip } from "react-tooltip";
+import { Link } from "react-router-dom";
 import { ModalConfirmCancel } from '../Components/ModalConfirmCancel';
 import NotificationContainer from '../Components/NotificationContainer';
 import { NotLoggedIn } from "../Components/Misc";
@@ -221,7 +222,7 @@ const Profile = () => {
   return (
     <div className="p-5 flex flex-col items-center">
       <div className="p-2 page-title">
-        Your Profile (fetched from Auth0)
+        Your user profile (fetched from <Link to={'https://auth0.com'} target="_blank">Auth0</Link>)
       </div>
 
       <div id="profile-content" className="flex justify-center flex-row gap-5 flex-wrap">

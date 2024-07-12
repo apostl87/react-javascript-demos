@@ -38,7 +38,7 @@ export default PrivacyPolicy;
 
 
 const mdPrivacyPolicyDE = `
-### Datenschutzrichtlinie [^english]
+### Datenschutzrichtlinie [^(english)]
 
 **Gültigkeitsdatum:** 01.06.2024
 
@@ -86,7 +86,7 @@ Wir können unsere Datenschutzrichtlinie von Zeit zu Zeit aktualisieren. Wir inf
 
 const mdPrivacyPolicyEN = `
 
-### Privacy Policy [^deutsch]
+### Privacy Policy [^(deutsch)]
 
 **Effective Date:** 01.06.2024
 

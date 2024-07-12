@@ -16,6 +16,7 @@ const Footer = () => {
                     <h2 className="footer-title">Shortcuts</h2>
                     <ul className="footer-list">
                         <li><Link to={"/home"} className="footer-link">Home</Link></li>
+                        <li><Link to={"/profile"} className="footer-link">Profile</Link></li>
                         <li><Link to={'/contact'} className="footer-link">Contact</Link></li>
                         <li><Link to={'/store'} className="footer-link">Store</Link></li>
                         <li><Link to={'/space-game'} className="footer-link">Space Game</Link></li>
@@ -34,7 +35,7 @@ const Footer = () => {
             <hr />
             <div className="footer-end">
                 <Link to ={'/privacy-policy'}>Privacy Policy</Link>
-                <Link to ={'/cookie-policy'}>Cookie Policy</Link>
+                <Link to ={'javascript:Cookiebot.show()'}>Manage Cookies</Link>
             </div>
         </footer>
     );
