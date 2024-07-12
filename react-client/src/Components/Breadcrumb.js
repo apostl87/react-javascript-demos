@@ -5,7 +5,7 @@ import { RightCaret } from './Misc';
 import '../css/breadcrumb.css';
 
 const Breadcrumb = ({ paths }) => {
-    if (paths.length < 1) {
+    if (paths.length == 0) {
         return <></>
     }
     return (
@@ -13,18 +13,16 @@ const Breadcrumb = ({ paths }) => {
             <ul className="breadcrumb-list">
                 {paths.map((path, index) => {
                     return (
-                        <>
+                        <li key={index} className="breadcrumb-item">
                             {index > 0 && <RightCaret size={5} />}
-                            <li key={index} className="breadcrumb-item">
-                                {index < paths.length - 1 ? (
-                                    <Link to={path.link ? path : '#'} className="breadcrumb-link">
-                                        {path.label}
-                                    </Link>
-                                ) : (
-                                    <span className="breadcrumb-current"><strong>{path.label}</strong></span>
-                                )}
-                            </li>
-                        </>
+                            {index < paths.length - 1 ? (
+                                <Link to={path.link ? path : '#'} className="breadcrumb-link">
+                                    {path.label}
+                                </Link>
+                            ) : (
+                                <span className="breadcrumb-current"><strong>{path.label}</strong></span>
+                            )}
+                        </li>
                     )
                 })}
             </ul>

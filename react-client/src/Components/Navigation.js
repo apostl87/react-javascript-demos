@@ -135,15 +135,19 @@ const Navigation = () => {
                 </nav>
             }
 
-            <div style={ breadcrumbStyle }>
-                <Breadcrumb paths={findPathLabels(siteMap, pathSegments)} />
-            </div>
+            {/* Breadcrumb */}
+            {findPathLabels(siteMap, pathSegments).length > 0 &&
+                <>
+                    <div style={breadcrumbStyle}>
+                        <Breadcrumb paths={findPathLabels(siteMap, pathSegments)} />
+                    </div>
+                    {/* Divisor to block height used by the breadcrumb */}
+                    < div style={{ marginTop: `${40}px` }}>
+                    </div>
+                </>
+            }
 
-            {/* Divisor to block height used by the navigation bar */}
-            < div style={{ marginTop: `100px` }}>
-            </div>
-
-            {/* <div className='bg-green-500'>TESTCONTET</div> */}
+            {/* <div className='bg-green-500'>TESTCONTENT</div> */}
         </>
     )
 }
