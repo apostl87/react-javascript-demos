@@ -1,4 +1,5 @@
 import { BrowserRouter as Router, Link, Routes, Route } from 'react-router-dom';
+import ScrollToTop from "react-scroll-to-top";
 import Navigation from './Components/Navigation';
 import { NotFound } from './Components/Misc';
 import Footer from './Components/Footer';
@@ -11,7 +12,6 @@ import Contact from './Views/Contact';
 import Store from './Views/Store';
 import DevView01 from './Views/DevView01';
 import DevView02 from './Views/DevView02';
-import CookieBot from 'react-cookiebot/lib/CookieBot';
 import PrivacyPolicy from './Views/PrivacyPolicy';
 
 // CookieBot ID
@@ -55,6 +55,8 @@ function App() {
       {/* <CookieBot domainGroupId={domainGroupId} /> */}
 
       <Footer />
+
+      <ScrollToTop smooth />
     </div>
   );
 }
