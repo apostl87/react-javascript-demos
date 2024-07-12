@@ -68,10 +68,7 @@ const Navigation = () => {
         paddingBottom: `${paddingTB}px`,
     }
     const breadcrumbStyle = {
-        position: 'fixed',
         top: `${height}px`,
-        width: '100%',
-        zIndex: 900,
     }
 
     // Listener and callback function for closing the menu if clicked outside

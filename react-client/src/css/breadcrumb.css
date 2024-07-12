@@ -3,6 +3,8 @@
     background-color: #f8f9fa;
     border-radius: 5px;
     width: 100%;
+    position: fixed;
+    z-index: 100;
 }
 
 .breadcrumb-list {

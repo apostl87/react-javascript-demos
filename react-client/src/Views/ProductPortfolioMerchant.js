@@ -673,7 +673,9 @@ function ProductPortfolioMerchant() {
             <ModalCreateProduct isShown={createModalIsOpen} countries={countries}
                 onClose={() => setCreateModalIsOpen(false)} onCreate={createProduct} />
 
-            <NotificationContainer notifications={notifications} setNotifications={setNotifications} className='fixed flex flex-col gap-1 top-16 w-1/2 right-4 z-20' />
+            <NotificationContainer
+                notifications={notifications} setNotifications={setNotifications}
+                className='absolute flex flex-col gap-1 top-16 w-1/2 right-4 z-20' />
 
         </>
     );
