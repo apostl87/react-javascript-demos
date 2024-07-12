@@ -12,15 +12,18 @@ const Imprint = () => {
     }
 
     return (
-        <div className='textcontent text-left p-5'>
-            <h3 className='text-left'>Contact</h3>
+        <div className='mainly-text-contentt'>
+            {/* <h3 className='text-left'>Contact</h3> */}
+            <h4>Responsible for the content on this website</h4>
             Andreas Postl <br />
-            andreas.postl.42 (at) gmail.com
+            andreas.postl.42 (at) gmail.com <br />
+            –––––––––––––––––––––––––––– <br/>
+            Austria
 
-            <h4 className='pt-5'>{imprint_en.title}</h4>
+            <h5 className='pt-5'>{imprint_en.title}</h5>
             <div>{imprint_en.text}</div>
 
-            <h4 className='pt-5'>{imprint_de.title}</h4>
+            <h5 className='pt-5'>{imprint_de.title}</h5>
             <div>{imprint_de.text}</div>
         </div>
     )
