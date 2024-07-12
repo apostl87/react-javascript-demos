@@ -175,10 +175,10 @@ const Profile = () => {
       } else {
         return (
           <tr key={fieldNames[index]} className="tr-profile">
-            <td className="text-nowrap font-bold text-right align=middle">
+            <td className="text-nowrap font-bold text-right">
               <span>{labels[index]}:</span>
             </td>
-            <td className="pl-2 ">
+            <td className="pl-2">
               {(editing && editable[index]) ?
                 <input type={types[index]} name={fieldNames[index]} defaultValue={value}
                   onChange={handleInputChanged} className="input-profile" required={required[index]} /> :
@@ -227,12 +227,12 @@ const Profile = () => {
 
       <div id="profile-content" className="flex justify-center flex-row gap-5 flex-wrap">
         <div className="flex flex-col gap-3">
-          <div className="flex flex-row gap-5 flex-wrap border-2 border-slate-400 rounded-lg p-3">
-            <div>
+          <div className="flex flex-row gap-5 flex-wrap border-2 border-slate-500 rounded-lg p-6 justify-center" >
+            <div className="">
               <img
                 src={user.picture}
                 alt="Profile"
-                className="flex-shrink-0 flex-grow-0"
+                className="flex-shrink-0 flex-grow-0 self-center"
               />
             </div>
             <form onSubmit={handleSubmit}>

@@ -74,7 +74,7 @@ a:focus {
 }
 
 .user-area-info {
-  font-size: 1rem;
+  font-size: 0.8rem;
   text-align: right;
   padding-bottom: 12px;
 }
@@ -86,7 +86,6 @@ a:focus {
   border-radius: 3px;
   cursor: pointer;
   color: inherit
-    /* <NavbarItem className="lg:flex bg-white hover:bg-gray-600 pt-0 pb-0 mb-2 pl-2 pr-2 rounded-md"> */
 }
 
 .user-area-link:hover {
@@ -102,16 +101,15 @@ a:focus {
 .input-profile {
   margin: 0 5px;
   flex: 1 0 auto;
-  min-height: 25px;
-  max-height: 25px;
+  min-height: 1.5rem;
+  max-height: 2rem;
   min-width: 200px;
-  font-size: small;
-  padding: 0 2px 0 5px;
+  font-size: 0.9rem;
+  padding: 0.2rem 4px 0.2rem 4px;
   border: none;
   border-bottom: 2px solid rgb(0, 0, 0);
   border-color: rgb(157, 157, 157);
   vertical-align: middle;
-  padding-top: 3px;
   border-radius: 3px;
 }
 
@@ -120,11 +118,12 @@ a:focus {
 }
 
 .tr-profile {
-  height: 32px;
+  height: 2.7rem;
 }
 
 #profile-content {
-  max-width: 67vw;
+  max-width: 80vw;
+  font-size: 0.9rem;
 }
 
 .table-space-game th,
