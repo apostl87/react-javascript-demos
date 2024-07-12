@@ -46,7 +46,7 @@ const Navigation = () => {
 
     // Open/close menu functions
     const toggleMenu = () => { setIsOpen(!isOpen) };
-    
+
     // Resize observer
     useEffect(() => {
         const resizeObserver = new ResizeObserver(onResize);
@@ -129,8 +129,7 @@ const Navigation = () => {
                 </nav>
             }
 
-            <div className='navigation-breadcrumb'>
-                WHERE IS MY CONTENT, {location.pathname}
+            <div>
                 <Breadcrumb paths={findPathLabels(siteMap, pathSegments)} />
             </div>
         </>

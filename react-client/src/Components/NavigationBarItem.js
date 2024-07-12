@@ -9,11 +9,12 @@ const NavigationBarItem = ({ label, path, link, children }) => {
     const [isActive, setIsActive] = useState(false);
 
     useEffect(() => {
-        setIsActive(window.location.pathname.split("/").includes(path));
+        // setIsActive(window.location.pathname.split("/").includes(path));
     },[location.pathname, path])
 
     const childIsActive = (childPath) => {
-        return location.pathname.split("/").includes(childPath);
+        // return location.pathname.split("/").includes(childPath);
+        return false;
     }
 
     const contentWithChildren =
