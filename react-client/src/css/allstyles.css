@@ -13,9 +13,20 @@
   min-height: 100vh;
 }
 
-.textcontent {
-  padding-left: 10px;
-  padding-right: 10px;
+.mainly-text-contentt {
+  max-width: 1200px;
+  align-self: center;
+  text-align: justify;
+  margin: 1rem 100px 2rem 100px;
+}
+
+.mainly-text-contentt h3 {
+  padding-top: 24px;
+}
+
+.mainly-text-contentt h5 {
+  padding-top: 20px;
+  padding-bottom: 6px;
 }
 
 code {
@@ -123,7 +134,8 @@ a:focus {
 }
 
 #portfolio-header, #portfolio-footer {
-  background-color: rgb(168, 183, 203);
+  /* background-color: rgb(168, 183, 203); */
+  background-color: rgb(203 213 225);
   z-index: 10;
 }
 
@@ -465,4 +477,8 @@ button-standard-inline:hover {
   height: 1px;
   border: 0;
   margin: 12px 6px;
+}
+
+.App {
+  min-height: 100vh;
 }

@@ -15,7 +15,11 @@
 }
 
 .breadcrumb-item {
-    margin-right: 10px;
+    display: flex;
+    flex-direction: row;
+    place-items: center;
+    gap: 6px;
+    margin-right: 6px;
     margin-left: 6px;
 }
 

@@ -30,6 +30,8 @@
     border: 1px solid rgb(39, 52, 84);
     white-space: nowrap;
     color: white;
+    font-size: 1rem;
+    font-weight: bold;
 }
 
 .navigation-bar-left-item.active {
@@ -69,6 +71,8 @@
     color: black;
     white-space: wrap;
     margin-bottom: 3px;
+    font-size: 0.9rem;
+    font-weight: normal;
 }
 
 .navigation-bar-left-child:hover {
