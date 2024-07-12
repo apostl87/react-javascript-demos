@@ -28,27 +28,23 @@ export default function UserArea() {
 
     if (!isLoading && !user) {
         return (
-            <div>
-                <div
-                    className="navigation-bar-right-item"
-                    onClick={() => loginWithRedirect({
-                        appState: {
-                            returnTo: window.location.pathname,
-                        },
-                    })}
-                >
-                    Login
-                </div>
+            <div
+                className="navigation-bar-right-item"
+                onClick={() => loginWithRedirect({
+                    appState: {
+                        returnTo: window.location.pathname,
+                    },
+                })}
+            >
+                Login
             </div>
         );
     } else if (!isLoading && user) {
         return (
-            <div
-                onMouseLeave={() => setTimeout(() => setUserAreaOpen(false), 1000)}>
-                <div className='w-12 h-12'
+            <div>
+                <div className='w-12 h-12 cursor-pointer'
                     ref={userAreaIcon}
                     onClick={toggleUserArea}
-                    onMouseEnter={() => setUserAreaOpen(true)}
                 >
                     <img src={iconUser} alt="icon-user" />
                 </div>
@@ -79,7 +75,7 @@ export default function UserArea() {
         );
     } else if (isLoading) {
         return (
-            <div className="text-white">
+            <div className="navigation-bar-right-item">
                 <div className="user-area-loading">Loading ...</div>
             </div>
         );

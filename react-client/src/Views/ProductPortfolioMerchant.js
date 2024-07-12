@@ -38,10 +38,6 @@ function ProductPortfolioMerchant() {
     // State for switching between public test mode user and actually logged in user
     const [usedUser, setUsedUser] = useState(null);
 
-    // Offset of content below header
-    const [offsetContent, setOffsetContent] = useState(0);
-    const headerRef = useRef(null);
-
     //// Variables, hooks, and basic functionality
     // Data from API calls
     const [products, setProducts] = useState([]);
@@ -152,14 +148,6 @@ function ProductPortfolioMerchant() {
     useEffect(() => {
         if (tooltipIsOpen) setTimeout(() => setTooltipIsOpen(false), appearTimeTooltip)
     }, [tooltipIsOpen])
-
-    // Observe resizing and possible changes of the header height
-    useEffect(() => {
-        const resizeObserver = new ResizeObserver(onHeaderResize);
-        if (headerRef.current) {
-            resizeObserver.observe(headerRef.current);
-        }
-    })
 
     //// Conditional returns
     if (isLoading) {
@@ -504,21 +492,15 @@ function ProductPortfolioMerchant() {
         );
     }
 
-    function onHeaderResize(entries) {
-        const header = entries[0];
-        if (header.contentRect.height != offsetContent) {
-            setOffsetContent(header.contentRect.height);
-        }
-    }
-
     return (
         <>
-            <div id='portfolio-header' ref={headerRef} className='w-full pr-5 pl-5 pt-5'>
+            <div id='portfolio-header' className='w-full pr-5 pl-5 pt-2'>
                 <div className='flex flex-wrap justify-between items-center'>
-                    <h3 className='p-2 pl-0 text-left'>
+                    {/* <h3 className='p-2 pl-0 text-left'>
                         Retailer Product Portfolio
-                        {location.pathname.includes('public-test-mode') && <span className='text-xs'> (Public Test Mode) </span>}
-                    </h3>
+                    </h3> */}
+                    {location.pathname.includes('public-test-mode') && <span className='text-xs'> (Public Test Mode) </span>}
+
                     {location.pathname.includes('public-test-mode') &&
                         <button type="button" onClick={() => { navigate(".") }}
                             className='button-test-mode text-wrap text-xs'>
@@ -527,7 +509,7 @@ function ProductPortfolioMerchant() {
                     }
                 </div>
                 
-                <div className='hr' />
+                {/* <div className='hr' /> */}
 
                 <div className='flex flex-wrap flex-col sm:flex-row sm:items-center items-start pb-2'>
                     <div className='flex-auto flex flex-row justify-start'>
@@ -552,8 +534,6 @@ function ProductPortfolioMerchant() {
                     </div>
                 </div>
             </div>
-
-            <div style={{ marginTop: String(offsetContent - 24) + "px" }}>&nbsp;</div>
 
             <PaginationBar currentPage={currentPage} handleClick={handlePaginationBarClick}
                 startIdx={indexOfFirstProduct} endIdx={indexOfLastProduct}

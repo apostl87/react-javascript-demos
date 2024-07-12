@@ -264,9 +264,9 @@ function ProductPortfolioEditable() {
     return (
 
         <div className='p-5'>
-            <h3 className='p-2 pl-0 text-left'>
+            {/* <h3 className='p-2 pl-0 text-left'>
                 Product Portfolio
-            </h3>
+            </h3> */}
 
             <div className='flex flex-row flex-wrap justify-start gap-4'>
                 <SearchBar onInputChange={(val) => filterProducts(products, val, setIsFiltered)} />

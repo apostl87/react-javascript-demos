@@ -221,7 +221,7 @@ const Profile = () => {
   return (
     <div className="p-5 flex flex-col items-center">
       <div className="p-2 page-title">
-        Your Profile
+        Your Profile (fetched from Auth0)
       </div>
 
       <div id="profile-content" className="flex justify-center flex-row gap-5 flex-wrap">

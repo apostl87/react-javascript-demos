@@ -43,6 +43,8 @@ function App() {
 
         <Route path='*' element={<NotFound />} />
       </Routes>
+
+      <script id="Cookiebot" src="https://consent.cookiebot.com/uc.js" data-cbid="619d0c4c-aa0f-4c9d-8133-55cd158f6c73" data-blockingmode="auto" type="text/javascript"></script>
     </div>
   );
 }

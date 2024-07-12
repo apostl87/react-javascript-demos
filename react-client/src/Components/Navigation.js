@@ -47,7 +47,7 @@ const Navigation = () => {
     // Open/close menu functions
     const toggleMenu = () => { setIsOpen(!isOpen) };
 
-    // Resize observer
+    // Resize observers
     useEffect(() => {
         const resizeObserver = new ResizeObserver(onResize);
         if (navigationRef.current) {
@@ -63,9 +63,15 @@ const Navigation = () => {
 
     // Styles that need to go here instead of the css files due to the resize observer
     const paddingTB = 6
-    const extraStyles = {
+    const navigationStyles = {
         paddingTop: `${paddingTB}px`,
         paddingBottom: `${paddingTB}px`,
+    }
+    const breadcrumbStyle = {
+        position: 'fixed',
+        top: `${height}px`,
+        width: '100%',
+        zIndex: 900,
     }
 
     // Listener and callback function for closing the menu if clicked outside
@@ -81,7 +87,7 @@ const Navigation = () => {
 
     return (
         <>
-            <nav ref={navigationRef} className='navigation' style={extraStyles}>
+            <nav ref={navigationRef} className='navigation' style={navigationStyles}>
                 <div ref={menuToggleRef} className={`navigation-menu-toggle ${(isOpen ? 'open' : '')}`}
                     onClick={toggleMenu}>
                     {isOpen ? '✕' : '☰'}
@@ -129,9 +135,15 @@ const Navigation = () => {
                 </nav>
             }
 
-            <div>
+            <div style={ breadcrumbStyle }>
                 <Breadcrumb paths={findPathLabels(siteMap, pathSegments)} />
             </div>
+
+            {/* Divisor to block height used by the navigation bar */}
+            < div style={{ marginTop: `100px` }}>
+            </div>
+
+            {/* <div className='bg-green-500'>TESTCONTET</div> */}
         </>
     )
 }

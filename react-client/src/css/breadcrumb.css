@@ -2,6 +2,7 @@
     padding: 10px 1rem;
     background-color: #f8f9fa;
     border-radius: 5px;
+    width: 100%;
 }
 
 .breadcrumb-list {
@@ -16,6 +17,10 @@
 .breadcrumb-item {
     margin-right: 10px;
     margin-left: 6px;
+}
+
+.breadcrumb-item a, .breadcrumb-item a:hover {
+    text-decoration: none;
 }
 
 .breadcrumb-link {
