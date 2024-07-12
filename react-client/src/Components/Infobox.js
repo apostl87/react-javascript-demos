@@ -10,7 +10,12 @@ const Infobox = ({ statusCode, message }) => {
     else additionalClasses = "bg-slate-200";
 
     // Hide if message is empty
-    if (message =="") additionalClasses += " hidden"
+    if (message == "") additionalClasses += " hidden"
+
+    // Display line breaks in the message string
+    const style = {
+        whiteSpace: 'pre-line',
+    }
 
     return (
         <div className={`${additionalClasses} text-black p-2
@@ -19,7 +24,7 @@ const Infobox = ({ statusCode, message }) => {
             <div className="h-auto w-10 flex-shrink-0">
                 <img src={infoIcon} />
             </div>
-            <div className="w-auto flex-grow text-center text-wrap">{message}</div>
+            <div className="w-auto flex-grow text-center text-wrap" style={style}>{message}</div>
         </div>
     );
 }

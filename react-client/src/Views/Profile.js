@@ -2,11 +2,13 @@ import { useAuth0 } from "@auth0/auth0-react";
 import { React, useEffect, useState } from "react";
 import { Tooltip } from "react-tooltip";
 import { Link } from "react-router-dom";
+import $ from 'jquery';
 import { ModalConfirmCancel } from '../Components/ModalConfirmCancel';
 import NotificationContainer from '../Components/NotificationContainer';
 import { NotLoggedIn } from "../Components/Misc";
 import Infobox from "../Components/Infobox";
 import { getUser, updateUser, deleteUser } from "../Services/auth0-management-service";
+import * as Utils from '../Utils/generic';
 
 const Profile = () => {
   const { user, isAuthenticated, isLoading } = useAuth0();
@@ -23,7 +25,7 @@ const Profile = () => {
   const [deleteModalOpen, setDeleteModalOpen] = useState(false)
 
   // Tooltip hook
-  const [tooltipIsOpen, setTooltipIsOpen] = useState(false);
+  const [tooltipEmail2IsOpen, setTooltipEmail2IsOpen] = useState(false);
 
   // Infobox
   const [infoboxMessage, setInfoboxMessage] = useState("")
@@ -48,10 +50,10 @@ const Profile = () => {
   }, [user]);
 
   // Hide tooltip after appearTimeTooltip milliseconds
-  const appearTimeTooltip = 5000;
+  const appearTimeTooltip = 2000;
   useEffect(() => {
-    if (tooltipIsOpen) setTimeout(() => setTooltipIsOpen(false), appearTimeTooltip)
-  }, [tooltipIsOpen])
+    if (tooltipEmail2IsOpen) setTimeout(() => setTooltipEmail2IsOpen(false), appearTimeTooltip)
+  }, [tooltipEmail2IsOpen])
 
   // Stop rendering when data from Auth0 has not been loaded yet
   if (isLoading) {
@@ -68,8 +70,12 @@ const Profile = () => {
       nickname: editedUserData.nickname,
       given_name: editedUserData.given_name,
       family_name: editedUserData.family_name,
-      name: editedUserData.given_name + " " + editedUserData.family_name,
     }
+
+    if (editedUserData.given_name || editedUserData.family_name) {
+      data = { ...data, ['name']: editedUserData.given_name + " " + editedUserData.family_name }
+    }
+
     if (changedEmail) {
       data = {
         ...data,
@@ -77,6 +83,9 @@ const Profile = () => {
       }
     }
 
+    // TODO: We could check if any value has changed; if not, 
+
+    // API call
     let response = await updateUser(user.sub, data);
 
     // Processing response
@@ -93,7 +102,7 @@ const Profile = () => {
 
   // Wrapper for the deleteUser-function from the Auth0 management service
   async function deleteUserWrapper() {
-
+    // API call
     let response = await deleteUser(user.sub);
 
     // Processing response
@@ -117,20 +126,67 @@ const Profile = () => {
   }
 
   function handleSubmit(e) {
-    //   #TODO
-    //  Sanitization of input in helper function
-    //  - Meaningful values for all fields
     e.preventDefault();
+
+    //// Basic Validation: Done manually, since automatic form validation does not work for an unknown reason
+    let infoMessage = "Validation fails: \n";
+    let inp, isInvalid;
+
+    // Nickname
+    inp = $('#profileInput-nickname')
+    if (!inp.val().trim()) { // this could also be done React-like with if (inp == editedUserData.nickname)
+      infoMessage += "- Nickname cannot be empty \n";
+      inp.addClass('invalid');
+      isInvalid = true;
+    }
+
+    // First Name
+    inp = $('#profileInput-given_name')
+    if (!inp.val().trim()) {
+      infoMessage += "- First Name cannot be empty \n";
+      inp.addClass('invalid');
+      isInvalid = true;
+    }
+
+    // Last Name
+    inp = $('#profileInput-family_name')
+    if (!inp.val().trim()) {
+      infoMessage += "- Last Name cannot be empty \n";
+      inp.addClass('invalid');
+      isInvalid = true;
+    }
+
+    // Email
+    inp = $('#profileInput-email')
+    if (!Utils.validateEmail(inp.val())) {
+      infoMessage += "- Email address is not valid \n";
+      inp.addClass('invalid');
+      isInvalid = true;
+    }
+
+    // Email2, resp. Double-Check Value for Email 
     if (editedUserData.email !== userData.email) {
-      if (editedUserData.email !== editedUserData.email2) {
-        setTooltipIsOpen(true);
+      if (editedUserData.email2 !== editedUserData.email) {
+        inp = $('#profileInput-email2')
+        inp.addClass('invalid');
+        isInvalid = true;
+        setTooltipEmail2IsOpen(true);
       } else {
         setChangeEmailModalOpen(true);
+        return;
       }
-    } else {
-      setEditing(false)
-      updateUserWrapper({ changedEmail: false });
     }
+
+    // If any validation failed, stop execution and display the Infobox
+    if (isInvalid) {
+      setResponseStatusCode(0);
+      setInfoboxMessage(infoMessage);
+      return;
+    }
+
+    // This is only reached if all validations were successful.
+    setEditing(false)
+    updateUserWrapper({ changedEmail: false });
   }
 
   function handleCancelClick() {
@@ -144,6 +200,7 @@ const Profile = () => {
 
   function handleInputChanged(e) {
     let { name, value } = e.target;
+    e.target.classList.remove('invalid');
     if (name === 'email' && value === userData.email) {
       setEditedUserData({ ...editedUserData, [name]: value, ['email2']: "" });
     } else {
@@ -161,7 +218,6 @@ const Profile = () => {
   }
 
   function getEditModalText(userData) {
-    // if (userData) {
     return (
       <span>If you proceed, you will be logged out
         and a verification mail will be sent to <b>{editedUserData.email}</b>.
@@ -170,10 +226,20 @@ const Profile = () => {
         <u>Important</u>: You will need to login using the <b>new email address</b>, even if you opt to not verify it.
       </span>
     )
-    // } else {
-    //   return;
-    // }
   }
+
+  function getDeleteModalText(userData) {
+    return (
+      <span>Do you really want to delete your profile?
+        <br />
+        <br />
+        {getAuthMethod(userData) != 'auth0' &&
+          'Your retailer product portfolio will be preserved (Social login).'
+        }
+      </span>
+    )
+  }
+
 
   function renderRows() {
     if (!userData) {
@@ -185,7 +251,7 @@ const Profile = () => {
     let values = [userData.nickname, userData.given_name, userData.family_name, userData.email, '', (userData.email_verified ? 'Yes' : 'No'), getAuthMethod(userData)]
     let types = ["text", "text", "text", "email", "email", "text", "text"];
     let editable = [true, true, true, true, true, false, false];
-    let required = [false, false, false, true, true, false, false];
+    let required = [true, true, true, true, true, false, false];
 
     return values.map((value, index) => {
       if (fieldNames[index] === 'email2') {
@@ -198,12 +264,16 @@ const Profile = () => {
             </td>
             <td className="pl-2">
               {(editing && editable[index]) ?
-                <input type={types[index]} name={fieldNames[index]} defaultValue={value}
-                  onChange={handleInputChanged} className="input-profile" required={required[index]} /> :
+                <input id={'profileInput-' + fieldNames[index]}
+                  type={types[index]} name={fieldNames[index]} value={editedUserData[fieldNames[index]]}
+                  placeholder="" onChange={handleInputChanged}
+                  className="input-profile" required={required[index]} />
+                :
                 value}
             </td>
             <td className="w-16 pl-2">
-              {editing && editable[index] && editedUserData[fieldNames[index]] !== userData[fieldNames[index]] &&
+              {editing && editable[index] &&
+                editedUserData[fieldNames[index]] !== userData[fieldNames[index]] &&
                 <em>changed</em>}
             </td>
           </tr>
@@ -222,9 +292,13 @@ const Profile = () => {
             <span>{label}:</span>
           </td>
           <td className="pl-2 ">
-            <input type={type} name={fieldName} value={editedUserData.email2} placeholder={disabled ? "Email address unchanged" : "Retype new email address"}
+            <input id={'profileInput-' + fieldName}
+              type={type} name={fieldName} value={editedUserData.email2}
+              placeholder={disabled ? "Email address unchanged" : "Retype new email address"}
               className={(disabled ? "bg-slate-300" : "") + " input-profile"}
-              onChange={handleInputChanged} required={required} disabled={disabled} data-tooltip-id={fieldName} />
+              onChange={handleInputChanged} required={required} disabled={disabled}
+              onPaste={(e) => { e.preventDefault() }} onDrop={(e) => { e.preventDefault() }}
+              data-tooltip-id={fieldName} />
           </td>
           <td>
           </td>
@@ -241,7 +315,7 @@ const Profile = () => {
       {userData &&
         <div className="p-5 flex flex-col items-center">
           <div className="p-2 page-title">
-            Your user profile (fetched from <Link to={'https://auth0.com'} target="_blank">Auth0</Link>)
+            Your user profile - fetched from <Link to={'https://auth0.com'} target="_blank">Auth0</Link>
           </div>
 
           <div id="profile-content" className="flex justify-center flex-row gap-5 flex-wrap">
@@ -261,15 +335,16 @@ const Profile = () => {
                       {renderRows()}
                       <tr className="tr-profile">
                         <td colSpan="2" className="text-center">
+                          <div className="h-4" />
                           {getAuthMethod(userData) === "auth0"
                             ?
                             editing
                               ?
-                              <div className="flex flex-row-reverse gap-1 w-full">
+                              <div className="flex flex-row-reverse gap-2 w-full">
                                 <button type="submit" className="button-standard w-1/2" onClick={handleSubmit}>
                                   Save changes
                                 </button>
-                                <button type="button" className="button-standard w-1/2" onClick={handleCancelClick}>
+                                <button type="button" className="button-standard-blue-grey w-1/2" onClick={handleCancelClick}>
                                   Cancel
                                 </button>
                               </div>
@@ -283,15 +358,11 @@ const Profile = () => {
                               Edit profile
                             </button>
                           }
-                        </td>
-                        <td>
-                        </td>
-                      </tr>
-                      <tr className="tr-profile">
-                        <td colSpan="2" className="text-center">
-                          <button type="button" className="button-standard danger w-full" onClick={handleDeleteClick}>
-                            Delete profile
-                          </button>
+                          {!editing &&
+                            <button type="button" className="button-standard danger w-full mt-2.5" onClick={handleDeleteClick}>
+                              Delete profile
+                            </button>
+                          }
                         </td>
                         <td>
                         </td>
@@ -310,7 +381,7 @@ const Profile = () => {
           {/* Overlay components */}
           <Tooltip id={'email2'}
             content={"Email addresses must match."}
-            isOpen={tooltipIsOpen} />
+            isOpen={tooltipEmail2IsOpen} />
 
           <ModalConfirmCancel
             isShown={changeEmailModalOpen}
@@ -322,7 +393,7 @@ const Profile = () => {
           <ModalConfirmCancel
             isShown={deleteModalOpen}
             title="Deleting Profile"
-            text={`Do you really want to delete your profile?`}
+            text={getDeleteModalText(userData)}
             onConfirm={() => { deleteUserWrapper(); setDeleteModalOpen(false); }}
             onCancel={() => setDeleteModalOpen(false)}
             isDangerous={true} />
