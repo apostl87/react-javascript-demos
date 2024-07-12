@@ -675,7 +675,7 @@ function ProductPortfolioMerchant() {
 
             <NotificationContainer
                 notifications={notifications} setNotifications={setNotifications}
-                className='absolute flex flex-col gap-1 top-16 w-1/2 right-4 z-20' />
+                className='fixed flex flex-col-reverse gap-1 bottom-5 left-5 z-20 w-full' />
 
         </>
     );
