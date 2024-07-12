@@ -8,6 +8,7 @@
     flex-wrap: nowrap;
     justify-content: space-between;
     place-items: center;
+    z-index: 1000;
 }
 
 .navigation a {

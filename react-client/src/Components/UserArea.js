@@ -1,4 +1,4 @@
-import { React, useState, useRef } from "react";
+import { React, useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth0 } from "@auth0/auth0-react";
 import iconUser from "../media/icon-user.png";
@@ -14,6 +14,7 @@ export default function UserArea() {
         setUserAreaOpen(!userAreaOpen);
     }
 
+    // Listener and callback functions for when user clicks outside of the user area
     const closeIfClickedOutside = (e) => {
         if (userAreaOpen &&
             !userArea.current?.contains(e.target) &&
@@ -21,7 +22,9 @@ export default function UserArea() {
             setUserAreaOpen(false);
         }
     };
-    document.addEventListener("mousedown", closeIfClickedOutside);
+    useEffect(() => {
+        document.addEventListener("mousedown", closeIfClickedOutside);
+    })
 
     if (!isLoading && !user) {
         return (

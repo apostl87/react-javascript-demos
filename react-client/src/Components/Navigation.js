@@ -1,12 +1,14 @@
 import React, { useState, useRef, useEffect } from 'react'
+import { useLocation } from 'react-router-dom';
 import UserArea from './UserArea';
 import NavigationBarItem from "./NavigationBarItem";
 import NavigationMenuItem from "./NavigationMenuItem";
 import Breadcrumb from './Breadcrumb';
+import findPathLabels from '../Utils/findPathLabels';
 import '../css/navigation.css';
 
 // The following array defines the entries of the navigation bar and the menu
-let pages = [
+let siteMap = [
     { label: "Home", path: "home", link: true },
     { label: "Retailer product portfolio", path: "merchant-product-portfolio", link: true },
     { label: "Store", path: "store", link: true },
@@ -22,7 +24,7 @@ let pages = [
 ];
 // Pages for development and testing purposes
 if (process.env.NODE_ENV === 'development') {
-    pages.push(
+    siteMap.push(
         {
             label: "Developer area", path: "devarea", link: false,
             children: [
@@ -37,13 +39,14 @@ const Navigation = () => {
     const [isOpen, setIsOpen] = useState(false);
     const navigationRef = useRef(null);
     const menuRef = useRef(null);
+    const menuToggleRef = useRef(null);
     const [height, setHeight] = useState(0);
+    const location = useLocation();
+    const pathSegments = location.pathname.split('/').filter(segment => segment !== "");
 
     // Open/close menu functions
-    const toggleMenu = () => { setIsOpen(!isOpen); };
-    const closeMenu = () => { setIsOpen(false); };
-    const openMenu = () => { setIsOpen(true); };
-
+    const toggleMenu = () => { setIsOpen(!isOpen) };
+    
     // Resize observer
     useEffect(() => {
         const resizeObserver = new ResizeObserver(onResize);
@@ -67,22 +70,26 @@ const Navigation = () => {
 
     // Listener and callback function for closing the menu if clicked outside
     const closeIfClickedOutside = (e) => {
-        if (!menuRef.current?.contains(e.target)) {
+        if (!menuRef.current?.contains(e.target) &&
+            !menuToggleRef.current?.contains(e.target)) {
             setIsOpen(false);
         }
     };
-    document.addEventListener("mousedown", closeIfClickedOutside);
+    useEffect(() => {
+        document.addEventListener("mousedown", closeIfClickedOutside);
+    })
 
     return (
         <>
             <nav ref={navigationRef} className='navigation' style={extraStyles}>
-                <div className={`navigation-menu-toggle ${(isOpen ? 'open' : '')}`} onClick={toggleMenu}>
+                <div ref={menuToggleRef} className={`navigation-menu-toggle ${(isOpen ? 'open' : '')}`}
+                    onClick={toggleMenu}>
                     {isOpen ? '✕' : '☰'}
                 </div>
 
                 {/* Left hand section of Navigation Bar */}
                 <div className='navigation-bar-left'>
-                    {pages.map((item, index) => {
+                    {siteMap.map((item, index) => {
                         return (
                             <NavigationBarItem key={index}
                                 label={item.label}
@@ -101,7 +108,7 @@ const Navigation = () => {
             </nav >
 
             {/* Divisor to block height used by the navigation bar */}
-            < div style={{ marginTop: `${height}px` }} onClick={closeMenu}>
+            < div style={{ marginTop: `${height}px` }}>
             </div>
 
             {/* Navigation menu */}
@@ -109,7 +116,7 @@ const Navigation = () => {
                 <nav>
                     <div id='navigation-menu-overlay' />
                     <div ref={menuRef} className='navigation-menu'>
-                        {pages.map((item, index) => {
+                        {siteMap.map((item, index) => {
                             return (
                                 <NavigationMenuItem key={index}
                                     label={item.label}
@@ -123,8 +130,8 @@ const Navigation = () => {
             }
 
             <div className='navigation-breadcrumb'>
-                WHERE IS MY CONTENT
-                <Breadcrumb pages={pages} />
+                WHERE IS MY CONTENT, {location.pathname}
+                <Breadcrumb paths={findPathLabels(siteMap, pathSegments)} />
             </div>
         </>
     )
