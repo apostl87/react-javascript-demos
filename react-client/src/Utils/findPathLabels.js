@@ -1,7 +1,7 @@
-const findPathLabels = (siteMap, segments, parentPath = "") => {
-
+const findPathLabels = (siteMap, segments_in, parentPath = "") => {
+    let segments = [... segments_in];
     let paths = [];
-    
+
     for (const page of siteMap) {
         const currentPath = `${parentPath}/${page.path}`;
         if (segments.includes(page.path)) {
