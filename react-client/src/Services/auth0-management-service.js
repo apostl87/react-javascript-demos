@@ -54,11 +54,10 @@ export const updateUser = async (id, userData) => {
 }
 
 export const deleteUser = async (id) => {
-
     let config = {
         method: 'delete',
         maxBodyLength: Infinity,
-        url: `https://${base_url}/api/v2/users/${id}`,
+        url: `https://${baseUrl}/api/v2/users/${id}`,
         headers: {
             'Content-Type': 'application/json',
             'Accept': 'application/json',

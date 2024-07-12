@@ -6,7 +6,7 @@ import { ModalConfirmCancel } from '../Components/ModalConfirmCancel';
 import NotificationContainer from '../Components/NotificationContainer';
 import { NotLoggedIn } from "../Components/Misc";
 import Infobox from "../Components/Infobox";
-import { getUser, updateUser } from "../Services/auth0-management-service";
+import { getUser, updateUser, deleteUser } from "../Services/auth0-management-service";
 
 const Profile = () => {
   const { user, isAuthenticated, isLoading } = useAuth0();
@@ -20,6 +20,7 @@ const Profile = () => {
 
   // Modal hooks
   const [changeEmailModalOpen, setChangeEmailModalOpen] = useState(false)
+  const [deleteModalOpen, setDeleteModalOpen] = useState(false)
 
   // Tooltip hook
   const [tooltipIsOpen, setTooltipIsOpen] = useState(false);
@@ -27,12 +28,6 @@ const Profile = () => {
   // Infobox
   const [infoboxMessage, setInfoboxMessage] = useState("")
   const [responseStatusCode, setResponseStatusCode] = useState(-1)
-
-  // Notification hook and functionality
-  const [notifications, setNotifications] = useState([])
-  function addNotification(notification) {
-    setNotifications([...notifications, [(notifications.length > 0) ? notifications[notifications.length - 1][0] + 1 : 0, notification]]);
-  }
 
   // If user data has been updated, update the local state
   useEffect(() => {
@@ -46,7 +41,7 @@ const Profile = () => {
     if (user) {
       const caller = async () => {
         let response = await getUser(user.sub);
-        setUserData(response.data)
+        setUserData(response.data);
       }
       caller();
     }
@@ -67,7 +62,7 @@ const Profile = () => {
     return <NotLoggedIn />
   }
 
-  // Wrapper for the management-API-calling function
+  // Wrapper for the updateUser-function from the Auth0 management service
   async function updateUserWrapper({ changedEmail = false } = {}) {
     let data = {
       nickname: editedUserData.nickname,
@@ -90,9 +85,28 @@ const Profile = () => {
       setUserData(response.data);
       setInfoboxMessage("User data updated successfully.");
     } else if (response.status == 400) {
-      setInfoboxMessage(`${response.data.message}. Updating user data denied. `);
+      setInfoboxMessage(`(${response.status}) Error: Updating user data denied. ${response.data.message}. `);
     } else {
-      setInfoboxMessage(`Unknown response status. Response message: ${response.data.message}`);
+      setInfoboxMessage(`(${response.status}) Unknown response status. Response message: ${response.data.message}`);
+    }
+  }
+
+  // Wrapper for the deleteUser-function from the Auth0 management service
+  async function deleteUserWrapper() {
+
+    let response = await deleteUser(user.sub);
+
+    // Processing response
+    setResponseStatusCode(response.status);
+    if (response.status == 204) {
+      setInfoboxMessage(`Profile deleted. You will be redirected in 2 seconds...`);
+      setTimeout(() => window.location.reload(), 2000);
+    }
+    else if (response.status == 400) {
+      setInfoboxMessage(`(${response.status}) Error: Deleting profile was denied. Response message: ${response.data.message}.`);
+    }
+    else {
+      setInfoboxMessage(`(${response.status}) Unknown response status. Response message: ${response.data.message}.`);
     }
   }
 
@@ -124,6 +138,10 @@ const Profile = () => {
     setEditedUserData({});
   }
 
+  function handleDeleteClick() {
+    setDeleteModalOpen(true);
+  }
+
   function handleInputChanged(e) {
     let { name, value } = e.target;
     if (name === 'email' && value === userData.email) {
@@ -134,7 +152,7 @@ const Profile = () => {
   }
 
   // Helper functions
-  function authMethod(userData) {
+  function getAuthMethod(userData) {
     if (userData) {
       return userData['identities'][0]['provider']
     } else {
@@ -142,19 +160,19 @@ const Profile = () => {
     }
   }
 
-  function modalText() {
-    if (editedUserData) {
-      return (
-        <span>If you proceed, you will be logged out
-          and a verification mail will be sent to <b>{editedUserData.email}</b>.
-          <br />
-          <br />
-          <u>Important</u>: You will need to login using the <b>new email address</b>, even if you opt to not verify it.
-        </span>
-      )
-    } else {
-      return;
-    }
+  function getEditModalText(userData) {
+    // if (userData) {
+    return (
+      <span>If you proceed, you will be logged out
+        and a verification mail will be sent to <b>{editedUserData.email}</b>.
+        <br />
+        <br />
+        <u>Important</u>: You will need to login using the <b>new email address</b>, even if you opt to not verify it.
+      </span>
+    )
+    // } else {
+    //   return;
+    // }
   }
 
   function renderRows() {
@@ -164,7 +182,7 @@ const Profile = () => {
 
     let fieldNames = ['nickname', 'given_name', 'family_name', 'email', 'email2', 'email_verified', 'auth_method']
     let labels = ["Nickname", "First Name", "Last Name", "Email", "Email (Confirmation)", "Email is verified", "Authentication Method"]
-    let values = [userData.nickname, userData.given_name, userData.family_name, userData.email, '', (userData.email_verified ? 'Yes' : 'No'), authMethod(userData)]
+    let values = [userData.nickname, userData.given_name, userData.family_name, userData.email, '', (userData.email_verified ? 'Yes' : 'No'), getAuthMethod(userData)]
     let types = ["text", "text", "text", "email", "email", "text", "text"];
     let editable = [true, true, true, true, true, false, false];
     let required = [false, false, false, true, true, false, false];
@@ -218,82 +236,100 @@ const Profile = () => {
   }
 
 
-
   return (
-    <div className="p-5 flex flex-col items-center">
-      <div className="p-2 page-title">
-        Your user profile (fetched from <Link to={'https://auth0.com'} target="_blank">Auth0</Link>)
-      </div>
+    <>
+      {userData &&
+        <div className="p-5 flex flex-col items-center">
+          <div className="p-2 page-title">
+            Your user profile (fetched from <Link to={'https://auth0.com'} target="_blank">Auth0</Link>)
+          </div>
 
-      <div id="profile-content" className="flex justify-center flex-row gap-5 flex-wrap">
-        <div className="flex flex-col gap-3">
-          <div className="flex flex-row gap-5 flex-wrap border-2 border-slate-500 rounded-lg p-6 justify-center" >
-            <div className="">
-              <img
-                src={user.picture}
-                alt="Profile"
-                className="flex-shrink-0 flex-grow-0 self-center"
-              />
-            </div>
-            <form onSubmit={handleSubmit}>
-              <table className="table-profile">
-                <thead></thead>
-                <tbody>
-                  {renderRows()}
-                  <tr className="tr-profile">
-                    <td colSpan="2" className="text-center">
-                      {authMethod(userData) === "auth0"
-                        ?
-                        editing
-                          ?
-                          <div className="flex flex-row-reverse gap-1 w-full">
-                            <button type="submit" className="button-standard w-1/2" onClick={handleSubmit}>
-                              Save changes
+          <div id="profile-content" className="flex justify-center flex-row gap-5 flex-wrap">
+            <div className="flex flex-col gap-3">
+              <div className="flex flex-row gap-5 flex-wrap border-2 border-slate-500 rounded-lg p-6 justify-center" >
+                <div>
+                  <img
+                    src={user.picture}
+                    alt="Profile"
+                    className="flex-shrink-0 flex-grow-0 self-center"
+                  />
+                </div>
+                <form onSubmit={handleSubmit}>
+                  <table className="table-profile">
+                    <thead></thead>
+                    <tbody>
+                      {renderRows()}
+                      <tr className="tr-profile">
+                        <td colSpan="2" className="text-center">
+                          {getAuthMethod(userData) === "auth0"
+                            ?
+                            editing
+                              ?
+                              <div className="flex flex-row-reverse gap-1 w-full">
+                                <button type="submit" className="button-standard w-1/2" onClick={handleSubmit}>
+                                  Save changes
+                                </button>
+                                <button type="button" className="button-standard w-1/2" onClick={handleCancelClick}>
+                                  Cancel
+                                </button>
+                              </div>
+                              :
+                              <button type="button" className="button-standard w-full" onClick={handleEditClick}>
+                                Edit profile
+                              </button>
+                            :
+                            <button type="button" className="button-standard disabled w-full"
+                              title="Not available for social login" disabled>
+                              Edit profile
                             </button>
-                            <button type="button" className="button-standard w-1/2" onClick={handleCancelClick}>
-                              Cancel
-                            </button>
-                          </div>
-                          :
-                          <button type="button" className="button-standard w-full" onClick={handleEditClick}>
-                            Edit profile
+                          }
+                        </td>
+                        <td>
+                        </td>
+                      </tr>
+                      <tr className="tr-profile">
+                        <td colSpan="2" className="text-center">
+                          <button type="button" className="button-standard danger w-full" onClick={handleDeleteClick}>
+                            Delete profile
                           </button>
-                        :
-                        <button type="button" className="button-standard button-disabled w-full" title="Not available for social login" disabled>
-                          Edit profile
-                        </button>
-                      }
-                    </td>
-                    <td>
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-            </form>
+                        </td>
+                        <td>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </form>
+              </div>
+              <div className="w-full">
+                <Infobox message={infoboxMessage} statusCode={responseStatusCode} />
+              </div>
+            </div>
           </div>
-          <div className="w-full">
-            <Infobox message={infoboxMessage} statusCode={responseStatusCode} />
-          </div>
-        </div>
-      </div>
 
 
-      {/* Overlay components */}
-      <Tooltip id={'email2'}
-        content={"Email addresses must match."}
-        isOpen={tooltipIsOpen} />
+          {/* Overlay components */}
+          <Tooltip id={'email2'}
+            content={"Email addresses must match."}
+            isOpen={tooltipIsOpen} />
 
-      <ModalConfirmCancel
-        isShown={changeEmailModalOpen}
-        title="Changing Email Address"
-        text={modalText()}
-        // onConfirm={() => { updateUserWrapper({ changedEmail: true }); window.location.reload(); }}
-        onConfirm={() => { updateUserWrapper({ changedEmail: true }); setChangeEmailModalOpen(false); setEditing(false); }}
-        onCancel={() => setChangeEmailModalOpen(false)} />
+          <ModalConfirmCancel
+            isShown={changeEmailModalOpen}
+            title="Changing Email Address"
+            text={getEditModalText(editedUserData)}
+            onConfirm={() => { updateUserWrapper({ changedEmail: true }); setChangeEmailModalOpen(false); setEditing(false); }}
+            onCancel={() => setChangeEmailModalOpen(false)} />
 
-      <NotificationContainer notifications={notifications} setNotifications={setNotifications} />
+          <ModalConfirmCancel
+            isShown={deleteModalOpen}
+            title="Deleting Profile"
+            text={`Do you really want to delete your profile?`}
+            onConfirm={() => { deleteUserWrapper(); setDeleteModalOpen(false); }}
+            onCancel={() => setDeleteModalOpen(false)}
+            isDangerous={true} />
 
-    </div >
+        </div >
+      }
+    </>
   );
 };
 

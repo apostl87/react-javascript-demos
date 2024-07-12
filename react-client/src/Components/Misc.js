@@ -11,7 +11,7 @@ export const NotLoggedIn = (props) => {
   const { loginWithRedirect } = useAuth0()
 
   return (
-    <div className='flex flex-col items-center w-2/3 gap-5'>
+    <div className='flex flex-col items-center w-2/3 gap-5 self-center'>
       <div className='text-center mt-10'>
         You need to <a href="" onClick={() => loginWithRedirect({
           appState: {

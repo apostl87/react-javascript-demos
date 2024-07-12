@@ -515,7 +515,7 @@ function ProductPortfolioMerchant() {
                     <div className='flex-auto flex flex-row justify-start'>
                         <button onClick={handleCreateClicked} disabled={maxProductsReached}
                             title={maxProductsReached ? `You reached the maximum number of products (limit: ${config.maxProductsPerUser}` : ''}
-                            className='button-new flex justify-between items-center my-auto w-auto gap-2 text-nowrap'>
+                            className='button-new-product flex justify-between items-center my-auto w-auto gap-2 text-nowrap'>
                             <span>+</span>
                             <span>New product</span>
                         </button>
@@ -527,7 +527,7 @@ function ProductPortfolioMerchant() {
                         {
                             filteredProducts.length > 0 &&
                             <button onClick={() => handleDeleteAllClick()}
-                                className='button-new flex items-center my-auto w-auto text-nowrap'>
+                                className='button-new-product flex items-center my-auto w-auto text-nowrap'>
                                 <span>Delete all products</span>
                             </button>
                         }
