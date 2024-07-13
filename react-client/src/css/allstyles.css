@@ -450,10 +450,6 @@ a:focus {
   font-size: smaller;
 }
 
-.notification {
-  background-color: rgba(0, 0, 0, 0.85);
-}
-
 .progress-bar {
   background-color: rgb(134, 134, 134);
   border-radius: 6px;

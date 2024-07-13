@@ -1,8 +1,8 @@
 import { BrowserRouter as Router, Link, Routes, Route } from 'react-router-dom';
-import ScrollToTop from "react-scroll-to-top";
 import Navigation from './Components/Navigation';
 import { NotFound } from './Components/Misc';
 import Footer from './Components/Footer';
+import MyScrollToTop from './Components/MyScrollToTop';
 import ProductPortfolio from './Views/ProductPortfolio';
 import ProductPortfolioMerchant from './Views/ProductPortfolioMerchant';
 import Home from './Views/Home';
@@ -13,9 +13,6 @@ import Store from './Views/Store';
 import DevView01 from './Views/DevView01';
 import DevView02 from './Views/DevView02';
 import PrivacyPolicy from './Views/PrivacyPolicy';
-
-// CookieBot ID
-const domainGroupId = '619d0c4c-aa0f-4c9d-8133-55cd158f6c73';
 
 function App() {
   return (
@@ -56,7 +53,7 @@ function App() {
 
       <Footer />
 
-      <ScrollToTop smooth />
+      <MyScrollToTop />
     </div>
   );
 }
