@@ -3,7 +3,8 @@ import Navigation from './Components/Navigation';
 import { NotFound } from './Components/Misc';
 import Footer from './Components/Footer';
 import MyScrollToTop from './Components/MyScrollToTop';
-import ProductPortfolio from './Views/ProductPortfolio';
+import Banner from './Components/Banner';
+import ProductPortfolio from '../excluded/ProductPortfolio';
 import ProductPortfolioMerchant from './Views/ProductPortfolioMerchant';
 import Home from './Views/Home';
 import SpaceGame from './Views/SpaceGame';
@@ -17,6 +18,7 @@ import PrivacyPolicy from './Views/PrivacyPolicy';
 function App() {
   return (
     <div className="App flex flex-col justify-start">
+      <Banner />
       <Navigation />
       <Routes>
         <Route path='/' element={<Home />} />
@@ -29,8 +31,8 @@ function App() {
         <Route path='/store' element={<Store />} />
 
         <Route path='/demos'>
-          <Route path='product-portfolio' element={<ProductPortfolio />} />
           <Route path='space-game' element={<SpaceGame />} />
+          <Route path='calculator' element={<Calculator />} />
         </Route>
 
         <Route exact path='/contact' element={<Contact />} />

@@ -15,8 +15,9 @@ let siteMap = [
     {
         label: "Other Demos", path: "demos", link: false,
         children: [
-            { label: "Public product portfolio (no login required)", path: "product-portfolio", link: true },
+            // { label: "Public product portfolio (no login required)", path: "product-portfolio", link: true },
             { label: "Space game", path: "space-game", link: true },
+            { label: "Calculator", path: "calculator", link: true },
         ]
     },
 
@@ -68,7 +69,7 @@ const Navigation = () => {
         paddingBottom: `${paddingTB}px`,
     }
     const breadcrumbStyle = {
-        top: `${height}px`,
+        // top: `${height}px`,
     }
 
     // Listener and callback function for closing the menu if clicked outside
@@ -111,7 +112,7 @@ const Navigation = () => {
             </nav >
 
             {/* Divisor to block height used by the navigation bar */}
-            < div style={{ marginTop: `${height}px` }}>
+            < div style={{ marginTop: `${height + 60}px` }}>
             </div>
 
             {/* Navigation menu */}
