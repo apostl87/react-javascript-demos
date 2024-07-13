@@ -4,6 +4,7 @@ import { Tooltip } from 'react-tooltip';
 import { useAuth0 } from "@auth0/auth0-react";
 import axios from 'axios';
 import $ from 'jquery';
+import { MoonLoader } from 'react-spinners';
 import deepEqual from 'deep-equal';
 import PaginationBar from '../Components/PaginationBar';
 import SearchBar from '../Components/SearchBar';
@@ -30,6 +31,10 @@ const publicTestUserNickname = process.env.REACT_APP_PUBLIC_TEST_USER;
 function ProductPortfolioMerchant() {
     // Auth0 hook
     const { user, isLoading } = useAuth0();
+
+    // API connection and response
+    const [databaseConnectionFailed, setDatabaseConnectionFailed] = useState(false);
+    const [waitingForResponse, setWaitingForReponse] = useState(true);
 
     // Navigation
     const navigate = useNavigate();
@@ -87,9 +92,6 @@ function ProductPortfolioMerchant() {
         setNotifications([...notifications, [(notifications.length > 0) ? notifications[notifications.length - 1][0] + 1 : 0, notification]]);
     }
 
-    // Loading (products)
-    let [loading, setLoading] = useState(false);
-
     // Current page parameters
     const indexOfLastProduct = Math.min(currentPage * productsPerPage, filteredProducts.length) - 1;
     const indexOfFirstProduct = Math.max(0, indexOfLastProduct - productsPerPage + 1)
@@ -111,15 +113,14 @@ function ProductPortfolioMerchant() {
             }
         } else if (pathParts.length == 3 && pathParts[2] == 'public-test-mode') {
             setUsedUser({ 'sub': publicTestUserNickname })
-        } else {
-            setUsedUser(user) // Here, usedUser is falsy
+        } else { // Here, usedUser is falsy
+            setUsedUser(user)
         }
     }, [user, window.location.pathname])
 
     // Loading data
     useEffect(() => {
         if (usedUser) {
-            setLoading(true)
             getProducts();
             getCountries();
         }
@@ -150,32 +151,55 @@ function ProductPortfolioMerchant() {
     }, [tooltipIsOpen])
 
     //// Conditional returns
-    if (isLoading) {
-        return null;
+    if (isLoading || waitingForResponse) {
+        return (
+            <div className='flex flex-col items-center pt-7'>
+                <MoonLoader speedMultiplier={0.3} color='rgb(15 23 42)' />
+            </div>
+        )
+    }
+    if (databaseConnectionFailed) {
+        return (
+            <div className='flex flex-col items-center pt-7'>
+                <div>Failed to connect to the database. Please try again later.</div>
+            </div>
+        )
     }
     if ((!isLoading && !usedUser)) {
         return (
-            <div className='flex flex-col items-center'>
+            <div className='flex flex-col items-center pt-7'>
                 <NotLoggedIn additionalHtml="For demonstration purposes, you can enter the page as a <strong>public test user</strong> by clicking the button below." />
-                <div className='pt-7'>
-                    <button type="button" onClick={() => { navigate("public-test-mode") }} className='button-test-mode'>
-                        Enter Public Test Mode
-                    </button>
-                </div>
+                <button type="button" onClick={() => { navigate("public-test-mode") }} className='button-test-mode'>
+                    Enter Public Test Mode
+                </button>
             </div>
         )
     }
 
+
     //// API calls
+
     function getProducts() {
         const url = `${api_url}/merchant-products/${usedUser.sub}`
-        request.get(url)
+        const controller = new AbortController();
+        const { signal } = controller;
+
+        setWaitingForReponse(false);
+
+        setTimeout(() => {
+            controller.abort("Timeout")
+        }, 10000)
+
+        request.get(url, { signal })
             .then(response => {
                 processProductData(response.data);
-                setLoading(false);
             })
             .catch(error => {
                 console.error(error);
+                setDatabaseConnectionFailed(true);
+            })
+            .finally(() => {
+                setWaitingForReponse(false);
             });
     }
 
@@ -264,6 +288,7 @@ function ProductPortfolioMerchant() {
             })
             .catch(error => {
                 console.error(error);
+                setDatabaseConnectionFailed(true);
             });
     }
 
@@ -508,7 +533,7 @@ function ProductPortfolioMerchant() {
                         </button>
                     }
                 </div>
-                
+
                 {/* <div className='hr' /> */}
 
                 <div className='flex flex-wrap flex-col sm:flex-row sm:items-center items-start pb-2'>
@@ -524,13 +549,11 @@ function ProductPortfolioMerchant() {
                         <SearchBar onInputChange={(val) => filterProducts(products, val, setIsFiltered)} />
                     </div>
                     <div className='flex-auto flex flex-row justify-end'>
-                        {
-                            filteredProducts.length > 0 &&
-                            <button onClick={() => handleDeleteAllClick()}
-                                className='button-new-product flex items-center my-auto w-auto text-nowrap'>
-                                <span>Delete all products</span>
-                            </button>
-                        }
+                        <button onClick={() => handleDeleteAllClick()}
+                            disabled={products.length == 0}
+                            className='button-new-product flex items-center my-auto w-auto text-nowrap'>
+                            <span>Delete all products</span>
+                        </button>
                     </div>
                 </div>
             </div>
@@ -638,8 +661,9 @@ function ProductPortfolioMerchant() {
                         ))}
                     </div>
                 ) : (
-                    loading ?
-                        <div align="center">Loading...</div> :
+                    waitingForResponse ?
+                        <div align="center">Loading...</div>
+                        :
                         <div className='flex flex-col items-center gap-5' >
                             <p>
                                 No products were found.

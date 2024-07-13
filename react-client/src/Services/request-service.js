@@ -1,7 +1,7 @@
 import axios from "axios";
 
 /* @internal */
-import TokenService from "./token-service"; // Could You please provide code from this file too?
+import TokenService from "./token-service";
 
 class Request {
     constructor() {

@@ -1,6 +1,7 @@
 import { React, useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth0 } from "@auth0/auth0-react";
+import { MoonLoader } from "react-spinners";
 import iconUser from "../media/icon-user.png";
 
 export default function UserArea() {
@@ -42,7 +43,7 @@ export default function UserArea() {
     } else if (!isLoading && user) {
         return (
             <div>
-                <div className='w-12 h-12 cursor-pointer'
+                <div className='w-10 h-10 cursor-pointer'
                     ref={userAreaIcon}
                     onClick={toggleUserArea}
                 >
@@ -77,7 +78,7 @@ export default function UserArea() {
     } else if (isLoading) {
         return (
             <div className="navigation-bar-right-item">
-                <div className="user-area-loading">Loading ...</div>
+                <div className="user-area-loading"><MoonLoader size="20px" speedMultiplier={0.3} color='rgb(255, 255, 255)' /></div>
             </div>
         );
     }
