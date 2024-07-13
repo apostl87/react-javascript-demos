@@ -184,7 +184,7 @@ function ProductPortfolioMerchant() {
         const controller = new AbortController();
         const { signal } = controller;
 
-        setWaitingForReponse(false);
+        setWaitingForReponse(true);
 
         setTimeout(() => {
             controller.abort("Timeout")
