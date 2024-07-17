@@ -1,9 +1,7 @@
 import React from 'react'
 import { LeftCaret, RightCaret } from './Misc';
 
-const PaginationBar = ({ currentPage, handleClick, startIdx, endIdx, nProducts, isFiltered }) => {
-    const productsPerPage = endIdx - startIdx + 1;
-    const nPages = Math.ceil(nProducts / productsPerPage)
+const PaginationBar = ({ currentPage, nPages, isFiltered, index1, index2, nProducts, handleClick }) => {
     const caretSize = 5.5;
     const colorDisabled = '#7c7c7c';
 
@@ -33,7 +31,7 @@ const PaginationBar = ({ currentPage, handleClick, startIdx, endIdx, nProducts, 
                 </div>
             </button >
             <span className='text-nowrap pl-2 pr-2'>
-                Products {startIdx + 1} - {endIdx + 1} of {nProducts} {isFiltered ? '(filtered)' : ''}
+                Products {index1 + 1} - {index2 + 1} of {nProducts} {isFiltered ? '(filtered)' : ''}
                 {/* Page {value} of {nPages} */}
             </span>
             <button onClick={() => handleClick(availablePageNumbers[2])}

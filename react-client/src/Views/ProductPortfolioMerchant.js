@@ -51,10 +51,6 @@ const ProductPortfolioMerchant = (props) => {
     const [products, setProducts] = useState([]);
     const [countries, setCountries] = useState([]);
 
-    // Pagination
-    const [currentPage, setCurrentPage] = useState(1);
-    const productsPerPage = 20;
-
     // Editing
     const [editedProduct, setEditedProduct] = useState({});
     const [editedIndex, setEditedIndex] = useState(-1);
@@ -92,10 +88,13 @@ const ProductPortfolioMerchant = (props) => {
     // Notification
     const [notifications, setNotifications] = useState([])
 
-    // Current page parameters
-    const indexOfLastProduct = Math.min(currentPage * productsPerPage, filteredProducts.length) - 1;
-    const indexOfFirstProduct = Math.max(0, indexOfLastProduct - productsPerPage + 1)
-    const currentProducts = filteredProducts.slice(indexOfFirstProduct, indexOfLastProduct + 1);
+    // Pagination
+    const [currentPage, setCurrentPage] = useState(1); // (!) starting at 1 
+    const productsPerPage = 20;
+    const nPages = Math.ceil(filteredProducts.length / productsPerPage);
+    const indexLastProduct = Math.min(currentPage * productsPerPage, filteredProducts.length) - 1;
+    const indexFirstProduct = Math.max(0, (currentPage - 1) * productsPerPage)
+    const currentProducts = filteredProducts.slice(indexFirstProduct, indexLastProduct + 1);
 
     // Other
     const WEIGHT_UNIT = 'kg';
@@ -132,10 +131,22 @@ const ProductPortfolioMerchant = (props) => {
         }
     }, [usedUser])
 
-    // Apply filter whenever Array products changes
+    // Filtering: Filter whenever products change
     useEffect(() => {
         filterProducts(products, searchString, setIsFiltered)
     }, [products]);
+
+    // Pagination: Go back one page if current page is greater than number of pages
+    useEffect(() => {
+        if (currentPage > nPages) {
+            setCurrentPage(Math.max(currentPage - 1, 1))
+        }
+    }, [filteredProducts]);
+
+    // Pagination: Go back to first page when search string changes
+    useEffect(() => {
+        setCurrentPage(1)
+    }, [searchString])
 
     // Verify image url whenever imageUrl changes to value unequal to ''
     useEffect(() => {
@@ -149,6 +160,18 @@ const ProductPortfolioMerchant = (props) => {
         }
         if (imageUrl) doAsync();
     }, [editedProduct.mp_image_url]);
+
+    // Dismiss changes
+    useEffect(() => {
+        if (unsavedChanges() && !pendingActionOnDismiss()) {
+            setDismissModalIsOpen(true)
+            setPendingActionOnDismiss(() => () => {
+                setEditedProduct({})
+                setEditedIndex(-1)
+                return true
+            })
+        }
+    }, [unsavedChanges])
 
     // Hide tooltip after appearTimeTooltip milliseconds
     const appearTimeTooltip = 3500;
@@ -572,9 +595,14 @@ const ProductPortfolioMerchant = (props) => {
                 </div>
             </div>
 
-            <PaginationBar currentPage={currentPage} handleClick={handlePaginationBarClick}
-                startIdx={indexOfFirstProduct} endIdx={indexOfLastProduct}
-                nProducts={filteredProducts.length} isFiltered={isFiltered} />
+            <PaginationBar
+                currentPage={currentPage}
+                nPages={nPages}
+                isFiltered={isFiltered}
+                index1={indexFirstProduct}
+                index2={indexLastProduct}
+                nProducts={filteredProducts.length}
+                handleClick={handlePaginationBarClick} />
 
             {filteredProducts.length > 0 ?
                 (
@@ -689,9 +717,14 @@ const ProductPortfolioMerchant = (props) => {
                 )
             }
 
-            <PaginationBar currentPage={currentPage} handleClick={setCurrentPage}
-                startIdx={indexOfFirstProduct} endIdx={indexOfLastProduct}
-                nProducts={filteredProducts.length} isFiltered={isFiltered} />
+            <PaginationBar
+                currentPage={currentPage}
+                nPages={nPages}
+                isFiltered={isFiltered}
+                index1={indexFirstProduct}
+                index2={indexLastProduct}
+                nProducts={filteredProducts.length}
+                handleClick={handlePaginationBarClick} />
 
             {/* Overlay components */}
             <Tooltip id={tooltipState[0]}
