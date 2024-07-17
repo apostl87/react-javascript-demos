@@ -16,6 +16,16 @@
     margin: 0;
 }
 
+.breadcrumb-list a, .breadcrumb-list a:hover {
+    text-decoration: none;
+    color: #007bff;
+}
+
+.breadcrumb-list li:last-child a {
+    color: #6c757d;
+    font-weight: bold;
+}
+
 .breadcrumb-item {
     display: flex;
     flex-direction: row;
@@ -23,21 +33,4 @@
     gap: 6px;
     margin-right: 6px;
     margin-left: 6px;
-}
-
-.breadcrumb-item a, .breadcrumb-item a:hover {
-    text-decoration: none;
-}
-
-.breadcrumb-link {
-    color: #007bff;
-    text-decoration: none;
-}
-
-.breadcrumb-link:hover {
-    text-decoration: underline;
-}
-
-.breadcrumb-current {
-    color: #6c757d;
 }
