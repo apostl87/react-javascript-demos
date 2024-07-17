@@ -1,12 +1,14 @@
 import React, { useEffect } from 'react'
 
-const NotificationContainer = ({ notifications, setNotifications, className }) => {
+const NotificationContainer = ({ notifications, deleteNotification, className }) => {
 
     const handleCloseClick = (index) => {
         let banner = document.getElementById('notification' + index);
-        banner.classList.add('hidden');
+        deleteNotification(index);
     }
 
+    // This effect is not optimally implemented, since it is always called when notifications changes
+    // (also if a notification is deleted)
     useEffect(() => {
         if (notifications.length > 0) {
             let banner = document.getElementById('notification' + notifications[notifications.length - 1][0]);
@@ -14,10 +16,11 @@ const NotificationContainer = ({ notifications, setNotifications, className }) =
             setTimeout(() => {
                 banner.classList.add('hidden');
             }, 5000);
+            console.log(notifications.length);
         }
         // Delete old notifications to avoid overflow
         if (notifications.length > 10) {
-            setNotifications([...notifications].slice(10));
+            deleteNotification(0);
         }
     }, [notifications])
 

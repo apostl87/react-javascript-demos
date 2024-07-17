@@ -28,7 +28,10 @@ const publicTestUserNickname = process.env.REACT_APP_PUBLIC_TEST_USER;
 // - Refactoring of Components
 // - Refactoring of certain functions
 
-function ProductPortfolioMerchant() {
+const ProductPortfolioMerchant = (props) => {
+    // Public test mode (Props does not work for this component for an unknown reason)
+    const [publicTestMode, setPublicTestMode] = useState(false)
+
     // Auth0 hook
     const { user, isLoading } = useAuth0();
 
@@ -88,9 +91,6 @@ function ProductPortfolioMerchant() {
 
     // Notification
     const [notifications, setNotifications] = useState([])
-    function addNotification(notification) {
-        setNotifications([...notifications, [(notifications.length > 0) ? notifications[notifications.length - 1][0] + 1 : 0, notification]]);
-    }
 
     // Current page parameters
     const indexOfLastProduct = Math.min(currentPage * productsPerPage, filteredProducts.length) - 1;
@@ -101,22 +101,28 @@ function ProductPortfolioMerchant() {
     const WEIGHT_UNIT = 'kg';
 
     //// Effects
-    // Use actually logged in user, or public test mode user, or use falsy user
+    // Check for public test mode, since props do not work for an unknown reason
     useEffect(() => {
         const pathParts = location.pathname.split('/');
+        setPublicTestMode(pathParts[pathParts.length - 1] == 'public-test-mode')
+    }, [location.pathname])
+
+    // Use actually logged in user, or public test mode user, or use falsy user
+    useEffect(() => {
+
         if (user) {
             setUsedUser(user)
             // Public test mode is not intended for logged in users
-            if (pathParts[2] == 'public-test-mode') {
-                navigate(".");
+            if (publicTestMode) {
                 addNotification('Automatically left public test mode (You are logged in).')
+                navigate(".");
             }
-        } else if (pathParts.length == 3 && pathParts[2] == 'public-test-mode') {
+        } else if (publicTestMode) {
             setUsedUser({ 'sub': publicTestUserNickname })
         } else { // Here, usedUser is falsy
             setUsedUser(user)
         }
-    }, [user, window.location.pathname])
+    }, [user, publicTestMode])
 
     // Loading data
     useEffect(() => {
@@ -448,6 +454,15 @@ function ProductPortfolioMerchant() {
     }
 
     //// Helper functions
+    function addNotification(notification) {
+        setNotifications([...notifications, [(notifications.length > 0) ? notifications[notifications.length - 1][0] + 1 : 0, notification]]);
+    }
+
+    function deleteNotification(index) {
+        setNotifications([...notifications.filter((_, i) => i !== index)])
+        console.log("deleteNotification");
+    }
+
     function startEditingProduct(product) {
         setEditedIndex(products.indexOf(product));
         setEditedProduct({ ...product });
@@ -524,15 +539,14 @@ function ProductPortfolioMerchant() {
     return (
         <>
             <div id='portfolio-header' className='w-full pr-5 pl-5 pt-2'>
-                <div className='flex flex-wrap justify-between items-center pt-2 pb-2'>
-                    {location.pathname.includes('public-test-mode') &&
+                {publicTestMode &&
+                    <div className='flex flex-wrap justify-start pt-2 pb-2'>
                         <button type="button" onClick={() => { navigate(".") }}
                             className='button-test-mode text-wrap'>
                             Leave Public Test Mode
                         </button>
-                    }
-                    <hr />
-                </div>
+                    </div>
+                }
 
                 {/* <div className='hr' /> */}
 
@@ -698,7 +712,7 @@ function ProductPortfolioMerchant() {
                 onClose={() => setCreateModalIsOpen(false)} onCreate={createProduct} />
 
             <NotificationContainer
-                notifications={notifications} setNotifications={setNotifications}
+                notifications={notifications} deleteNotification={deleteNotification}
                 className='fixed flex flex-col-reverse gap-1 bottom-5 left-5 z-20 w-full' />
 
         </>
