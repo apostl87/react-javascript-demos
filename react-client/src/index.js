@@ -1,5 +1,5 @@
 import "./css/output.css";
-import "./css/allstyles.css"; // during development
+import "./css/mainstyles.css"; // during development
 import "rsuite/dist/rsuite.css";
 import React from 'react';
 import ReactDOM from 'react-dom/client';

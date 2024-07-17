@@ -1208,10 +1208,6 @@ input[type="range"]::-ms-fill-lower {
   right: 0.375rem;
 }
 
-.right-2 {
-  right: 0.5rem;
-}
-
 .right-3 {
   right: 0.75rem;
 }
@@ -1246,10 +1242,6 @@ input[type="range"]::-ms-fill-lower {
 
 .top-2\.5 {
   top: 0.625rem;
-}
-
-.top-20 {
-  top: 5rem;
 }
 
 .top-3 {
@@ -4346,6 +4338,10 @@ input[type="range"]::-ms-fill-lower {
   padding-top: 0px;
 }
 
+.pt-10 {
+  padding-top: 2.5rem;
+}
+
 .pt-2 {
   padding-top: 0.5rem;
 }
@@ -4503,6 +4499,10 @@ input[type="range"]::-ms-fill-lower {
 
 .leading-tight {
   line-height: 1.25;
+}
+
+.tracking-widest {
+  letter-spacing: 0.1em;
 }
 
 .\!text-danger {
@@ -5869,9 +5869,7 @@ input[type="range"]::-ms-fill-lower {
 
 #body {
   margin: 0;
-  font-family: 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
+  font-family: 'Lato', 'Roboto', 'Oxygen', 'Helvetica Neue', sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   background-color: rgb(203 213 225);
@@ -6312,10 +6310,6 @@ a:focus {
 .dropzone-container ul {
   text-align: center;
   font-size: smaller;
-}
-
-.notification {
-  background-color: rgba(0, 0, 0, 0.85);
 }
 
 .progress-bar {
