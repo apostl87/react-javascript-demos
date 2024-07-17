@@ -34,7 +34,7 @@ function ProductPortfolioMerchant() {
 
     // API connection and response
     const [databaseConnectionFailed, setDatabaseConnectionFailed] = useState(false);
-    const [waitingForResponse, setWaitingForReponse] = useState(true);
+    const [waitingForResponse, setWaitingForReponse] = useState(false);
 
     // Navigation
     const navigate = useNavigate();
@@ -167,8 +167,11 @@ function ProductPortfolioMerchant() {
     }
     if ((!isLoading && !usedUser)) {
         return (
-            <div className='flex flex-col items-center pt-7'>
-                <NotLoggedIn additionalHtml="For demonstration purposes, you can enter the page as a <strong>public test user</strong> by clicking the button below." />
+            <div className='flex flex-col items-center gap-3'>
+                <NotLoggedIn />
+                <div>
+                    For demonstration purposes, you can access the <strong>public portfolio</strong> (non-personalized) by clicking the button below.
+                </div>
                 <button type="button" onClick={() => { navigate("public-test-mode") }} className='button-test-mode'>
                     Enter Public Test Mode
                 </button>
@@ -182,13 +185,14 @@ function ProductPortfolioMerchant() {
     function getProducts() {
         const url = `${api_url}/merchant-products/${usedUser.sub}`
         const controller = new AbortController();
-        const { signal } = controller;
 
         setWaitingForReponse(true);
 
         setTimeout(() => {
             controller.abort("Timeout")
         }, 10000)
+
+        const { signal } = controller;
 
         request.get(url, { signal })
             .then(response => {
@@ -520,18 +524,14 @@ function ProductPortfolioMerchant() {
     return (
         <>
             <div id='portfolio-header' className='w-full pr-5 pl-5 pt-2'>
-                <div className='flex flex-wrap justify-between items-center'>
-                    {/* <h3 className='p-2 pl-0 text-left'>
-                        Retailer Product Portfolio
-                    </h3> */}
-                    {location.pathname.includes('public-test-mode') && <span className='text-xs'> (Public Test Mode) </span>}
-
+                <div className='flex flex-wrap justify-between items-center pt-2 pb-2'>
                     {location.pathname.includes('public-test-mode') &&
                         <button type="button" onClick={() => { navigate(".") }}
-                            className='button-test-mode text-wrap text-xs'>
+                            className='button-test-mode text-wrap'>
                             Leave Public Test Mode
                         </button>
                     }
+                    <hr />
                 </div>
 
                 {/* <div className='hr' /> */}
