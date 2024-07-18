@@ -675,7 +675,7 @@ const ProductPortfolioMerchant = (props) => {
 
                                 </div>
                             ) : (
-                                <div key={product.mp_id} className="productlist-item h-auto flex flex-row flex-shrink">
+                                <div key={product.mp_id} className="productlist-item overflow-scroll h-auto flex flex-row flex-shrink">
                                     <div className='flex flex-col flex-grow'>
                                         <div align='left' className='float-left w-full'>
                                             <p><strong>Product ID:</strong> {product.mp_id}</p>
