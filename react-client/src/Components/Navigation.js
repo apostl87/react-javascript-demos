@@ -126,7 +126,8 @@ const Navigation = () => {
                                     label={item.label}
                                     path={item.path}
                                     link={item.link}
-                                    children={item.children} />
+                                    children={item.children}
+                                    toggleMenu={toggleMenu} />
                             );
                         })}
                     </div>

@@ -2,7 +2,7 @@ import React, { useEffect, useState, useCallback } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { DownCaret, UpCaret } from './Misc.js';
 
-const NavmenuNew = ({ label, path, link, children }) => {
+const NavmenuNew = ({ label, path, link, children, toggleMenu }) => {
   const location = useLocation();
   const [isOpen, setIsOpen] = useState(false);
   const [forcedOpen, setForcedOpen] = useState(false);
@@ -54,7 +54,8 @@ const NavmenuNew = ({ label, path, link, children }) => {
 
           {(forcedOpen || isOpen) && children.map((subItem, index) => (
             <Link key={subItem.path} to={path + "/" + subItem.path}
-              className={`navigation-menu-item-child ${childIsActive(subItem.path) ? "active " : ""}`}>
+              className={`navigation-menu-item-child ${childIsActive(subItem.path) ? "active " : ""}`}
+              onClick={toggleMenu}>
               <div className=''>{subItem.label}</div>
             </Link>
           ))
@@ -62,7 +63,8 @@ const NavmenuNew = ({ label, path, link, children }) => {
         </div>
         :
         <Link to={path}
-          className={`navigation-menu-item ${isActive && " active"}`} >
+          className={`navigation-menu-item ${isActive && " active"}`}
+          onClick={toggleMenu}>
           {label}
         </Link>
       }
