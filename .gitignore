@@ -3,6 +3,7 @@ excluded
 testdata
 .testdata
 */build
+package-lock.json
 
 _devel-scripts
 
