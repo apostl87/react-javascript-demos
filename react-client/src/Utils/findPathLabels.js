@@ -1,38 +1,51 @@
 import { capitalizeLetters, cleanString } from './generic';
 
 const findPathLabels = (siteMap, segments_in, parentPath = "") => {
-    let segments = [...segments_in];
+    let pathSegments = [...segments_in];
 
     let paths = [];
+    let currentPath = `${parentPath}`
 
-    for (const page of siteMap) {
+    find: {
+        for (const page of siteMap) {
+            if (pathSegments[0] == page.path) {
 
-        if (segments[0] == page.path) {
-            // Menu item found
-            let currentPath = `${parentPath}/${page.path}`;
-            paths.push({ label: page.label, to: currentPath, link: page.link });
+                // Menu item found
+                currentPath = `${currentPath}/${page.path}`;
+                paths.push({ label: page.label, to: currentPath, link: page.link });
 
-            segments.shift();
+                pathSegments.shift();
 
-            if (segments.length > 0) {
-                if (page.children) {
-                    // Find menu sub items
-                    paths = paths.concat(findPathLabels(page.children, segments, currentPath));
-                } else {
-                    // Here, we deal with 3 more segments (even though more could exist) beyond the in-menu segments
-                    for (const segment of segments.slice(0, 3)) {
-                        const label = capitalizeLetters(cleanString(segment));
-                        console.log(label, segment);
-                        currentPath = `${currentPath}/${segment}`;
-                        paths.push({ label: label, to: currentPath, link: true });
-                    };
+                if (pathSegments.length > 0) {
+                    if (page.children) {
+                        // Find menu sub items
+                        paths = paths.concat(findPathLabels(page.children, pathSegments, currentPath));
+                    } else {
+                        paths = paths.concat(addNonMenuPaths(pathSegments, currentPath))
+                    }
                 }
+                break find;
             }
-
-            break;
         }
+        paths = paths.concat(addNonMenuPaths(pathSegments, currentPath))
     }
     return paths;
 };
 
+
 export default findPathLabels;
+
+
+const addNonMenuPaths = (pathSegments, currentPath) => {
+    // Here, we deal with 3 more path segments (even though more could exist) beyond the in-menu segments
+    let paths = [];
+
+    for (const segment of pathSegments.slice(0, 3)) {
+        const label = capitalizeLetters(cleanString(segment));
+        console.log(label, segment);
+        currentPath = `${currentPath}/${segment}`;
+        paths.push({ label: label, to: currentPath, link: true });
+    };
+
+    return paths;
+}
