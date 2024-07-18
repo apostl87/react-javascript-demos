@@ -42,7 +42,6 @@ const addNonMenuPaths = (pathSegments, currentPath) => {
 
     for (const segment of pathSegments.slice(0, 3)) {
         const label = capitalizeLetters(cleanString(segment));
-        console.log(label, segment);
         currentPath = `${currentPath}/${segment}`;
         paths.push({ label: label, to: currentPath, link: true });
     };

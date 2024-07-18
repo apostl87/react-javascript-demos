@@ -7,7 +7,7 @@ function SearchBar({ onInputChange }) {
                 id="searchStringInput"
                 className='my-auto h-8 w-auto rounded-md'
                 type="text"
-                placeholder="Search"
+                placeholder="Quick search"
                 onChange={(e) => onInputChange(e.target.value)}
             />
 

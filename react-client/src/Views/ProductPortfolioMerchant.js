@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { Navigate, useNavigate, useLocation } from 'react-router-dom';
 import { Tooltip } from 'react-tooltip';
 import { useAuth0 } from "@auth0/auth0-react";
@@ -65,9 +65,9 @@ const ProductPortfolioMerchant = (props) => {
     const [tooltipState, setTooltipState] = useState(['', '']); // [name of input field, tooltip text]
 
     // Search filter
-    const [isFiltered, setIsFiltered] = useState(false)
     const [searchString, setSearchString] = useState('')
-    const [filteredProducts, setFilteredProducts] = useState([])
+    const isFiltered = useMemo(() => { return !!searchString.trim() }, [searchString])
+    const filteredProducts = useMemo(filterProducts, [searchString, products])
 
     // Deleting
     const [deleteOneModalIsOpen, setDeleteOneModalIsOpen] = useState(false);
@@ -79,7 +79,6 @@ const ProductPortfolioMerchant = (props) => {
     const [pendingActionOnDismiss, setPendingActionOnDismiss] = useState(() => () => { return false; });
     const [dismissModalIsOpen, setDismissModalIsOpen] = useState(false);
     const dismissModalText = `Are you sure you want to dismiss your unsaved changes to the product "${editedProduct.mp_name}" (Product ID: ${editedProduct.mp_id})?`
-    const unsavedChanges = () => { return (Object.keys(editedProduct).length > 0 && !deepEqual(editedProduct, products[editedIndex])) }
 
     // Creating (products)
     const [createModalIsOpen, setCreateModalIsOpen] = useState(false);
@@ -130,11 +129,6 @@ const ProductPortfolioMerchant = (props) => {
         }
     }, [usedUser])
 
-    // Filtering: Filter whenever products change
-    useEffect(() => {
-        filterProducts(products, searchString, setIsFiltered)
-    }, [products]);
-
     // Pagination: Go back one page if current page is greater than number of pages
     useEffect(() => {
         if (currentPage > nPages) {
@@ -161,16 +155,17 @@ const ProductPortfolioMerchant = (props) => {
     }, [editedProduct.mp_image_url]);
 
     // Dismiss changes
-    useEffect(() => {
-        if (unsavedChanges() && !pendingActionOnDismiss()) {
-            setDismissModalIsOpen(true)
-            setPendingActionOnDismiss(() => () => {
-                setEditedProduct({})
-                setEditedIndex(-1)
-                return true
-            })
-        }
-    }, [unsavedChanges])
+    // useEffect(() => {
+    //     console.log("called");
+    //     if (unsavedChanges() && !pendingActionOnDismiss()) {
+    //         setDismissModalIsOpen(true)
+    //         setPendingActionOnDismiss(() => () => {
+    //             setEditedProduct({})
+    //             setEditedIndex(-1)
+    //             return true
+    //         })
+    //     }
+    // }, [unsavedChanges()])
 
     // Hide tooltip after appearTimeTooltip milliseconds
     const appearTimeTooltip = 3500;
@@ -225,6 +220,7 @@ const ProductPortfolioMerchant = (props) => {
         request.get(url, { signal })
             .then(response => {
                 processProductData(response.data);
+                //console.log(JSON.stringify(response.data));
             })
             .catch(error => {
                 console.error(error);
@@ -243,7 +239,7 @@ const ProductPortfolioMerchant = (props) => {
         request.patch(url, body)
             .then(response => {
                 let newProducts = [...products];
-                newProducts[editedIndex] = response.data[0]
+                newProducts[editedIndex] = response.data[0];
                 setProducts(newProducts);
                 addNotification(`"${editedProduct.mp_name}" (ID: ${p_id}) modified.`);
                 setEditedProduct({});
@@ -324,7 +320,7 @@ const ProductPortfolioMerchant = (props) => {
             });
     }
 
-    //// Helper functions for API calls
+    //// Helper functions
     function processProductData(data) {
         const newProducts = mapProductData(data)
         setProducts(newProducts);
@@ -341,50 +337,50 @@ const ProductPortfolioMerchant = (props) => {
                 mp_price: data.mp_price,
                 mp_weight_kg: data.mp_weight_kg,
                 mp_c_id_production: data.mp_c_id_production ? data.mp_c_id_production : "null",
+                c_name: data.c_name,
             };
         });
         return (products);
     }
 
-    function findCountryNameById(countries, c_id) {
-        if (countries.length > 0) {
-            let matchingCountry = countries.filter(country => country.c_id === c_id)[0]
-            if (matchingCountry) {
-                return matchingCountry.c_name;
-            } else {
-                return "";
-            }
-        } else {
-            return "Loading...";
-        }
-    }
+    // function findCountryNameById(countries, c_id) {
+    //     if (countries.length > 0) {
+    //         let matchingCountry = countries.filter(country => country.c_id === c_id)[0]
+    //         if (matchingCountry) {
+    //             return matchingCountry.c_name;
+    //         } else {
+    //             return "";
+    //         }
+    //     } else {
+    //         return "Loading...";
+    //     }
+    // }
 
-    function filterProducts(products, searchString, setFilteredFlag) {
-        setSearchString(searchString);
-        if (!searchString.trim()) {
-            setFilteredFlag(false);
-            setFilteredProducts(products);
+    function filterProducts() {
+        if (!isFiltered) {
+            return products;
         } else {
-            setFilteredFlag(true);
-            setFilteredProducts(products.filter(product => {
+            return (products.filter(product => {
                 for (let attribute in product) {
-                    if (typeof product[attribute] === 'string') {
-                        if (product[attribute].toLowerCase().includes(searchString.toLowerCase())) {
-                            return true;
-                        }
-                    } else {
-                        if (String(product[attribute]).toLowerCase().includes(searchString.toLowerCase())) {
-                            return true;
-                        }
+                    if (String(product[attribute]).toLowerCase().includes(searchString.toLowerCase())) {
+                        return true;
                     }
+                }
+                if (product.mp_id == editedProduct.mp_id) {
+                    return true;
                 }
             }))
         }
     }
 
+    const unsavedChanges = () => {
+        return (Object.keys(editedProduct).length > 0 && !deepEqual(editedProduct, products[editedIndex]))
+    }
+
+
     //// Callback functions
     function handleEditClick(product, force = false) {
-        if (unsavedChanges()) {
+        if (force == false && unsavedChanges()) {
             // Open modal if usedUser is usedUser has unsaved changes on a product
             setPendingActionOnDismiss(() => () => startEditingProduct(product));
             setDismissModalIsOpen(true);
@@ -435,7 +431,6 @@ const ProductPortfolioMerchant = (props) => {
             setTooltipState([tooltipAnchorId, formatInfo]);
             setTooltipIsOpen(true);
         }
-
         setEditedProduct({ ...editedProduct, [id]: value });
     }
 
@@ -444,7 +439,7 @@ const ProductPortfolioMerchant = (props) => {
         setPreviewImageButtonEnabled(!!e.target.value);
     }
 
-    function handleLoadImageClicked(e) {
+    function handleLoadImageClick(e) {
         setEditedProduct({ ...editedProduct, mp_image_url: manualImageUrl });
         setPreviewImageButtonEnabled(false);
     }
@@ -452,12 +447,12 @@ const ProductPortfolioMerchant = (props) => {
     function handleDismissModalConfirmed() {
         setDismissModalIsOpen(false);
         setEditedProduct({});
-        setEditedIndex(-1);
         pendingActionOnDismiss();
     }
 
-    function handlePaginationBarClick(value) {
+    function handlePaginationBarClick(value, force = false) {
         if (unsavedChanges()) {
+            // Open modal if usedUser is usedUser has unsaved changes on a product
             setPendingActionOnDismiss(() => () => setCurrentPage(value));
             setDismissModalIsOpen(true)
         } else {
@@ -465,7 +460,7 @@ const ProductPortfolioMerchant = (props) => {
         }
     }
 
-    function handleCreateClicked(e) {
+    function handleCreateClick(e, force = false) {
         if (unsavedChanges()) {
             // Open modal if usedUser is usedUser has unsaved changes on a product
             setPendingActionOnDismiss(() => () => setCreateModalIsOpen(true));
@@ -573,7 +568,7 @@ const ProductPortfolioMerchant = (props) => {
 
                 <div className='flex flex-wrap flex-col sm:flex-row sm:items-center items-start pb-2'>
                     <div className='flex-auto flex flex-row justify-start'>
-                        <button onClick={handleCreateClicked} disabled={maxProductsReached}
+                        <button onClick={handleCreateClick} disabled={maxProductsReached}
                             title={maxProductsReached ? `You reached the maximum number of products (limit: ${config.maxProductsPerUser}` : ''}
                             className='button-new-product flex justify-between items-center my-auto w-auto gap-2 text-nowrap'>
                             <span>+</span>
@@ -581,7 +576,7 @@ const ProductPortfolioMerchant = (props) => {
                         </button>
                     </div>
                     <div className='flex-auto flex flex-row justify-center'>
-                        <SearchBar onInputChange={(val) => filterProducts(products, val, setIsFiltered)} />
+                        <SearchBar onInputChange={(val) => setSearchString(val.trim())} />
                     </div>
                     <div className='flex-auto flex flex-row justify-end'>
                         <button onClick={() => handleDeleteAllClick()}
@@ -626,7 +621,7 @@ const ProductPortfolioMerchant = (props) => {
                                                     <input type="textarea" rows="2" id="mp_image_url" className='overflow-scroll h-40'
                                                         value={manualImageUrl} onChange={handleManualImageUrlChanged}
                                                         placeholder="Enter or paste URL here (http://...)" />
-                                                    <button type="button" onClick={handleLoadImageClicked} disabled={previewImageButtonEnabled ? false : true}
+                                                    <button type="button" onClick={handleLoadImageClick} disabled={previewImageButtonEnabled ? false : true}
                                                         className={(!previewImageButtonEnabled ? 'button-disabled ' : '') + 'button-standard-inline pb-0.5'}>
                                                         Load
                                                     </button>
@@ -680,7 +675,7 @@ const ProductPortfolioMerchant = (props) => {
                                         <div align='left' className='float-left w-full'>
                                             <p><strong>Product ID:</strong> {product.mp_id}</p>
                                             <p><strong>Product Name:</strong> {product.mp_name}</p>
-                                            <p><strong>Production&nbsp;Country:</strong> {findCountryNameById(countries, product.mp_c_id_production)}</p>
+                                            <p><strong>Production&nbsp;Country:</strong> {product.c_name}</p>
                                             <p><strong>Color:</strong>
                                                 <span className='color-show' style={{ display: 'inline-block', backgroundColor: product.mp_color }}></span>
                                                 <span className='text-xs'>{colorText(product.mp_color)}</span>
