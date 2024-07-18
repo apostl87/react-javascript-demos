@@ -8,11 +8,11 @@ const PrivacyPolicy = () => {
     const MyMarkdown = () => {
         return (
                 <Markdown>
-                    {'<a name="deutsch" />' + 
-                     mdPrivacyPolicyDE +
+                    {'<a name="english" />' + 
+                     mdPrivacyPolicyEN +
                      '<br/>' +
-                     '<a name="english" />' + 
-                     mdPrivacyPolicyEN}
+                     '<a name="deutsch" />' + 
+                     mdPrivacyPolicyDE}
                 </Markdown >
         )
     }
