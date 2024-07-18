@@ -3,9 +3,9 @@ import React from 'react';
 const SpaceGame = () => {
     return (
         <div align='center' className='p-5'>
-            <h3 className='p-2'>
+            <h5 className='p-2'>
                 Arcade Space Shooter in JavaScript
-            </h3>
+            </h5>
             <iframe title="Space Game" src="/SpaceGame/SpaceGame.html" width="610" height="420" />
             <div className='p-3'>
                 <table className='table-space-game'>

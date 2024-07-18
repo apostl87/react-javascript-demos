@@ -1,0 +1,159 @@
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.content {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+}
+
+.calculator {
+    font-family: Arial, sans-serif;
+    font-weight: bold;
+    max-width: 400px;
+    min-width: 300px;
+    margin: 0 auto;
+    padding: 0px;
+    color: white;
+    border-radius: 10px;
+    overflow: hidden;
+    background-color: hsl(0, 0%, 20%);
+}
+
+.calculator textarea{
+    width: 110%;
+    outline-width: 0;
+    resize: none;
+    margin-bottom: 10px;
+    overflow: hidden;
+}
+
+#display-parent {
+    width: 100%;
+    vertical-align: middle;
+    background-color: hsl(0, 0%, 20%);
+}
+
+#display {
+    background-color: hsl(0, 0%, 20%);
+    width: 93%;
+    padding: 10px;
+    font-size: 1.8rem;
+    font-family: monospace;
+    border: 0;
+    color: white;
+    text-align: right;
+    display: flex;
+    height: 100px;
+}
+
+#display:active {
+    border: 0;
+    outline: 0;
+}
+
+#result {
+    background-color: hsl(0, 0%, 25%);
+    width: 95%;
+    padding: 10px;
+    font-size: 1.4rem;
+    border: 0;
+    color: white;
+    text-align: right;
+}
+
+#result-parent {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    vertical-align: middle;
+    background-color: hsl(0, 0%, 25%);
+}
+
+.result-register {
+    background-color: hsl(0, 0%, 25%);
+    padding: 5px 15px;
+}
+
+#keys {
+    display: grid;
+    flex-shrink: 1;
+    grid-template-columns: repeat(4, 1fr);
+    grid-gap: 5px;
+    padding: 10px;
+    border-radius: 10px;
+}
+
+.btn {
+    padding: 10px;
+    font-size: 1.2em;
+    cursor: pointer;
+    background-color: hsl(0, 0%, 30%);
+    text-align: center;
+    border-radius: 5px;
+}
+
+.btn:hover {
+    background-color: hsl(0, 0%, 40%);
+}
+
+.btn:active {
+    background-color: hsl(0, 0%, 50%);
+}
+
+.btn-op {
+    padding: 10px;
+    font-size: 1.2em;
+    cursor: pointer;
+    background-color: hsl(191, 14%, 30%);
+    text-align: center;
+    border-radius: 5px;
+}
+
+.btn-op:hover {
+    background-color: hsl(191, 14%, 50%);
+}
+
+.btn-op:active {
+    background-color: hsl(191, 14%, 60%);
+}
+
+.btn-calc {
+    padding: 10px;
+    font-size: 1.2em;
+    cursor: pointer;
+    background-color: hsl(191, 44%, 30%);
+    text-align: center;
+    border-radius: 5px;
+}
+
+.btn-calc:hover {
+    background-color: hsl(191, 44%, 50%);
+}
+
+.btn-calc:active {
+    background-color: hsl(191, 44%, 60%);
+}
+
+.manual {
+    max-width: 400px;
+}
+
+.manual td { 
+    background-color: hsl(0, 0%, 80%);
+    padding: 4px;
+    border-radius: 5px;
+}
+
+.manual-table {
+    padding: 10px;
+    border-radius: 10px;
+}
+
+.manual-key {
+    font-weight: bold;
+}
