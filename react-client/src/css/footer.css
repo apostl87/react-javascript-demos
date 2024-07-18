@@ -1,8 +1,7 @@
 .footer {
-    background-color: rgb(15 23 42);
     color: #fff;
-    padding: 0px 0;
     bottom: 0;
+    padding-top: 40px;
     text-align: center;
     position: relative;
     width: 100%;
@@ -11,6 +10,11 @@
 
 .footer a {
     text-decoration: none;
+}
+
+.footer-container {
+    background-color: rgb(15 23 42);
+    padding-bottom: 1px;
 }
 
 .footer-content {
