@@ -1,7 +1,7 @@
 import "./css/output.css";
 import "./css/mainstyles.css"; // during development
 import "rsuite/dist/rsuite.css";
-import React from 'react';
+import React, { StrictMode } from 'react';
 import ReactDOM from 'react-dom/client';
 import { BrowserRouter as Router, Link, Routes, Route } from 'react-router-dom';
 import App from './App';
@@ -10,12 +10,13 @@ import Auth0ProviderWithHistory from './Components/auth0-provider-with-history';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
-
-  <Router>
-    <Auth0ProviderWithHistory>
+  <StrictMode>
+    <Router>
+      <Auth0ProviderWithHistory>
         <App />
-    </Auth0ProviderWithHistory>
-  </Router>
+      </Auth0ProviderWithHistory>
+    </Router>
+  </StrictMode>
 );
 
 reportWebVitals();
