@@ -1,4 +1,5 @@
 import React from 'react'
+import { Link } from 'react-router-dom';
 import '../css/banner.css'
 import BrandImage from '../media/brand_circular.png'
 
@@ -6,7 +7,9 @@ const Banner = () => {
     return (
         <div id='banner'>
             <div className='left-5 top-2 pr-2'>
-                <img src={BrandImage} width={50} />
+                <Link to='/home'>
+                    <img src={BrandImage} width={50} />
+                </Link>
             </div>
             <div>
                 <div className='text-white font-bold text-large tracking-widest'>
