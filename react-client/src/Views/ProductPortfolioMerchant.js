@@ -22,16 +22,15 @@ import { hexToRgb } from '../Utils/generic';
 import config from '../config';
 
 const api_url = process.env.REACT_APP_BACKEND_API_URL;
-const publicTestUserNickname = process.env.REACT_APP_PUBLIC_TEST_USER;
+const PUBLIC_TEST_USER = process.env.REACT_APP_PUBLIC_TEST_USER;
 
 // Code needs a major overhaul
 // - Refactoring of Components
 // - Refactoring of certain functions
 
-const ProductPortfolioMerchant = (props) => {
-    // Public test mode (Props does not work for this component for an unknown reason)
-    const [publicTestMode, setPublicTestMode] = useState(false)
+const WEIGHT_UNIT = 'kg';
 
+const ProductPortfolioMerchant = (props) => {
     // Auth0 hook
     const { user, isLoading } = useAuth0();
 
@@ -42,9 +41,6 @@ const ProductPortfolioMerchant = (props) => {
     // Navigation
     const navigate = useNavigate();
     const location = useLocation();
-
-    // State for switching between public test mode user and actually logged in user
-    const [usedUser, setUsedUser] = useState(null);
 
     //// Variables, hooks, and basic functionality
     // Data from API calls
@@ -66,7 +62,7 @@ const ProductPortfolioMerchant = (props) => {
 
     // Search filter
     const [searchString, setSearchString] = useState('')
-    const isFiltered = useMemo(() => { return !!searchString.trim() }, [searchString])
+    const isFiltered = !!searchString.trim()
     const filteredProducts = useMemo(filterProducts, [searchString, products])
 
     // Deleting
@@ -95,29 +91,16 @@ const ProductPortfolioMerchant = (props) => {
     const indexFirstProduct = Math.max(0, (currentPage - 1) * productsPerPage)
     const currentProducts = filteredProducts.slice(indexFirstProduct, indexLastProduct + 1);
 
-    // Other
-    const WEIGHT_UNIT = 'kg';
-
-    //// Effects
-    // Check for public test mode, since props do not work for an unknown reason
-    useEffect(() => {
-        const pathParts = location.pathname.split('/');
-        setPublicTestMode(pathParts[pathParts.length - 1] == 'public-test-mode')
-    }, [location.pathname])
+    // Public test mode (Props does not work for this component for an unknown reason)
+    const publicTestMode = location.pathname.split('/').slice(-1)[0] === 'public-test-mode';
 
     // Use actually logged in user, or public test mode user, or use falsy user
-    useEffect(() => {
-        if (user) {
-            setUsedUser(user)
-            // Public test mode is not intended for logged in users
-            if (publicTestMode) {
-                addNotification('Automatically left public test mode (You are logged in).')
-                navigate(".");
-            }
+    // Memo for switching between public test mode user and actually logged in user
+    const usedUser = useMemo(() => {
+        if (user || !publicTestMode) {
+            return user // Here, usedUser is the logged in used or falsy
         } else if (publicTestMode) {
-            setUsedUser({ 'sub': publicTestUserNickname })
-        } else { // Here, usedUser is falsy
-            setUsedUser(user)
+            return { 'sub': PUBLIC_TEST_USER } // pseudo user
         }
     }, [user, publicTestMode])
 
@@ -154,6 +137,21 @@ const ProductPortfolioMerchant = (props) => {
         if (imageUrl) doAsync();
     }, [editedProduct.mp_image_url]);
 
+    // Hide tooltip after appearTimeTooltip milliseconds
+    const appearTimeTooltip = 3500;
+    useEffect(() => {
+        if (tooltipIsOpen) setTimeout(() => setTooltipIsOpen(false), appearTimeTooltip)
+    }, [tooltipIsOpen])
+
+    // Disabling public test mode if user is logged in
+    useEffect(() => {
+        if (user && publicTestMode) {
+            addNotification('Automatically left public test mode (You are logged in).')
+            navigate(".");
+            return;
+        }
+    }, [user, publicTestMode]);
+
     // Dismiss changes
     // useEffect(() => {
     //     console.log("called");
@@ -167,11 +165,6 @@ const ProductPortfolioMerchant = (props) => {
     //     }
     // }, [unsavedChanges()])
 
-    // Hide tooltip after appearTimeTooltip milliseconds
-    const appearTimeTooltip = 3500;
-    useEffect(() => {
-        if (tooltipIsOpen) setTimeout(() => setTooltipIsOpen(false), appearTimeTooltip)
-    }, [tooltipIsOpen])
 
     //// Conditional returns
     if (isLoading || waitingForResponse) {
