@@ -108,7 +108,6 @@ const ProductPortfolioMerchant = (props) => {
 
     // Use actually logged in user, or public test mode user, or use falsy user
     useEffect(() => {
-
         if (user) {
             setUsedUser(user)
             // Public test mode is not intended for logged in users
@@ -483,7 +482,6 @@ const ProductPortfolioMerchant = (props) => {
 
     function deleteNotification(index) {
         setNotifications([...notifications.filter((_, i) => i !== index)])
-        console.log("deleteNotification");
     }
 
     function startEditingProduct(product) {
@@ -606,10 +604,10 @@ const ProductPortfolioMerchant = (props) => {
 
             {filteredProducts.length > 0 ?
                 (
-                    <div className="product-list">
+                    <div className="productlist">
                         {currentProducts.map((product) => (
                             (editedProduct.mp_id === product.mp_id) ? (
-                                <div key={product.mp_id} id="product-item-editing" className="product-item overflow-scroll w-full flex flex-col">
+                                <div key={product.mp_id} className="productlist-item editing overflow-scroll w-full flex flex-col">
                                     <form onSubmit={handleSubmit}>
                                         <p className='product-details-row'>
                                             <strong>Product ID:</strong>&nbsp;{editedProduct.mp_id}
@@ -677,7 +675,7 @@ const ProductPortfolioMerchant = (props) => {
 
                                 </div>
                             ) : (
-                                <div key={product.mp_id} className="product-item h-auto flex flex-row flex-shrink">
+                                <div key={product.mp_id} className="productlist-item h-auto flex flex-row flex-shrink">
                                     <div className='flex flex-col flex-grow'>
                                         <div align='left' className='float-left w-full'>
                                             <p><strong>Product ID:</strong> {product.mp_id}</p>

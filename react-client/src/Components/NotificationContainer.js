@@ -15,8 +15,7 @@ const NotificationContainer = ({ notifications, deleteNotification, className })
             // Automatically hide after 5 seconds
             setTimeout(() => {
                 banner.classList.add('hidden');
-            }, 5000);
-            console.log(notifications.length);
+            }, 3500);
         }
         // Delete old notifications to avoid overflow
         if (notifications.length > 10) {

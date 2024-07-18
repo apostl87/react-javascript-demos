@@ -10,7 +10,7 @@ const Breadcrumb = ({ paths }) => {
     }
     return (
         <nav className="breadcrumb">
-            <ul className="breadcrumb-list">
+            <ul id="breadcrumb-list" className="breadcrumb-list">
                 {paths.map((path, index) => {
                     return (
                         <li key={index} className="breadcrumb-item">

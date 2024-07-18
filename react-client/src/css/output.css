@@ -6012,7 +6012,7 @@ a:focus {
   color: #333;
 }
 
-.product-list {
+.productlist {
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
@@ -6021,7 +6021,7 @@ a:focus {
   /* align-items: last baseline; */
 }
 
-.product-item {
+.productlist-item {
   background: #e5e5e5;
   border: 1px solid #838383;
   border-radius: 5px;
@@ -6033,7 +6033,7 @@ a:focus {
   gap: 15px;
 }
 
-#product-item-editing {
+#productlist-item-editing {
   height: auto;
   background: #ffffff;
 }
@@ -6097,7 +6097,7 @@ a:focus {
   max-width: 253px;
 }
 
-.product-item p {
+.productlist-item p {
   margin: 5px 0;
   width: 100%;
 }
