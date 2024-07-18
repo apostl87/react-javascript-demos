@@ -15,7 +15,7 @@ const Breadcrumb = ({ paths }) => {
                     return (
                         <li key={index} className="breadcrumb-item">
                             {index > 0 && <RightCaret size={5} />}
-                            <Link to={path.link ? path : '#'}>
+                            <Link to={path.link ? path.to : '#'}>
                                 {path.label}
                             </Link>
                         </li>
