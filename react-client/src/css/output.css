@@ -4074,11 +4074,13 @@ a:focus {
   background-color: #406992;
 }
 
-.button-standard.disabled {
+.button-standard.disabled,
+.button-standard-inline.disabled {
   background-color: #808080;
 }
 
-.button-standard.disabled:hover {
+.button-standard.disabled:hover,
+.button-standard-inline.disabled:hover {
   background-color: #808080;
 }
 

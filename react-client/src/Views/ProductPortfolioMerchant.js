@@ -121,21 +121,10 @@ const ProductPortfolioMerchant = (props) => {
 
     // Pagination: Go back to first page when search string changes
     useEffect(() => {
-        setCurrentPage(1)
-    }, [searchString])
-
-    // Verify image url whenever imageUrl changes to value unequal to ''
-    useEffect(() => {
-        let imageUrl = editedProduct.mp_image_url
-        async function doAsync() {
-            const isValid = await verifyUrlImage(imageUrl);
-            if (!isValid) {
-                setEditedProduct({ ...editedProduct, mp_image_url: 'invalid' });
-                console.log('Invalid image url');
-            }
+        if (currentPage != 1) {
+            setCurrentPage(1)
         }
-        if (imageUrl) doAsync();
-    }, [editedProduct.mp_image_url]);
+    }, [searchString])
 
     // Hide tooltip after appearTimeTooltip milliseconds
     const appearTimeTooltip = 3500;
@@ -433,7 +422,17 @@ const ProductPortfolioMerchant = (props) => {
     }
 
     function handleLoadImageClick(e) {
-        setEditedProduct({ ...editedProduct, mp_image_url: manualImageUrl });
+        // Verify image url whenever imageUrl changes to value unequal to ''
+        async function doVerify() {
+            const isValid = await verifyUrlImage(manualImageUrl);
+            if (!isValid) {
+                setEditedProduct({ ...editedProduct, mp_image_url: 'invalid' });
+                console.log('Invalid image url');
+            } else {
+                setEditedProduct({ ...editedProduct, mp_image_url: manualImageUrl });
+            }
+        }
+        if (manualImageUrl) doVerify();
         setPreviewImageButtonEnabled(false);
     }
 
@@ -475,6 +474,8 @@ const ProductPortfolioMerchant = (props) => {
     function startEditingProduct(product) {
         setEditedIndex(products.indexOf(product));
         setEditedProduct({ ...product });
+        setManualImageUrl("");
+        setPreviewImageButtonEnabled(false);
     }
 
     function selectCountry(countries) {
@@ -615,7 +616,7 @@ const ProductPortfolioMerchant = (props) => {
                                                         value={manualImageUrl} onChange={handleManualImageUrlChanged}
                                                         placeholder="Enter or paste URL here (http://...)" />
                                                     <button type="button" onClick={handleLoadImageClick} disabled={previewImageButtonEnabled ? false : true}
-                                                        className={(!previewImageButtonEnabled ? 'button-disabled ' : '') + 'button-standard-inline pb-0.5'}>
+                                                        className={(!previewImageButtonEnabled ? 'disabled ' : '') + 'button-standard-inline pb-0.5'}>
                                                         Load
                                                     </button>
                                                 </div>
