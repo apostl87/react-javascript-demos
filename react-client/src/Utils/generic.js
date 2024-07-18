@@ -22,8 +22,22 @@ const validateEmail = (email) => {
     );
 };
 
+function cleanString(str) {
+    let cleanedStr = str.replace(/[_\-!@#\$%\^\&\*\(\)\+=\[\]\{\};:'",.<>\/?\\|`~]/g, ' ');
+    cleanedStr = cleanedStr.replace(/\s+/g, ' '); // shorten any whitespace chain to one
+    return cleanedStr.trim();
+}
+
+function capitalizeLetters(str) {
+    return str.split(' ')
+              .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+              .join(' ');
+}
+
 module.exports = {
     hexToRgb,
     rgbToHex,
     validateEmail,
+    capitalizeLetters,
+    cleanString,
 }

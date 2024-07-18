@@ -134,7 +134,7 @@ const Navigation = () => {
             }
 
             {/* Breadcrumb */}
-            {findPathLabels(siteMap, pathSegments).length > 0 &&
+            {pathSegments.length > 0 &&
                 <>
                     <div style={breadcrumbStyle}>
                         <Breadcrumb paths={findPathLabels(siteMap, pathSegments)} />
