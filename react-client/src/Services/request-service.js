@@ -3,6 +3,9 @@ import axios from "axios";
 /* @internal */
 import TokenService from "./token-service";
 
+// This class is used to register multiple requests and,
+// in case of an authentication error, to receive a new token by calling the token service.
+
 class Request {
     constructor() {
         this.baseURL = process.env.REACT_APP_BACKEND_API_URL;

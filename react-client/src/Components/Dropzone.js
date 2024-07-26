@@ -1,6 +1,6 @@
 import React, { useCallback, useMemo } from 'react';
 import { useDropzone } from 'react-dropzone';
-import iconPhoto from '../media/icon-photo.svg'
+import iconPhoto from '../assets/icon-photo.svg'
 
 export default function Dropzone(props) {
     // Custom onDrop hook for dropzone

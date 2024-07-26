@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo, useRef } from 'react';
 import { Navigate, useNavigate, useLocation } from 'react-router-dom';
 import { Tooltip } from 'react-tooltip';
 import { useAuth0 } from "@auth0/auth0-react";
@@ -59,6 +59,7 @@ const ProductPortfolioMerchant = (props) => {
     // Tooltip
     const [tooltipIsOpen, setTooltipIsOpen] = useState(false);
     const [tooltipState, setTooltipState] = useState(['', '']); // [name of input field, tooltip text]
+    const tooltipTimeoutRef = useRef(null)
 
     // Search filter
     const [searchString, setSearchString] = useState('')
@@ -112,25 +113,19 @@ const ProductPortfolioMerchant = (props) => {
         }
     }, [usedUser])
 
-    // Pagination: Go back one page if current page is greater than number of pages
+    // Pagination: Go back one page if current page is greater than number of pages (suboptimal effect)
     useEffect(() => {
         if (currentPage > nPages) {
             setCurrentPage(Math.max(currentPage - 1, 1))
         }
     }, [filteredProducts]);
 
-    // Pagination: Go back to first page when search string changes
+    // Pagination: Go back to first page when search string changes (suboptimal effect)
     useEffect(() => {
         if (currentPage != 1) {
             setCurrentPage(1)
         }
     }, [searchString])
-
-    // Hide tooltip after appearTimeTooltip milliseconds
-    const appearTimeTooltip = 3500;
-    useEffect(() => {
-        if (tooltipIsOpen) setTimeout(() => setTooltipIsOpen(false), appearTimeTooltip)
-    }, [tooltipIsOpen])
 
     // Disabling public test mode if user is logged in
     useEffect(() => {
@@ -165,14 +160,14 @@ const ProductPortfolioMerchant = (props) => {
     }
     if (databaseConnectionFailed) {
         return (
-            <div className='flex flex-col items-center pt-7'>
+            <div className='flex flex-col items-center pt-7 px-5'>
                 <div>Failed to connect to the database. Please try again later.</div>
             </div>
         )
     }
     if ((!isLoading && !usedUser)) {
         return (
-            <div className='flex flex-col items-center gap-3'>
+            <div className='flex flex-col items-center gap-3 px-5'>
                 <NotLoggedIn />
                 <div>
                     For demonstration purposes, you can access the <strong>public portfolio</strong> (non-personalized) by clicking the button below.
@@ -359,6 +354,12 @@ const ProductPortfolioMerchant = (props) => {
         return (Object.keys(editedProduct).length > 0 && !deepEqual(editedProduct, products[editedIndex]))
     }
 
+    const openTooltip = () => {
+        setTooltipIsOpen(true);
+        // Hide tooltip after a delay
+        clearTimeout(tooltipTimeoutRef.current)
+        tooltipTimeoutRef.current = setTimeout(() => setTooltipIsOpen(false), 3500)
+    }
 
     //// Callback functions
     function handleEditClick(product, force = false) {
@@ -411,7 +412,7 @@ const ProductPortfolioMerchant = (props) => {
 
         if (tooltipAnchorId) {
             setTooltipState([tooltipAnchorId, formatInfo]);
-            setTooltipIsOpen(true);
+            openTooltip();
         }
         setEditedProduct({ ...editedProduct, [id]: value });
     }
@@ -503,6 +504,7 @@ const ProductPortfolioMerchant = (props) => {
         setEditedProduct({ ...editedProduct, mp_image_url: url });
         setManualImageUrl(url);
         setUploadProgress(-1);
+        setPreviewImageButtonEnabled(false);
     }
 
     //// Rendering functions
@@ -510,7 +512,7 @@ const ProductPortfolioMerchant = (props) => {
         let disabled, style;
         if (id == 'mp_color_code') {
             disabled = true
-            style = { border: 'none' }
+            style = { border: 'none', width: '250px' }
         } else {
             disabled = false
             style = {}
@@ -552,7 +554,7 @@ const ProductPortfolioMerchant = (props) => {
                 {publicTestMode &&
                     <div className='flex flex-wrap justify-start pt-2 pb-2'>
                         <button type="button" onClick={() => { navigate(".") }}
-                            className='button-test-mode text-wrap'>
+                            className='button-test-mode'>
                             Leave Public Test Mode
                         </button>
                     </div>
@@ -560,19 +562,15 @@ const ProductPortfolioMerchant = (props) => {
 
                 {/* <div className='hr' /> */}
 
-                <div className='flex flex-wrap flex-col sm:flex-row sm:items-center items-start pb-2'>
-                    <div className='flex-auto flex flex-row justify-start'>
+                <div className='flex flex-wrap flex-col justify-between sm:flex-row pb-2'>
+                    <SearchBar onInputChange={(val) => setSearchString(val.trim())} />
+                    <div className='flex flex-row flex-wrap justify-center gap-2'>
                         <button onClick={handleCreateClick} disabled={maxProductsReached}
                             title={maxProductsReached ? `You reached the maximum number of products (limit: ${config.maxProductsPerUser}` : ''}
                             className='button-new-product flex justify-between items-center my-auto w-auto gap-2 text-nowrap'>
                             <span>+</span>
                             <span>New product</span>
                         </button>
-                    </div>
-                    <div className='flex-auto flex flex-row justify-center'>
-                        <SearchBar onInputChange={(val) => setSearchString(val.trim())} />
-                    </div>
-                    <div className='flex-auto flex flex-row justify-end'>
                         <button onClick={() => handleDeleteAllClick()}
                             disabled={products.length == 0}
                             className='button-new-product flex items-center my-auto w-auto text-nowrap'>
@@ -622,7 +620,7 @@ const ProductPortfolioMerchant = (props) => {
                                                 </div>
                                             </div>
                                             <div className='flex-shrink'>
-                                                <img src={editedProduct.mp_image_url} alt="Invalid image URL" className="product-image mt-1.5" />
+                                                <img src={editedProduct.mp_image_url} alt="Invalid image URL" className="product-image editing mt-1.5" />
                                             </div>
                                         </div>
 

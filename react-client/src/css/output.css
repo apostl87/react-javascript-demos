@@ -3752,6 +3752,10 @@ input[type="range"]::-ms-fill-lower {
   scrollbar-width: none;
 }
 
+input::-webkit-inner-spin-button {
+  margin-left: 4px;
+}
+
 #body {
   margin: 0;
   font-family: 'Lato', 'Roboto', 'Oxygen', 'Helvetica Neue', sans-serif;
@@ -3926,10 +3930,17 @@ a:focus {
 
 .product-image {
   width: 100px;
-  height: 175px;
+  height: 150px;
   border-radius: 5px;
+  /* background-color: white; */
   flex: 1 1 auto;
   position: relative;
+  object-fit: contain;
+}
+
+.product-image.editing {
+  border: 1px solid #838383;
+  background-color: red;
 }
 
 .product-image[alt]:after {

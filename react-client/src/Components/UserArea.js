@@ -2,7 +2,7 @@ import { React, useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth0 } from "@auth0/auth0-react";
 import { MoonLoader } from "react-spinners";
-import iconUser from "../media/icon-user.png";
+import iconUser from "../assets/icon-user.png";
 
 export default function UserArea() {
     const { loginWithRedirect, logout, user, isLoading } = useAuth0();

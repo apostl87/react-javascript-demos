@@ -1,5 +1,6 @@
 .breadcrumb {
-    padding: 10px 1rem;
+    padding-left: 1rem;
+    padding-right: 1rem;
     background-color: #f8f9fa;
     border-radius: 5px;
     width: 100%;

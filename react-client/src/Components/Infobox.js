@@ -1,4 +1,4 @@
-import infoIcon from "../media/icon-info.svg";
+import infoIcon from "../assets/icon-info.svg";
 
 const Infobox = ({ statusCode, message }) => {
     let additionalClasses = "";

@@ -1,7 +1,7 @@
 import React from 'react'
 import { Link } from 'react-router-dom';
 import '../css/banner.css'
-import BrandImage from '../media/brand_circular.png'
+import BrandImage from '../assets/brand_circular.png'
 
 const Banner = () => {
     return (

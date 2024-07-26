@@ -38,15 +38,20 @@ if (process.env.NODE_ENV === 'development') {
 
 const Navigation = () => {
     const [isOpen, setIsOpen] = useState(false);
+    const breadcrumbRef = useRef(null);
     const navigationRef = useRef(null);
     const menuRef = useRef(null);
     const menuToggleRef = useRef(null);
-    const [height, setHeight] = useState(0);
+    const [navigationHeight, setNavigationHeight] = useState(0);
+    const [breadcrumbHeight, setBreadcrumbHeight] = useState(0);
     const location = useLocation();
     const pathSegments = location.pathname.split('/').filter(segment => segment !== "");
 
     // Open/close menu functions
     const toggleMenu = () => { setIsOpen(!isOpen) };
+
+    // Effect to get breadcrumb ref
+
 
     // Resize observers
     useEffect(() => {
@@ -54,23 +59,46 @@ const Navigation = () => {
         if (navigationRef.current) {
             resizeObserver.observe(navigationRef.current);
         }
-    })
+        if (breadcrumbRef.current) {
+            resizeObserver.observe(breadcrumbRef.current);
+        }
+        return () => resizeObserver.disconnect();
+    }, [navigationRef, breadcrumbRef])
+
     function onResize(entries) {
-        const entry = entries[0];
-        if (entry.contentRect.height + 2 * paddingTB != height) {
-            setHeight(entry.contentRect.height + 2 * paddingTB);
+        console.log("Nav Height", navigationHeight);
+        console.log(JSON.stringify(entries))
+        // Navigation bar
+        let entry = entries[0];
+        console.log("state", entry.contentRect.height + 2 * navigationPaddingTB);
+        if (entry.contentRect.height + 2 * navigationPaddingTB != navigationHeight) {
+            console.log("Setting nav height");
+            setNavigationHeight(entry.contentRect.height + 2 * navigationPaddingTB);
+        }
+        // Breadcrumb
+        entry = entries[1];
+        console.log("state bc", entry.contentRect.height + 2 * breadcrumbPaddingTB);
+        console.log(document.getElementById("breadcrumb").offsetHeight);
+        if (entry.contentRect.height + 2 * breadcrumbPaddingTB != breadcrumbHeight) {
+            setBreadcrumbHeight(entry.contentRect.height + 2 * breadcrumbPaddingTB);
+            console.log("Changed");
         }
     }
 
+
     // Styles that need to go here instead of the css files due to the resize observer
-    const paddingTB = 6
-    const navigationStyles = {
-        paddingTop: `${paddingTB}px`,
-        paddingBottom: `${paddingTB}px`,
+    const navigationPaddingTB = 6
+    const navigationStyle = {
+        paddingTop: `${navigationPaddingTB}px`,
+        paddingBottom: `${navigationPaddingTB}px`,
     }
+    const breadcrumbPaddingTB = 10
     const breadcrumbStyle = {
-        // top: `${height}px`,
+        paddingTop: `${breadcrumbPaddingTB}px`,
+        paddingBottom: `${breadcrumbPaddingTB}px`,
+        top: `${navigationHeight + 60}px`,
     }
+
 
     // Listener and callback function for closing the menu if clicked outside
     const closeIfClickedOutside = (e) => {
@@ -81,11 +109,11 @@ const Navigation = () => {
     };
     useEffect(() => {
         document.addEventListener("mousedown", closeIfClickedOutside);
-    })
+    }, [])
 
     return (
         <>
-            <nav ref={navigationRef} className='navigation' style={navigationStyles}>
+            <nav ref={navigationRef} className='navigation' style={navigationStyle}>
                 <div ref={menuToggleRef} className={`navigation-menu-toggle ${(isOpen ? 'open' : '')}`}
                     onClick={toggleMenu}>
                     {isOpen ? '✕' : '☰'}
@@ -111,8 +139,8 @@ const Navigation = () => {
 
             </nav >
 
-            {/* Divisor to block height used by the navigation bar */}
-            < div style={{ marginTop: `${height + 60}px` }}>
+            {/* Divisor to block height used by the navigation bar plus banner */}
+            < div style={{ marginTop: `${navigationHeight + 60}px` }}>
             </div>
 
             {/* Navigation menu */}
@@ -137,11 +165,9 @@ const Navigation = () => {
             {/* Breadcrumb */}
             {pathSegments.length > 0 &&
                 <>
-                    <div style={breadcrumbStyle}>
-                        <Breadcrumb paths={findPathLabels(siteMap, pathSegments)} />
-                    </div>
+                    <Breadcrumb refprop={breadcrumbRef} paths={findPathLabels(siteMap, pathSegments)} style={breadcrumbStyle} />
                     {/* Divisor to block height used by the breadcrumb */}
-                    < div style={{ marginTop: `${40}px` }}>
+                    < div style={{ marginTop: `${breadcrumbHeight}px`, marginBottom: '10px' }}>
                     </div>
                 </>
             }

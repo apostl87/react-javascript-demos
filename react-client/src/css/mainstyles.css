@@ -2,6 +2,8 @@
 @tailwind components;
 @tailwind utilities;
 
+input::-webkit-inner-spin-button { margin-left: 4px; } 
+
 #body {
   margin: 0;
   font-family: 'Lato', 'Roboto', 'Oxygen', 'Helvetica Neue', sans-serif;
@@ -159,16 +161,16 @@ a:focus {
 }
 
 .productlist-item {
-  background: #e5e5e5;
   border: 1px solid #838383;
   border-radius: 5px;
   padding: 15px;
   width: 425px;
   max-width: 100vw;
-  flex: 0 0 auto;
+  flex: 0 1 auto;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   display: flex;
   gap: 15px;
+  background: linear-gradient(0.25turn, rgba(9, 96, 237, 0.094), rgb(220, 220, 220));
 }
 
 .productlist-item.editing {
@@ -178,10 +180,16 @@ a:focus {
 
 .product-image {
   width: 100px;
-  height: 175px;
+  height: 150px;
   border-radius: 5px;
+  background-color: white;
   flex: 1 1 auto;
   position: relative;
+  object-fit: contain;
+}
+
+.product-image.editing {
+  border: 2px solid #838383;
 }
 
 .product-image[alt]:after {
@@ -293,6 +301,8 @@ a:focus {
   cursor: pointer;
   transition: background-color 0.1s;
   vertical-align: bottom;
+  width: 100%;
+  text-wrap: wrap;
 }
 
 .button-test-mode:hover {
@@ -325,40 +335,42 @@ a:focus {
   background-color: #406992;
 }
 
-.button-standard.disabled {
+.button-standard.disabled,
+.button-standard-inline.disabled {
   background-color: #808080;
 }
 
-.button-standard.disabled:hover {
+.button-standard.disabled:hover,
+.button-standard-inline.disabled:hover {
   background-color: #808080;
 }
 
 .pagination {
   display: flex;
+  gap: 5px;
   justify-content: center;
-  margin-top: 10px;
+  margin-top: 8px;
   margin-bottom: 10px;
+  align-items: center;
 }
 
 .button-pagination {
-  margin-right: 4px;
-  padding: 3px 10px 2px 10px;
+  padding: 4px 10px;
   border: 2px solid #111111;
   border-radius: 3px;
+  min-height: 32px;
   background-color: #ffffff;
   cursor: pointer;
   transition: background-color 0.3s;
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: center;
 }
 
-.button-pagination-disabled {
-  margin-right: 4px;
-  padding: 5px 10px;
-  /* border: 2px dotted #7c7c7c; */
+.button-pagination.disabled {
+  border: none;
   color: #7c7c7c;
   border-radius: 3px;
-  background-color: #ffffff;
-  cursor: pointer;
-  transition: background-color 0.3s;
 }
 
 .button-pagination:hover {
@@ -488,4 +500,10 @@ a:focus {
 
 .App {
   min-height: 100vh;
+}
+
+@media (max-width:400px) {
+  .pagination{
+    flex-direction: column;
+  }
 }

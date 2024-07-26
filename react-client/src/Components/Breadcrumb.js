@@ -4,12 +4,12 @@ import PropTypes from 'prop-types';
 import { RightCaret } from './Misc';
 import '../css/breadcrumb.css';
 
-const Breadcrumb = ({ paths }) => {
+const Breadcrumb = ({ paths, style, refprop }) => {
     if (paths.length == 0) {
         return <></>
     }
     return (
-        <nav className="breadcrumb">
+        <nav className="breadcrumb" ref={refprop} id="breadcrumb" style={style}>
             <ul id="breadcrumb-list" className="breadcrumb-list">
                 {paths.map((path, index) => {
                     return (
