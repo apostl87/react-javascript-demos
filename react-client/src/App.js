@@ -24,7 +24,7 @@ function App() {
         <Route path='/' element={<Home />} />
         <Route path='/home' element={<Home />} />
 
-        <Route path='/merchant-product-portfolio' element={<ProductPortfolioMerchant />}>
+        <Route path='/product-portfolio-admin-panel' element={<ProductPortfolioMerchant />}>
           <Route path='public-test-mode' element={<ProductPortfolioMerchant />} />
         </Route>
 

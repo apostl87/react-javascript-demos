@@ -1,0 +1,9 @@
+.store-menu{
+    display: flex;
+    flex-direction: row;
+    font-size: 1.5rem;
+}
+
+#store-menu-display {
+    /* min-height: 100vh; */
+}

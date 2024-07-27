@@ -11,7 +11,7 @@ import { ModalConfirmCancel } from '../Components/ModalConfirmCancel';
 import { NotLoggedIn } from '../Components/Misc';
 import NotificationContainer from '../Components/NotificationContainer';
 import ModalCreateProduct from '../Components/ModalCreateProduct';
-import { ProductCardEdit, ProductCard } from '../Components/ProductCard';
+import { AdminProductCardEdit, AdminProductCard} from '../Components/AdminProductCard';
 import request from '../Services/request-service';
 import formatNumeric from '../Utils/formatNumeric';
 import verifyUrlImage from '../Utils/verifyUrlImage';
@@ -93,7 +93,7 @@ const ProductPortfolioMerchant = (props) => {
     // Loading data
     useEffect(() => {
         if (usedUser) {
-            getProducts();
+            getMerchantProducts();
             getCountries();
         }
     }, [usedUser])
@@ -167,7 +167,7 @@ const ProductPortfolioMerchant = (props) => {
 
     //// API calls
 
-    function getProducts() {
+    function getMerchantProducts() {
         const url = `${api_url}/merchant-products/${usedUser.sub}`
         const controller = new AbortController();
 
@@ -439,8 +439,7 @@ const ProductPortfolioMerchant = (props) => {
                         <button onClick={handleCreateClick} disabled={maxProductsReached}
                             title={maxProductsReached ? `You reached the maximum number of products (limit: ${config.maxProductsPerUser}` : ''}
                             className='button-new-product flex justify-between items-center my-auto w-auto gap-2 text-nowrap'>
-                            <span>+</span>
-                            <span>New product</span>
+                            <span>Add new product</span>
                         </button>
                         <button onClick={() => handleDeleteAllClick()}
                             disabled={products.length == 0}
@@ -465,14 +464,16 @@ const ProductPortfolioMerchant = (props) => {
                     <div className="productlist">
                         {currentProducts.map((product) => (
                             (editedProduct.mp_id === product.mp_id) ? (
-                                <ProductCardEdit
+                                <AdminProductCardEdit
+                                    key={product.mp_id}
                                     product={editedProduct}
                                     handleSubmit={handleSubmit}
                                     handleCancelClick={handleCancelClick}
                                     setEditedProduct={setEditedProduct}
                                     countries={countries} />
                             ) : (
-                                <ProductCard
+                                <AdminProductCard
+                                    key={product.mp_id}
                                     product={product}
                                     handleEditClick={handleEditClick}
                                     handleDeleteClick={handleDeleteOneClick} />

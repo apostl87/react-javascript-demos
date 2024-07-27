@@ -1,12 +1,12 @@
 import React, { useState, useRef } from 'react'
 import { Tooltip } from 'react-tooltip';
-import Dropzone from '../Components/Dropzone';
-import ProgressBar from '../Components/ProgressBar';
+import Dropzone from './Dropzone';
+import ProgressBar from './ProgressBar';
 import uploadImage from '../Utils/uploadImage';
 import verifyUrlImage from '../Utils/verifyUrlImage';
 import { colorText } from '../Utils/generic';
 
-export const ProductCardEdit = (props) => {
+export const AdminProductCardEdit = (props) => {
     const product = props.product
     const countries = props.countries
     const handleSubmit = props.handleSubmit
@@ -172,7 +172,7 @@ export const ProductCardEdit = (props) => {
     )
 }
 
-export const ProductCard = (props) => {
+export const AdminProductCard= (props) => {
     let product = props.product
     let handleEditClick = props.handleEditClick
     let handleDeleteClick = props.handleDeleteClick

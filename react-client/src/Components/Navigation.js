@@ -10,7 +10,7 @@ import '../css/navigation.css';
 // The following array defines the entries of the navigation bar and the menu
 let siteMap = [
     { label: "Home", path: "home", link: true },
-    { label: "Retailer product portfolio", path: "merchant-product-portfolio", link: true },
+    { label: "Product Portfolio Admin Panel", path: "product-portfolio-admin-panel", link: true },
     { label: "Store", path: "store", link: true },
     {
         label: "Other Demos", path: "demos", link: false,
@@ -68,13 +68,20 @@ const Navigation = () => {
     function onResize(entries) {
         // Navigation bar
         let entry = entries[0];
-        if (entry.contentRect.height + 2 * navigationPaddingTB != navigationHeight) {
-            setNavigationHeight(entry.contentRect.height + 2 * navigationPaddingTB);
+        try {
+            if (entry.contentRect.height + 2 * navigationPaddingTB != navigationHeight) {
+                setNavigationHeight(entry.contentRect.height + 2 * navigationPaddingTB);
+            }
+        } catch (error) {
         }
+
         // Breadcrumb
         entry = entries[1];
-        if (entry.contentRect.height + 2 * breadcrumbPaddingTB != breadcrumbHeight) {
-            setBreadcrumbHeight(entry.contentRect.height + 2 * breadcrumbPaddingTB);
+        try {
+            if (entry.contentRect.height + 2 * breadcrumbPaddingTB != breadcrumbHeight) {
+                setBreadcrumbHeight(entry.contentRect.height + 2 * breadcrumbPaddingTB);
+            }
+        } catch (error) {
         }
     }
 
@@ -160,7 +167,7 @@ const Navigation = () => {
                 <>
                     <Breadcrumb refprop={breadcrumbRef} paths={findPathLabels(siteMap, pathSegments)} style={breadcrumbStyle} />
                     {/* Divisor to block height used by the breadcrumb */}
-                    < div style={{ marginTop: `${breadcrumbHeight}px`, marginBottom: '10px' }}>
+                    < div style={{ marginTop: `${breadcrumbHeight}px`, marginBottom: '0px' }}>
                     </div>
                 </>
             }

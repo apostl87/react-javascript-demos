@@ -1,10 +1,16 @@
-import React from 'react'
+import React from 'react';
+import StoreContextProvider from '../Contexts/StoreContext';
+import StoreMenu from '../Components/Store/StoreMenu';
+import StoreContent from '../Components/Store/StoreContent';
 
 const Store = () => {
     return (
-        <div className='pl-10 pt-10'>
-            Work in progress
-        </div>
+        <StoreContextProvider>
+            <div className='flex flex-row flex-nowrap'>
+                <StoreMenu />
+                <StoreContent />
+            </div>
+        </StoreContextProvider>
     )
 }
 
