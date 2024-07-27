@@ -11,7 +11,7 @@ import { ModalConfirmCancel } from '../Components/ModalConfirmCancel';
 import { NotLoggedIn } from '../Components/Misc';
 import NotificationContainer from '../Components/NotificationContainer';
 import ModalCreateProduct from '../Components/ModalCreateProduct';
-import {ProductCardEditWrapper} from '../Components/ProductCard';
+import { ProductCardEdit, ProductCard } from '../Components/ProductCard';
 import request from '../Services/request-service';
 import formatNumeric from '../Utils/formatNumeric';
 import verifyUrlImage from '../Utils/verifyUrlImage';
@@ -416,8 +416,6 @@ const ProductPortfolioMerchant = (props) => {
     function startEditingProduct(product) {
         setEditedIndex(products.indexOf(product));
         setEditedProduct({ ...product });
-        //setManualImageUrl("");
-        //setPreviewImageButtonEnabled(false);
     }
 
 
@@ -467,35 +465,17 @@ const ProductPortfolioMerchant = (props) => {
                     <div className="productlist">
                         {currentProducts.map((product) => (
                             (editedProduct.mp_id === product.mp_id) ? (
-                                <ProductCardEditWrapper 
+                                <ProductCardEdit
                                     product={editedProduct}
                                     handleSubmit={handleSubmit}
                                     handleCancelClick={handleCancelClick}
-                                    setEditedProduct={setEditedProduct} 
+                                    setEditedProduct={setEditedProduct}
                                     countries={countries} />
                             ) : (
-                                <div key={product.mp_id} className="productcard">
-                                    <div className='flex flex-col flex-grow'>
-                                        <div align='left' className='float-left w-full'>
-                                            <p><strong>Product ID:</strong> {product.mp_id}</p>
-                                            <p><strong>Product Name:</strong> {product.mp_name}</p>
-                                            <p><strong>Production&nbsp;Country:</strong> {product.c_name}</p>
-                                            <p><strong>Color:</strong>
-                                                <span className='color-show' style={{ display: 'inline-block', backgroundColor: product.mp_color }}></span>
-                                                <span className='text-xs'>{colorText(product.mp_color)}</span>
-                                            </p>
-                                            <p><strong>Weight:</strong> {product.mp_weight_kg ? product.mp_weight_kg : '-'} kg</p>
-                                            <p><strong>Price:</strong> {product.mp_price ? product.mp_price : '-'} {product.mp_currency}</p>
-                                        </div>
-                                        <div className="flex flex-row gap-1">
-                                            <button onClick={() => handleEditClick(product)} className='button-standard'>Edit</button>
-                                            <button onClick={() => handleDeleteOneClick(product)} className='button-standard-blue-grey'>Delete</button>
-                                        </div>
-                                    </div>
-                                    <div className='flex-shrink-0'>
-                                        <img src={product.mp_image_url} alt={product.mp_name} className="productcard-image" />
-                                    </div>
-                                </div>
+                                <ProductCard
+                                    product={product}
+                                    handleEditClick={handleEditClick}
+                                    handleDeleteClick={handleDeleteOneClick} />
                             )
                         ))}
                     </div>

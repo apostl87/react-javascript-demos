@@ -6,16 +6,12 @@ import uploadImage from '../Utils/uploadImage';
 import verifyUrlImage from '../Utils/verifyUrlImage';
 import { colorText } from '../Utils/generic';
 
-export const ProductCardEditWrapper = (props) => {
-    return <ProductCardEdit key={props.product.mp_id} props={props} />
-}
-
-const ProductCardEdit = (props) => {
-    const product = props.props.product
-    const countries = props.props.countries
-    const handleSubmit = props.props.handleSubmit
-    const handleCancelClick = props.props.handleCancelClick
-    const setEditedProduct = props.props.setEditedProduct
+export const ProductCardEdit = (props) => {
+    const product = props.product
+    const countries = props.countries
+    const handleSubmit = props.handleSubmit
+    const handleCancelClick = props.handleCancelClick
+    const setEditedProduct = props.setEditedProduct
 
     // Image
     const [manualImageUrl, setManualImageUrl] = useState(''); // Manually input image url
@@ -135,7 +131,7 @@ const ProductCardEdit = (props) => {
                     <strong>Color:</strong>
                     <input type="color" className='my-auto w-10' value={product.mp_color} name='colorPicker' id="mp_color" onChange={handleInputChanged} />
                     <input type='text' id='mp_color_code' name='mp_color_code' data-tooltip-id='mp_color_code'
-                        value={colorText(product.mp_color)} style={{border: 'none'}}
+                        value={colorText(product.mp_color)} style={{ border: 'none' }}
                         disabled
                     />
                 </p>
@@ -174,5 +170,35 @@ const ProductCardEdit = (props) => {
                 isOpen={tooltipIsOpen} />
         </div>
     )
+}
 
+export const ProductCard = (props) => {
+    let product = props.product
+    let handleEditClick = props.handleEditClick
+    let handleDeleteClick = props.handleDeleteClick
+
+    return (
+        <div key={product.mp_id} className="productcard">
+            <div className='flex flex-col flex-grow'>
+                <div align='left' className='float-left w-full'>
+                    <p><strong>Product ID:</strong> {product.mp_id}</p>
+                    <p><strong>Product Name:</strong> {product.mp_name}</p>
+                    <p><strong>Production&nbsp;Country:</strong> {product.c_name}</p>
+                    <p><strong>Color:</strong>
+                        <span className='color-show' style={{ display: 'inline-block', backgroundColor: product.mp_color }}></span>
+                        <span className='text-xs'>{colorText(product.mp_color)}</span>
+                    </p>
+                    <p><strong>Weight:</strong> {product.mp_weight_kg ? product.mp_weight_kg : '-'} kg</p>
+                    <p><strong>Price:</strong> {product.mp_price ? product.mp_price : '-'} {product.mp_currency}</p>
+                </div>
+                <div className="flex flex-row gap-1">
+                    <button onClick={() => handleEditClick(product)} className='button-standard'>Edit</button>
+                    <button onClick={() => handleDeleteClick(product)} className='button-standard-blue-grey'>Delete</button>
+                </div>
+            </div>
+            <div className='flex-shrink-0'>
+                <img src={product.mp_image_url} alt={product.mp_name} className="productcard-image" />
+            </div>
+        </div>
+    )
 }
