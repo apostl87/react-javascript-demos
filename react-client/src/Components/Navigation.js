@@ -66,22 +66,15 @@ const Navigation = () => {
     }, [navigationRef, breadcrumbRef])
 
     function onResize(entries) {
-        console.log("Nav Height", navigationHeight);
-        console.log(JSON.stringify(entries))
         // Navigation bar
         let entry = entries[0];
-        console.log("state", entry.contentRect.height + 2 * navigationPaddingTB);
         if (entry.contentRect.height + 2 * navigationPaddingTB != navigationHeight) {
-            console.log("Setting nav height");
             setNavigationHeight(entry.contentRect.height + 2 * navigationPaddingTB);
         }
         // Breadcrumb
         entry = entries[1];
-        console.log("state bc", entry.contentRect.height + 2 * breadcrumbPaddingTB);
-        console.log(document.getElementById("breadcrumb").offsetHeight);
         if (entry.contentRect.height + 2 * breadcrumbPaddingTB != breadcrumbHeight) {
             setBreadcrumbHeight(entry.contentRect.height + 2 * breadcrumbPaddingTB);
-            console.log("Changed");
         }
     }
 

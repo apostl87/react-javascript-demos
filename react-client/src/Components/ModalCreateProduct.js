@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Tooltip } from 'react-tooltip';
 import { useAuth0 } from "@auth0/auth0-react";
 import axios from 'axios';
@@ -8,12 +8,12 @@ import formatNumeric from '../Utils/formatNumeric';
 import uploadImage from "../Utils/uploadImage";
 import verifyUrlImage from '../Utils/verifyUrlImage';
 
-const ModalCreateProduct = ({ isShown, countries, onClose, onCreate }) => {
-    const { user } = useAuth0();
+const ModalCreateProduct = ({ isShown, countries, onClose, onCreate, user }) => {
 
     // Tooltip hooks
     const [tooltipIsOpen, setTooltipIsOpen] = useState(null);
     const [tooltipState, setTooltipState] = useState(['', '']); // [name of input field, tooltip text]
+    const tooltipTimeoutRef = useRef(null)
 
     // Image hooks
     const [imageUrl, setImageUrl] = useState(''); // Actually used image url
@@ -33,12 +33,6 @@ const ModalCreateProduct = ({ isShown, countries, onClose, onCreate }) => {
         if (imageUrl) doAsync();
     }, [imageUrl])
 
-    // Hide tooltip after appearTimeTooltip milliseconds
-    const appearTimeTooltip = 3500;
-    useEffect(() => {
-        if (tooltipIsOpen) setTimeout(() => setTooltipIsOpen(false), appearTimeTooltip)
-    }, [tooltipIsOpen])
-
     // Callback functions
     function handleInputChanged(e) {
         let { id, value } = e.target;
@@ -55,7 +49,7 @@ const ModalCreateProduct = ({ isShown, countries, onClose, onCreate }) => {
 
         if (tooltipAnchorId) {
             setTooltipState([tooltipAnchorId, formatInfo]);
-            setTooltipIsOpen(true);
+            openTooltip();
         }
 
         document.getElementById(id).value = value;
@@ -106,6 +100,13 @@ const ModalCreateProduct = ({ isShown, countries, onClose, onCreate }) => {
         setImageUrl(url);
         setManualImageUrl(url);
         setUploadProgress(-1);
+    }
+
+    const openTooltip = () => {
+        setTooltipIsOpen(true);
+        // Hide tooltip after a delay
+        clearTimeout(tooltipTimeoutRef.current)
+        tooltipTimeoutRef.current = setTimeout(() => setTooltipIsOpen(false), 3500)
     }
 
     return (

@@ -16,6 +16,11 @@ function rgbToHex(r, g, b) {
     return "#" + componentToHex(r) + componentToHex(g) + componentToHex(b);
 }
 
+function colorText(colorHex) {
+    colorHex = colorHex.trim();
+    return (colorHex != '' ? (`HEX: ${colorHex}, RGB: (${Object.values(hexToRgb(colorHex)).join(',')})`) : '');
+}
+
 const validateEmail = (email) => {
     return email.match(
         /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
@@ -37,6 +42,7 @@ function capitalizeLetters(str) {
 module.exports = {
     hexToRgb,
     rgbToHex,
+    colorText,
     validateEmail,
     capitalizeLetters,
     cleanString,

@@ -11,7 +11,7 @@ const PaginationBar = ({ currentPage, nPages, isFiltered, index1, index2, nProdu
 
     const output =
         <>
-            <div className='flex'>
+            <div className='flex gap-1'>
                 <button onClick={() => handleClick(availablePageNumbers[0])}
                     className={"button-pagination" + (isDisabled[0] ? ' disabled' : '')}
                     style={isDisabled[0] ? { color: colorDisabled } : {}}
@@ -32,13 +32,13 @@ const PaginationBar = ({ currentPage, nPages, isFiltered, index1, index2, nProdu
                 Showing {index1 + 1} - {index2 + 1} of {nProducts} {isFiltered ? '(filtered)' : ''}
                 {/* Page {value} of {nPages} */}
             </span>
-            <div className='flex'>
+            <div className='flex gap-1'>
                 <button onClick={() => handleClick(availablePageNumbers[2])}
                     className={"button-pagination" + (isDisabled[2] ? ' disabled' : '')}
                     style={isDisabled[2] ? { color: colorDisabled, borderColor: 'white' } : {}}
                     disabled={isDisabled[2]}>
                     <RightCaret size={caretSize} color={isDisabled[2] ? colorDisabled : '#000000'} />
-                    <div className='max-sm:hidden'>{buttonLabels[2]}</div>
+                    <div className='max-sm:hidden pl-2'>{buttonLabels[2]}</div>
                 </button >
                 <button onClick={() => handleClick(availablePageNumbers[3])}
                     className={"button-pagination" + (isDisabled[3] ? ' disabled' : '')}
@@ -46,7 +46,7 @@ const PaginationBar = ({ currentPage, nPages, isFiltered, index1, index2, nProdu
                     disabled={isDisabled[3]}>
                     <RightCaret size={caretSize} color={isDisabled[2] ? colorDisabled : '#000000'} />
                     <RightCaret size={caretSize} color={isDisabled[2] ? colorDisabled : '#000000'} />
-                    <div className='max-sm:hidden'>{buttonLabels[3]}</div>
+                    <div className='max-sm:hidden pl-2'>{buttonLabels[3]}</div>
                 </button >
             </div>
         </>;

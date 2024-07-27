@@ -157,28 +157,24 @@ a:focus {
   flex-wrap: wrap;
   gap: 20px;
   justify-content: center;
-  /* align-items: last baseline; */
+  align-items: last baseline;
 }
 
-.productlist-item {
+.productcard {
   border: 1px solid #838383;
   border-radius: 5px;
   padding: 15px;
   width: 425px;
   max-width: 100vw;
-  flex: 0 1 auto;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   display: flex;
+  flex: 0 1 auto;
   gap: 15px;
+  height: 220px;
   background: linear-gradient(0.25turn, rgba(9, 96, 237, 0.094), rgb(220, 220, 220));
 }
 
-.productlist-item.editing {
-  height: auto;
-  background: #ffffff;
-}
-
-.product-image {
+.productcard-image {
   width: 100px;
   height: 150px;
   border-radius: 5px;
@@ -188,11 +184,7 @@ a:focus {
   object-fit: contain;
 }
 
-.product-image.editing {
-  border: 2px solid #838383;
-}
-
-.product-image[alt]:after {
+.productcard-image[alt]:after {
   display: block;
   position: absolute;
   margin-top: 20;
@@ -208,24 +200,31 @@ a:focus {
   content: attr(alt);
 }
 
-.product-details {
+.productcard-edit {
+  border: 1px solid #838383;
+  border-radius: 5px;
+  padding: 15px;
+  width: 425px;
+  max-width: 100vw;
   display: flex;
   flex-direction: column;
-  justify-content: center;
-  text-align: left;
-  flex-wrap: nowrap;
+  flex: 0 1 auto;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  gap: 15px;
+  height: auto;
+  background: #ffffff;
 }
 
-.product-details-row {
-  padding: 0px 0px 4px 0px;
+.productcard-edit-image-section {
+  display: flex;
+  flex-direction: row;
+  flex-shrink: 1;
+  gap: 8px;
+  align-items: end;
+  padding-bottom: 10px;
 }
 
-.product-details-row strong {
-  vertical-align: bottom;
-}
-
-.product-details-row input,
-.product-details-row select {
+.productcard-edit-image-section input {
   margin: 0 5px 0px 5px;
   flex: 1 1 auto;
   min-height: 15px;
@@ -235,15 +234,38 @@ a:focus {
   padding: 0 2px 0 4px;
   border: none;
   border-bottom: 2px solid #666666;
+  border-top: 2px solid #FFFFFF;
   background-color: transparent;
 }
 
-.product-details-row select {
+.productcard-edit-field {
+  padding: 0px 0px 4px 0px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.productcard-edit-field input,
+.productcard-edit-field select {
+  margin: 0 5px 0px 5px;
+  flex: 1 1 auto;
+  min-height: 15px;
+  max-height: 22px;
+  min-width: 40px;
+  font-size: small;
+  padding: 0 2px 0 4px;
+  border: none;
+  border-bottom: 2px solid #666666;
+  border-top: 2px solid #FFFFFF;
+  background-color: transparent;
+}
+
+.productcard-edit-field select {
   width: auto;
   max-width: 253px;
 }
 
-.productlist-item p {
+.productcard p {
   margin: 5px 0;
   width: 100%;
 }

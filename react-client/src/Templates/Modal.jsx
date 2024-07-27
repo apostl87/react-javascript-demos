@@ -42,6 +42,7 @@ const styles = {
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
+    zIndex: "2000",
   },
   modal: {
     backgroundColor: "white",

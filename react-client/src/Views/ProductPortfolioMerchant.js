@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useMemo, useRef } from 'react';
-import { Navigate, useNavigate, useLocation } from 'react-router-dom';
-import { Tooltip } from 'react-tooltip';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth0 } from "@auth0/auth0-react";
 import axios from 'axios';
 import $ from 'jquery';
@@ -12,13 +11,11 @@ import { ModalConfirmCancel } from '../Components/ModalConfirmCancel';
 import { NotLoggedIn } from '../Components/Misc';
 import NotificationContainer from '../Components/NotificationContainer';
 import ModalCreateProduct from '../Components/ModalCreateProduct';
-import Dropzone from '../Components/Dropzone';
-import ProgressBar from '../Components/ProgressBar';
+import {ProductCardEditWrapper} from '../Components/ProductCard';
 import request from '../Services/request-service';
 import formatNumeric from '../Utils/formatNumeric';
-import uploadImage from '../Utils/uploadImage';
 import verifyUrlImage from '../Utils/verifyUrlImage';
-import { hexToRgb } from '../Utils/generic';
+import { colorText } from '../Utils/generic';
 import config from '../config';
 
 const api_url = process.env.REACT_APP_BACKEND_API_URL;
@@ -27,8 +24,6 @@ const PUBLIC_TEST_USER = process.env.REACT_APP_PUBLIC_TEST_USER;
 // Code needs a major overhaul
 // - Refactoring of Components
 // - Refactoring of certain functions
-
-const WEIGHT_UNIT = 'kg';
 
 const ProductPortfolioMerchant = (props) => {
     // Auth0 hook
@@ -50,16 +45,6 @@ const ProductPortfolioMerchant = (props) => {
     // Editing
     const [editedProduct, setEditedProduct] = useState({});
     const [editedIndex, setEditedIndex] = useState(-1);
-
-    // Image
-    const [manualImageUrl, setManualImageUrl] = useState(''); // Manually input image url
-    const [previewImageButtonEnabled, setPreviewImageButtonEnabled] = useState(false);
-    const [uploadProgress, setUploadProgress] = useState(-1);
-
-    // Tooltip
-    const [tooltipIsOpen, setTooltipIsOpen] = useState(false);
-    const [tooltipState, setTooltipState] = useState(['', '']); // [name of input field, tooltip text]
-    const tooltipTimeoutRef = useRef(null)
 
     // Search filter
     const [searchString, setSearchString] = useState('')
@@ -354,13 +339,6 @@ const ProductPortfolioMerchant = (props) => {
         return (Object.keys(editedProduct).length > 0 && !deepEqual(editedProduct, products[editedIndex]))
     }
 
-    const openTooltip = () => {
-        setTooltipIsOpen(true);
-        // Hide tooltip after a delay
-        clearTimeout(tooltipTimeoutRef.current)
-        tooltipTimeoutRef.current = setTimeout(() => setTooltipIsOpen(false), 3500)
-    }
-
     //// Callback functions
     function handleEditClick(product, force = false) {
         if (force == false && unsavedChanges()) {
@@ -368,6 +346,7 @@ const ProductPortfolioMerchant = (props) => {
             setPendingActionOnDismiss(() => () => startEditingProduct(product));
             setDismissModalIsOpen(true);
         } else {
+            setEditedProduct({});
             startEditingProduct(product);
         }
     }
@@ -397,46 +376,6 @@ const ProductPortfolioMerchant = (props) => {
         setDeleteAllModalIsOpen(true);
     }
 
-    function handleInputChanged(e) {
-        let { id, value } = e.target;
-        let tooltipAnchorId = null;
-        let formatInfo = null;
-
-        if (id == 'mp_weight_kg') {
-            ({ value, formatInfo } = formatNumeric(value, 1));
-            if (formatInfo !== '') tooltipAnchorId = id;
-        } else if (id == 'mp_price') {
-            ({ value, formatInfo } = formatNumeric(value, 2));
-            if (formatInfo !== '') tooltipAnchorId = id;
-        }
-
-        if (tooltipAnchorId) {
-            setTooltipState([tooltipAnchorId, formatInfo]);
-            openTooltip();
-        }
-        setEditedProduct({ ...editedProduct, [id]: value });
-    }
-
-    function handleManualImageUrlChanged(e) {
-        setManualImageUrl(e.target.value)
-        setPreviewImageButtonEnabled(!!e.target.value);
-    }
-
-    function handleLoadImageClick(e) {
-        // Verify image url whenever imageUrl changes to value unequal to ''
-        async function doVerify() {
-            const isValid = await verifyUrlImage(manualImageUrl);
-            if (!isValid) {
-                setEditedProduct({ ...editedProduct, mp_image_url: 'invalid' });
-                console.log('Invalid image url');
-            } else {
-                setEditedProduct({ ...editedProduct, mp_image_url: manualImageUrl });
-            }
-        }
-        if (manualImageUrl) doVerify();
-        setPreviewImageButtonEnabled(false);
-    }
-
     function handleDismissModalConfirmed() {
         setDismissModalIsOpen(false);
         setEditedProduct({});
@@ -449,6 +388,7 @@ const ProductPortfolioMerchant = (props) => {
             setPendingActionOnDismiss(() => () => setCurrentPage(value));
             setDismissModalIsOpen(true)
         } else {
+            setEditedProduct({});
             setCurrentPage(value);
         }
     }
@@ -459,6 +399,7 @@ const ProductPortfolioMerchant = (props) => {
             setPendingActionOnDismiss(() => () => setCreateModalIsOpen(true));
             setDismissModalIsOpen(true)
         } else {
+            setEditedProduct({});
             setCreateModalIsOpen(true);
         }
     }
@@ -475,78 +416,10 @@ const ProductPortfolioMerchant = (props) => {
     function startEditingProduct(product) {
         setEditedIndex(products.indexOf(product));
         setEditedProduct({ ...product });
-        setManualImageUrl("");
-        setPreviewImageButtonEnabled(false);
+        //setManualImageUrl("");
+        //setPreviewImageButtonEnabled(false);
     }
 
-    function selectCountry(countries) {
-        return (
-            <select id="mp_c_id_production" name="mp_c_id_production" onChange={handleInputChanged} value={editedProduct.mp_c_id_production}>
-                <option value="null">Choose country...</option>
-                <option disabled>──────────</option>
-                {countries.map((country, idx) => {
-                    return (<option key={idx} value={country.c_id}>{country.c_name}</option>)
-                })}
-            </select>
-        )
-    }
-
-    function colorText(colorHex) {
-        colorHex = colorHex.trim();
-        if (colorHex != '') {
-            return (colorHex != '' ? (`HEX: ${colorHex}, RGB: (${Object.values(hexToRgb(colorHex)).join(',')})`) : '');
-        } else {
-            return '';
-        }
-    }
-
-    function onUploadComplete(url) {
-        setEditedProduct({ ...editedProduct, mp_image_url: url });
-        setManualImageUrl(url);
-        setUploadProgress(-1);
-        setPreviewImageButtonEnabled(false);
-    }
-
-    //// Rendering functions
-    function renderInputField(type, id, value) {
-        let disabled, style;
-        if (id == 'mp_color_code') {
-            disabled = true
-            style = { border: 'none', width: '250px' }
-        } else {
-            disabled = false
-            style = {}
-        }
-
-        let required;
-        if (['mp_price', 'mp_weight_kg', 'mp_name'].includes(id)) {
-            required = true
-        } else {
-            required = false
-        }
-
-        let step = ""
-        if (type.includes('number')) {
-            step = type.slice(6);
-            type = type.slice(0, 6);
-            style = { textAlign: "right" }
-        }
-
-        return (
-            <input
-                type={type}
-                step={step}
-                id={id}
-                name={id}
-                value={value}
-                onChange={handleInputChanged}
-                data-tooltip-id={id}
-                disabled={disabled}
-                required={required}
-                style={style}
-            />
-        );
-    }
 
     return (
         <>
@@ -594,75 +467,14 @@ const ProductPortfolioMerchant = (props) => {
                     <div className="productlist">
                         {currentProducts.map((product) => (
                             (editedProduct.mp_id === product.mp_id) ? (
-                                <div key={product.mp_id} className="productlist-item editing overflow-scroll w-full flex flex-col">
-                                    <form onSubmit={handleSubmit}>
-                                        <p className='product-details-row'>
-                                            <strong>Product ID:</strong>&nbsp;{editedProduct.mp_id}
-                                        </p>
-                                        <div className='w-full flex flex-row flex-shrink gap-2 border-1 border-gray-600 p-2 rounded-sm mr-9'>
-                                            <div className='product-details-row flex-grow flex flex-col'>
-                                                <div className='flex flex-row items-center gap-2'>
-                                                    <strong>Image</strong>
-                                                    {uploadProgress >= 0 && uploadProgress < 1 &&
-                                                        <ProgressBar value={uploadProgress} text="Uploading: " />
-                                                    }
-                                                </div>
-                                                <Dropzone uploadImage={(x) => uploadImage(x, setUploadProgress, onUploadComplete)} showLargeIcon={false} />
-                                                <span className='pb-1 text-center'>OR</span>
-                                                <div className='flex flex-row'>
-                                                    <input type="textarea" rows="2" id="mp_image_url" className='overflow-scroll h-40'
-                                                        value={manualImageUrl} onChange={handleManualImageUrlChanged}
-                                                        placeholder="Enter or paste URL here (http://...)" />
-                                                    <button type="button" onClick={handleLoadImageClick} disabled={previewImageButtonEnabled ? false : true}
-                                                        className={(!previewImageButtonEnabled ? 'disabled ' : '') + 'button-standard-inline pb-0.5'}>
-                                                        Load
-                                                    </button>
-                                                </div>
-                                            </div>
-                                            <div className='flex-shrink'>
-                                                <img src={editedProduct.mp_image_url} alt="Invalid image URL" className="product-image editing mt-1.5" />
-                                            </div>
-                                        </div>
-
-                                        <p className='product-details-row'>
-                                            <strong>Product Name:</strong>
-                                            {renderInputField('text', 'mp_name', editedProduct.mp_name)}
-                                        </p>
-
-                                        <p className='product-details-row'>
-                                            <strong>Production&nbsp;Country:</strong>
-                                            {selectCountry(countries)}
-                                        </p>
-
-                                        <p className='product-details-row'>
-                                            <strong>Color:</strong>
-                                            <input type="color" className='my-auto w-10' value={editedProduct.mp_color} name='colorPicker' id="mp_color" onChange={handleInputChanged} />
-                                            {renderInputField('text', 'mp_color_code', colorText(editedProduct.mp_color))}
-                                        </p>
-
-                                        <div className='product-details-row justify-between flex flex-row gap-5'>
-                                            <div className='flex flex-row flex-grow w-40'>
-                                                <div className='font-bold'>Weight:</div>
-                                                {renderInputField('number0.1', 'mp_weight_kg', editedProduct.mp_weight_kg)}
-                                                <div>{WEIGHT_UNIT}</div>
-                                            </div>
-                                            <div className='flex flex-row flex-grow w-40'>
-                                                <div className='font-bold'>Price:</div>
-                                                {renderInputField('number0.01', 'mp_price', editedProduct.mp_price)}
-                                                <label>{editedProduct.mp_currency}</label>
-                                            </div>
-                                        </div>
-
-                                        <div className='flex flex-row gap-1'>
-                                            <button type='submit' className='button-standard'>Save</button>
-                                            <button type='button' onClick={() => handleCancelClick()} className='button-standard-blue-grey'>Cancel</button>
-                                        </div>
-
-                                    </form>
-
-                                </div>
+                                <ProductCardEditWrapper 
+                                    product={editedProduct}
+                                    handleSubmit={handleSubmit}
+                                    handleCancelClick={handleCancelClick}
+                                    setEditedProduct={setEditedProduct} 
+                                    countries={countries} />
                             ) : (
-                                <div key={product.mp_id} className="productlist-item overflow-scroll h-auto flex flex-row flex-shrink">
+                                <div key={product.mp_id} className="productcard">
                                     <div className='flex flex-col flex-grow'>
                                         <div align='left' className='float-left w-full'>
                                             <p><strong>Product ID:</strong> {product.mp_id}</p>
@@ -672,7 +484,7 @@ const ProductPortfolioMerchant = (props) => {
                                                 <span className='color-show' style={{ display: 'inline-block', backgroundColor: product.mp_color }}></span>
                                                 <span className='text-xs'>{colorText(product.mp_color)}</span>
                                             </p>
-                                            <p><strong>Weight:</strong> {product.mp_weight_kg ? product.mp_weight_kg : '-'} {WEIGHT_UNIT}</p>
+                                            <p><strong>Weight:</strong> {product.mp_weight_kg ? product.mp_weight_kg : '-'} kg</p>
                                             <p><strong>Price:</strong> {product.mp_price ? product.mp_price : '-'} {product.mp_currency}</p>
                                         </div>
                                         <div className="flex flex-row gap-1">
@@ -681,7 +493,7 @@ const ProductPortfolioMerchant = (props) => {
                                         </div>
                                     </div>
                                     <div className='flex-shrink-0'>
-                                        <img src={product.mp_image_url} alt={product.mp_name} className="product-image" />
+                                        <img src={product.mp_image_url} alt={product.mp_name} className="productcard-image" />
                                     </div>
                                 </div>
                             )
@@ -712,9 +524,6 @@ const ProductPortfolioMerchant = (props) => {
                 handleClick={handlePaginationBarClick} />
 
             {/* Overlay components */}
-            <Tooltip id={tooltipState[0]}
-                content={tooltipState[1]}
-                isOpen={tooltipIsOpen} />
 
             <ModalConfirmCancel isShown={deleteOneModalIsOpen} title='Confirm deletion' text={deleteModalText}
                 onConfirm={() => { deleteProduct(); setDeleteOneModalIsOpen(false); }} onCancel={() => { setDeleteOneModalIsOpen(false) }} />
@@ -727,7 +536,8 @@ const ProductPortfolioMerchant = (props) => {
                 onCancel={() => { setDismissModalIsOpen(false) }} />
 
             <ModalCreateProduct isShown={createModalIsOpen} countries={countries}
-                onClose={() => setCreateModalIsOpen(false)} onCreate={createProduct} />
+                onClose={() => setCreateModalIsOpen(false)} onCreate={createProduct}
+                user={usedUser} />
 
             <NotificationContainer
                 notifications={notifications} deleteNotification={deleteNotification}
