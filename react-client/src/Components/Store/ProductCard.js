@@ -1,0 +1,48 @@
+import React, { useState, useContext, useEffect } from 'react'
+import { StoreContext } from '../../Contexts/StoreContext'
+
+const ProductCard = (props) => {
+    const { addToCart } = useContext(StoreContext)
+
+    let product = props.product
+    let variants = props.variants
+
+    const [variantId, setVariantId] = useState(undefined)
+    
+    useEffect(() => {
+        setVariantId(variants.length > 0 ? variants[0].pv_id : undefined);
+    }, [variants]);
+
+    return (
+        <div key={product.mp_id}
+            className='p-3 border-2 hover:scale-105 transition w-full'>
+            <img src={product.mp_image_url} alt={product.mp_name}
+                className='object-contain w-full max-h-52' />
+            <p className='my-2 text-center text-lg font-bold'>
+                {product.mp_name}
+            </p>
+            <p className='flex gap-2 items-center'>
+                <span className='w-14'>Color</span>
+                <button className="w-6 border border-black" style={{ backgroundColor: `${product.mp_color}` }}>&nbsp;</button>
+            </p>
+            <p className='flex gap-2 items-center'>
+                <span className='w-14'>Variant</span>
+                <select className='h-9' value={variantId} onChange={(e) => setVariantId(e.target.value)}>
+                    {variants.map(variant => {
+                        return (<option key={variant.pv_id} value={variant.pv_id}>{variant.pv_variant_name}</option>)
+                    })}
+                </select>
+            </p>
+            <p className='text-right font-bold py-2'>
+                EUR {product.mp_price}
+            </p>
+
+            <button className='self-center rounded-2xl bg-emerald-200 w-full py-2 font-semibold'
+                onClick={() => addToCart(product.mp_id, variantId)}>
+                Add to cart
+            </button>
+        </div>
+    )
+}
+
+export default ProductCard

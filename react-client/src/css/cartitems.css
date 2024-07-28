@@ -1,0 +1,150 @@
+.cartitems{
+    margin: 20px 10%;
+}
+.cartitems hr{
+    height: 2px;
+    background: #e2e2e2;
+    border: 0;
+    padding: 0px;
+}
+.cartitems-format-main{
+    display: grid;
+    grid-template-columns: 0.5fr 2fr 1fr 1fr 1fr 0.25fr 1fr;
+    align-items: center;
+    gap: 30px;
+    padding: 0px 0px;
+    color: #454545;
+    font-size: 16px;
+    font-weight: 600;
+}
+.cartitems-format{
+    font-size: 16px;
+    font-weight: 500;
+}
+.cartitems-product-icon{
+    height: 85px;
+}
+.cartitems-remove-icon{
+    width: 12px;
+    margin: 0px 30px;
+    cursor: pointer;
+}
+.cartitems-quantity{
+    width: 55px;
+    height: 45px;
+    border: 2px solid #ebebeb;
+    background: #fff;
+}
+.cartitems-down{
+    display: flex;
+    flex-direction: row-reverse;
+    justify-content: space-between;
+    margin: 30px 0px;
+}
+.cartitems-total{
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    margin-right: 0px;
+    gap: 20px;
+}
+.cartitems-total-item{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 2px 0px;
+    font-size: 16px;
+}
+.cartitems-promocode{
+    flex: 1;
+    font-size: 16px;
+    font-weight: 500;
+}
+.cartitems-promocode p{
+    color: #555;
+}
+.cartitems-promobox{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 400px;
+    margin-top: 15px;
+    height: 50px;
+    background: #eaeaea;
+}
+.cartitems-promobox input{
+    border: none;
+    outline: none;
+    background: transparent;
+    font-size: 16px;
+    flex: 1;
+    height: 100%;
+    padding-left: 20px;
+}
+.cartitems-promobox button{
+    width: 130px;
+    height: 100%;
+    font-size: 16px;
+    background: black;
+    color: white;
+    cursor: pointer;
+}
+.cartitems-empty-cart{
+    display: flex;
+    flex-direction: column;
+    justify-content: start;
+}
+
+@media(max-width:1280px){
+    .cartitems{
+        margin: 10px 8%;
+    }
+    .cartitems-format-main{
+        grid-template-columns: 0.5fr 2fr 0.5fr 0.75fr 0.5fr 0.1fr 0.5fr;
+        gap: 20px;
+        padding: 0px 0px;
+        font-size: 15px;
+    }
+    .cartitems-format{
+        font-size: 15px;
+    }
+    .carticon-product-icon{
+        height: 40px;
+    }
+    .cartitems-remove-icon{
+        margin: auto;
+    }
+    .cartitems-quantity{
+        width: 40px;
+        height: 30px;
+    }
+    .cartitems-down{
+        margin: 30px 0px;
+        flex-wrap: wrap;
+        gap: 20px;
+    }
+    .cartitems-total{
+        margin: 0;
+        min-width: 300px;
+    }
+    .cartitems-total-item{
+        font-size: 15px;
+    }
+    .cartitems-promobox{
+        width: 90%;
+        max-width: 500px;
+    }
+    
+}
+@media(max-width:500px){
+    .cartitems-format-main{
+       display: none;
+    }
+    .cartitems-format{
+        display: grid;
+    }
+    .cartitems-format-main{
+        grid-template-columns: 0.5fr 3fr 0.5fr;
+        gap: 10px;
+    }
+}

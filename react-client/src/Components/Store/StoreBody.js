@@ -3,8 +3,9 @@ import { useLocation } from 'react-router-dom'
 import StoreLandingPage from './StoreLandingPage'
 import StoreCategory from './StoreCategory'
 import StoreProduct from './StoreProduct'
+import Cart from './Cart'
 
-const StoreContent = () => {
+const StoreBody = () => {
 
     const location = useLocation()
     const subpath = location.pathname.split("/").slice(2);
@@ -22,6 +23,10 @@ const StoreContent = () => {
         const id = subpath[1].split("-")[1].replace("P", "")
         return <StoreProduct productId={id}/>
     }
+
+    if (subpath[0] == "cart") {
+        return <Cart />
+    }
 }
 
-export default StoreContent
+export default StoreBody

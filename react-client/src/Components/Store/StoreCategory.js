@@ -1,11 +1,24 @@
-import React, { useContext, useState, useEffect } from 'react'
+import React, { useContext, useState, useEffect, useMemo } from 'react'
 import { useLocation } from 'react-router-dom'
 import { StoreContext } from '../../Contexts/StoreContext'
+import { MoonLoader } from 'react-spinners';
+import ProductCard from './ProductCard'
 
 const StoreCategory = (props) => {
-  const { getProductsByCategory } = useContext(StoreContext);
-  const [products, setProducts] = useState([])
+  const { getProductsByCategory, categories, allCategoryVariants, getVariantsByCategory } = useContext(StoreContext);
+  const [products, setProducts] = useState(null)
   const [loading, setLoading] = useState(false);
+
+  const category = useMemo(() => categories.find(c => c.pc_id == props.categoryId), [props.categoryId, categories]);
+  const variants = useMemo(() => getVariantsByCategory(props.categoryId), [props.categoryId]);
+  //   {
+  //   try {
+  //     return allCategoryVariants.find(cv => cv.pc_id == props.categoryId)['variants']
+  //   } catch (error) {
+  //     //console.error(error);
+  //     return []
+  //   }
+  // }, [props.categoryId, allCategoryVariants])
 
   useEffect(() => {
     // Fetch products for the given category ID
@@ -25,32 +38,29 @@ const StoreCategory = (props) => {
   }, []);
 
   return (
-    <div id="store-category"
-      className='my-5 mx-auto grid grid-cols-2 gap-3 justify-items-center
-        md:grid-cols-3  
-        lg:grid-cols-4 lg:gap-5'>
-      {products.length === 0
+    <div id="store-category" className="flex items-center justify-center w-full py-5 bg-white">
+
+      {!products
         ?
-        (loading
-          ? 'Loading ...'
-          : 'No products to display.')
+        <MoonLoader speedMultiplier={0.3} color='rgb(15 23 42)' />
         :
-        (
-          products.map(product => {
-            return (
-              <div key={product.mp_id} className='p-1 border-2 hover:scale-105'>
-                <img src={product.mp_image_url} alt={product.mp_name} />
-                <h2>{product.mp_name}</h2>
-                <p>Color: <span style={{ backgroundColor: `${product.mp_color}` }}></span></p>
-                <p>EUR {product.mp_price}</p>
-                <p>Variant: <select></select></p>
-                <button>Add To Cart</button>
-              </div>
-            )
-          })
+        (products.length === 0
+          ?
+          <span>No products to display.</span>
+          :
+          <div id="store-category-items"
+            className='mb-5 grid grid-cols-2 gap-3 px-2
+                      md:grid-cols-3  md:mx-0
+                      lg:grid-cols-4 lg:gap-5 lg:px-0 lg:items-stretch'>
+            {products.map(product => {
+              return (
+                <ProductCard key={product.mp_id} product={product} variants={variants} />
+              )
+            })}
+          </div>
         )
       }
-    </div>
+    </div >
   )
 }
 

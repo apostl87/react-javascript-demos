@@ -1,14 +1,17 @@
 import React from 'react';
 import StoreContextProvider from '../Contexts/StoreContext';
 import StoreMenu from '../Components/Store/StoreMenu';
-import StoreContent from '../Components/Store/StoreContent';
+import StoreBody from '../Components/Store/StoreBody';
+import StoreHeader from '../Components/Store/StoreHeader';
+
+export const currency = 'EUR';
 
 const Store = () => {
     return (
         <StoreContextProvider>
-            <div className='flex flex-row flex-nowrap'>
-                <StoreMenu />
-                <StoreContent />
+            <div className='flex flex-col flex-nowrap'>
+                <StoreHeader />
+                <StoreBody />
             </div>
         </StoreContextProvider>
     )

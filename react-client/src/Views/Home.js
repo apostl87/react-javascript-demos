@@ -1,6 +1,7 @@
-import React, { useLayoutEffect } from 'react';
+import React, { useEffect, useLayoutEffect } from 'react';
 
 const Home = () => {
+
   return (
     <div className='p-5'>
       This is a small demonstration page utilizing a database CRUD application and basic pure JavaScript applications.

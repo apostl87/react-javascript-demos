@@ -28,7 +28,8 @@ function App() {
           <Route path='public-test-mode' element={<ProductPortfolioMerchant />} />
         </Route>
 
-        <Route path='/store/*' element={<Store />} />
+        <Route path='/store/*' element={<Store />}>
+        </Route>
 
         <Route path='/demos'>
           <Route path='space-game' element={<SpaceGame />} />

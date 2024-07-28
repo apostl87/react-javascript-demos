@@ -6,7 +6,7 @@ input::-webkit-inner-spin-button { margin-left: 4px; }
 
 #body {
   margin: 0;
-  font-family: 'Lato', 'Roboto', 'Oxygen', 'Helvetica Neue', sans-serif;
+  font-family: 'Poppins', 'Lato', 'Roboto', 'Oxygen', 'Helvetica Neue', sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   background-color: rgb(203 213 225);
@@ -522,6 +522,20 @@ a:focus {
 
 .App {
   min-height: 100vh;
+}
+
+.store-cart-count{
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: -35px;
+  margin-left: 30px;
+  font-size: 14px;
+  background: red;
+  color: white;
 }
 
 @media (max-width:400px) {
