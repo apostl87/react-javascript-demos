@@ -54,7 +54,7 @@ export default function UserArea() {
                         <div className="user-area-info">
                             Logged in as <br />{user.name}
                         </div>
-                        <div align="right">–––––––––––––––––––––––</div>
+                        <hr />
                         <button
                             className="user-area-link"
                             onClick={() => navigate("/profile")}

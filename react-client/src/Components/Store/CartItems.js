@@ -10,7 +10,7 @@ const CartItems = () => {
 
   if (!cartItemsDisplay || cartItemsDisplay.length === 0) {
     return (
-      <div className="text-center mt-5">
+      <div className="text-center mt-5 min-h-screen">
         Your cart is empty.
       </div>
     )
