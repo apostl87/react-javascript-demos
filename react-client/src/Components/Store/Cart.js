@@ -3,7 +3,7 @@ import CartItems from './CartItems.js'
 
 const Cart = () => {
   return (
-    <div className='bg-white'>
+    <div>
       <CartItems/>
     </div>
   )

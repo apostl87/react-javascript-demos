@@ -9,7 +9,7 @@ const StoreHeader = () => {
 
     return (
         <div className='w-full bg-white h-11 z-15 flex border-b-2 justify-between px-1'>
-            <div className='justify-start'>
+            <div>
                 <StoreMenu />
             </div>
             {/* {JSON.stringify(cartItems)} */}

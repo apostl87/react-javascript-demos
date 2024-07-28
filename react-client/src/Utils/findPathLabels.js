@@ -32,16 +32,14 @@ const findPathLabels = (siteMap, segments_in, parentPath = "") => {
     return paths;
 };
 
-
 export default findPathLabels;
-
 
 const addNonMenuPaths = (pathSegments, currentPath) => {
     // Here, we deal with 3 more path segments (even though more could exist) beyond the in-menu segments
     let paths = [];
 
     for (const segment of pathSegments.slice(0, 3)) {
-        const idsRemoved = segment.split("-C")[0]
+        const idsRemoved = segment.split("-C")[0].split("-P")[0] // Hack for Store
         const label = capitalizeLetters(cleanString(idsRemoved));
         currentPath = `${currentPath}/${segment}`;
         paths.push({ label: label, to: currentPath, link: true });

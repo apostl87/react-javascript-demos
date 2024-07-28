@@ -10,7 +10,7 @@ const StoreCategory = (props) => {
   const [loading, setLoading] = useState(false);
 
   const category = useMemo(() => categories.find(c => c.pc_id == props.categoryId), [props.categoryId, categories]);
-  const variants = useMemo(() => getVariantsByCategory(props.categoryId), [props.categoryId]);
+  const variants = useMemo(() => getVariantsByCategory(allCategoryVariants, props.categoryId), [props.categoryId, allCategoryVariants]);
   //   {
   //   try {
   //     return allCategoryVariants.find(cv => cv.pc_id == props.categoryId)['variants']
@@ -21,7 +21,8 @@ const StoreCategory = (props) => {
   // }, [props.categoryId, allCategoryVariants])
 
   useEffect(() => {
-    // Fetch products for the given category ID
+    // Testing performance
+    // Fetch products for the given category ID, even though the StoreContext already contains all products
     setLoading(true);
     let ignore = false;
 
@@ -38,7 +39,7 @@ const StoreCategory = (props) => {
   }, []);
 
   return (
-    <div id="store-category" className="flex items-center justify-center w-full py-5 bg-white">
+    <div id="store-category" className="flex justify-center w-full min-h-screen py-5">
 
       {!products
         ?

@@ -23,10 +23,15 @@
 }
 .cartitems-product-icon{
     height: 85px;
+    min-width: 60px;
 }
 .cartitems-remove-icon{
-    width: 12px;
-    margin: 0px 30px;
+    min-width: 24px;
+    max-width: 28px;
+    min-height: 40px;
+    max-height: 47px;
+    flex-shrink: 0;
+    margin: 0px 10px;
     cursor: pointer;
 }
 .cartitems-quantity{
@@ -110,9 +115,10 @@
     }
     .carticon-product-icon{
         height: 40px;
+        min-width: 27px;
     }
     .cartitems-remove-icon{
-        margin: auto;
+        margin: 0px;
     }
     .cartitems-quantity{
         width: 40px;

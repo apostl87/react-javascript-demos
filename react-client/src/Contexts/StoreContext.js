@@ -35,6 +35,8 @@ const StoreContextProvider = (props) => {
     }, [])
 
     const getProductsByCategory = async (pc_id) => {
+        // Testing performance
+        // Fetch products for the given category ID, even though the StoreContext already contains all products
         return request.get(`${api_url}/products/category/${pc_id}`)
             .then(response => {
                 return (response.data)
@@ -45,9 +47,9 @@ const StoreContextProvider = (props) => {
             })
     }
 
-    const getVariantsByCategory = (pc_id) => {
+    const getVariantsByCategory = (allVariants, pc_id) => {
         try {
-            return allCategoryVariants.find(cv => cv.pc_id == pc_id)['variants']
+            return allVariants.find(v => v.pc_id == pc_id)['variants']
         } catch (error) {
             return []
         }
@@ -59,8 +61,7 @@ const StoreContextProvider = (props) => {
                 return (
                     cartItems.map((cartItem) => {
                         let product = products.find(product => product.mp_id === Number(cartItem.mp_id));
-                        console.log(product);
-                        const variants = getVariantsByCategory(product.mp_pc_id);
+                        const variants = getVariantsByCategory(allCategoryVariants, product.mp_pc_id);
                         let variant = variants.find(variant => variant.pv_id === Number(cartItem.pv_id));
                         return {
                             ...product,
@@ -73,7 +74,7 @@ const StoreContextProvider = (props) => {
         } else {
             return null;
         }
-    }, [cartItems, products]);
+    }, [cartItems, products, allCategoryVariants]);
 
     const getTotalCartPrice = () => {
         let totalPrice = 0;
@@ -83,7 +84,7 @@ const StoreContextProvider = (props) => {
                 totalPrice += item.quantity * product.mp_price;
             } catch (error) { }
         }
-        return totalPrice;
+        return totalPrice.toFixed(2);
     };
 
     const getAmountCartItems = () => {
@@ -133,7 +134,6 @@ const StoreContextProvider = (props) => {
         );
 
         let newCartItems = [...cartItems];
-        console.log(cartItems[index]);
         if (cartItems[index].quantity == 1) {
             // Delete the entry from the cart
             newCartItems.splice(index, 1);
@@ -158,7 +158,7 @@ const StoreContextProvider = (props) => {
     const contextValue = {
         products, getProductsByCategory, categories, allCategoryVariants, getVariantsByCategory,
         cartItems, cartItemsDisplay, getAmountCartItems, getTotalCartPrice, addToCart, removeFromCart, emptyCart,
-    }; //, addToCart, removeFromCart, getAmountCartItems, getTotalCartAmount };
+    };
     return (
         <StoreContext.Provider value={contextValue}>
             {props.children}

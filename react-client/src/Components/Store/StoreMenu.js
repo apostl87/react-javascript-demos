@@ -5,9 +5,17 @@ import CloseButtonBlack from '../../assets/button-close-black.svg'
 import '../../css/store.css'
 import { Link } from 'react-router-dom'
 
+const initMenuState = () => {
+    if (window.location.pathname.split('/').slice(-1)[0] === 'store') {
+        return true;
+    } else {
+        return false;
+    }
+}
+
 const StoreMenu = () => {
     const { categories } = useContext(StoreContext)
-    const [menuOpen, setMenuOpen] = useState(false);
+    const [menuOpen, setMenuOpen] = useState(initMenuState);
     const menuRef = useRef(null);
 
     const toggleMenu = () => {
