@@ -42,9 +42,11 @@ const StoreMenu = () => {
                     <div id="store-menu-items" className='flex flex-col gap-0 z-20 w-52 text-md font-bold text-center'>
                         {categories.map((category) => {
                             return (
-                                <Link to={'category/' + category.pc_id}
+                                <Link to={'_c/' + category.pc_category_name.toLowerCase() + '-C' + category.pc_id}
                                     className='border-t last-of-type:border-b border-gray-800 my-0 py-2 pl-2
                                                 hover:no-underline text-gray-700 hover:text-gray-700 hover:bg-slate-200'
+                                    onClick={toggleMenu}
+                                    key={category.pc_id}
                                 >
                                     {category.pc_category_name}
                                 </Link>
@@ -55,7 +57,7 @@ const StoreMenu = () => {
             </div >
             {/* Background div for menu */}
             <div id='store-menu-background'
-                className={`absolute bg-slate-100 h-screen z-10 top-0 transition-all
+                className={`fixed bg-slate-100 h-screen z-10 top-0 transition-all
                             ${menuOpen ? 'w-52' : 'w-0'}`
                 }
                 onClick={toggleMenu} >

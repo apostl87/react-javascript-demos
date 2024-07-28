@@ -45,13 +45,10 @@ const Navigation = () => {
     const [navigationHeight, setNavigationHeight] = useState(0);
     const [breadcrumbHeight, setBreadcrumbHeight] = useState(0);
     const location = useLocation();
-    const pathSegments = location.pathname.split('/').filter(segment => segment !== "");
+    const pathSegments = location.pathname.split('/').filter(segment => segment !== "" && segment[0] !== '_');
 
     // Open/close menu functions
     const toggleMenu = () => { setIsOpen(!isOpen) };
-
-    // Effect to get breadcrumb ref
-
 
     // Resize observers
     useEffect(() => {

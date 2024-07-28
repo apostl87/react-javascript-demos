@@ -29,6 +29,7 @@ const MyScrollToTop = () => {
         height: '35px',
         right: '15px',
         bottom: '10px',
+        zIndex: '500',
     }
 
     return (

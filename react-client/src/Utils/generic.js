@@ -28,7 +28,8 @@ const validateEmail = (email) => {
 };
 
 function cleanString(str) {
-    let cleanedStr = str.replace(/[_\-!@#\$%\^\&\*\(\)\+=\[\]\{\};:'",.<>\/?\\|`~]/g, ' ');
+    let cleanedStr = str.replaceAll("%20", " ")
+    cleanedStr = cleanedStr.replace(/[_\-!@#\$%\^\*\(\)\+=\[\]\{\};:'",.<>\/?\\|`~]/g, ' ');
     cleanedStr = cleanedStr.replace(/\s+/g, ' '); // shorten any whitespace chain to a length of one
     return cleanedStr.trim();
 }

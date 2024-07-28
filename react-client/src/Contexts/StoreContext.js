@@ -25,9 +25,10 @@ const StoreContextProvider = (props) => {
             .catch(error => { console.error(error); })
     }, [])
 
-    const getProductsByCategory = (category_id) => {
-        request.get(`${api_url}/products/${category_id}`)
-            .then(response => { return(response.data) })
+    const getProductsByCategory = async (category_id) => {
+        return request.get(`${api_url}/products/category/${category_id}`)
+            .then(response => {
+                return(response.data) })
             .catch(error => {
                 console.error(error);
                 return(JSON.stringify(error));
