@@ -45,7 +45,10 @@ const Navigation = () => {
     const [navigationHeight, setNavigationHeight] = useState(0);
     const [breadcrumbHeight, setBreadcrumbHeight] = useState(0);
     const location = useLocation();
+
+    // Extracting path segments and handling "/"
     const pathSegments = location.pathname.split('/').filter(segment => segment !== "" && segment[0] !== '_');
+    if (pathSegments.length === 0) {pathSegments.push("home")}
 
     // Open/close menu functions
     const toggleMenu = () => { setIsOpen(!isOpen) };
@@ -160,14 +163,14 @@ const Navigation = () => {
             }
 
             {/* Breadcrumb */}
-            {pathSegments.length > 0 &&
+            {/* {pathSegments.length > 0 && */}
                 <>
                     <Breadcrumb refprop={breadcrumbRef} paths={findPathLabels(siteMap, pathSegments)} style={breadcrumbStyle} />
                     {/* Divisor to block height used by the breadcrumb */}
                     < div style={{ marginTop: `${breadcrumbHeight}px`, marginBottom: '0px' }}>
                     </div>
                 </>
-            }
+            {/* } */}
 
             {/* <div className='bg-green-500'>TESTCONTENT</div> */}
         </>

@@ -5,9 +5,22 @@ import { RightCaret } from './Misc';
 import '../css/breadcrumb.css';
 
 const Breadcrumb = ({ paths, style, refprop }) => {
-    if (paths.length == 0) {
-        return <></>
-    }
+    // if (paths.length == 0) {
+    //     return (
+    //         <nav className="h-0" ref={refprop} id="breadcrumb" style={style}>
+    //             {/* <ul id="breadcrumb-list" className="breadcrumb-list">
+    //                 <li className='breadcrumb-item'>123</li>
+    //             </ul> */}
+    //         </nav>
+    //     )
+    // }
+    // if (paths.length == 0) {
+    //     paths.push({ label: 'Home', to: '/home', link: true })
+    // }
+    // console.log(typeof paths);
+    // console.log("13p");
+    console.log(paths);
+
     return (
         <nav className="breadcrumb" ref={refprop} id="breadcrumb" style={style}>
             <ul id="breadcrumb-list" className="breadcrumb-list">

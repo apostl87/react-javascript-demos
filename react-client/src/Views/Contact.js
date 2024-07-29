@@ -17,7 +17,7 @@ const Imprint = () => {
             <h4>Responsible for the content on this website</h4>
             Andreas Postl <br />
             andreas.postl.42 (at) gmail.com <br />
-            –––––––––––––––––––––––––––– <br/>
+            <br/>
             Austria
 
             <h5 className='pt-5'>{imprint_en.title}</h5>

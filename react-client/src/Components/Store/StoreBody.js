@@ -12,7 +12,6 @@ const StoreBody = () => {
 
     let content;
     if (subpath.length === 0) {
-        console.log("lander");
         content = <StoreLandingPage />
     } else if (subpath[0] == "_c") {
         const id = subpath[1].split("-")[1].replace("C", "")

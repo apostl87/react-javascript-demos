@@ -7,8 +7,8 @@ const Home = () => {
       This is a small demonstration page utilizing a database CRUD application and basic pure JavaScript applications.
       <br />
       <br />
-      Note that the API is protected JWT Authentication, however, since limited quota for tokens is available at my hosting provider,
-      Token Authentication is disabled from time to time.
+      Note that the API is protected by JWT Authentication, however, since limited quota for tokens is available at my hosting provider,
+      JWT Authentication is disabled from time to time.
     </div>
   )
 }
