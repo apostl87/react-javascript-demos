@@ -46,14 +46,29 @@ const Navigation = () => {
     const [breadcrumbHeight, setBreadcrumbHeight] = useState(0);
     const location = useLocation();
 
-    // Extracting path segments and handling "/"
+    // Breadcrumb memo
     const pathSegments = location.pathname.split('/').filter(segment => segment !== "" && segment[0] !== '_');
-    if (pathSegments.length === 0) {pathSegments.push("home")}
+    if (pathSegments.length === 0) { pathSegments.push("home") }
 
-    // Open/close menu functions
-    const toggleMenu = () => { setIsOpen(!isOpen) };
+    // Styles that need to go here instead of the css files due to the resize observer
+    const navigationPaddingTB = 6
+    const navigationStyle = {
+        paddingTop: `${navigationPaddingTB}px`,
+        paddingBottom: `${navigationPaddingTB}px`,
+    }
+    const breadcrumbPaddingTB = 10
+    const breadcrumbStyle = {
+        paddingTop: `${breadcrumbPaddingTB}px`,
+        paddingBottom: `${breadcrumbPaddingTB}px`,
+        top: `${navigationHeight + 60}px`,
+    }
 
-    // Resize observers
+    //// Effects
+    // Listener for closing menu if clicked outside
+    useEffect(() => {
+        document.addEventListener("mousedown", closeIfClickedOutside);
+    }, [])
+    // Resize observer
     useEffect(() => {
         const resizeObserver = new ResizeObserver(onResize);
         if (navigationRef.current) {
@@ -65,6 +80,11 @@ const Navigation = () => {
         return () => resizeObserver.disconnect();
     }, [navigationRef, breadcrumbRef])
 
+    //// Callback functions
+    // Open/close menu functions
+    const toggleMenu = () => { setIsOpen(!isOpen) };
+
+    // Resize observer
     function onResize(entries) {
         // Navigation bar
         let entry = entries[0];
@@ -85,31 +105,14 @@ const Navigation = () => {
         }
     }
 
-
-    // Styles that need to go here instead of the css files due to the resize observer
-    const navigationPaddingTB = 6
-    const navigationStyle = {
-        paddingTop: `${navigationPaddingTB}px`,
-        paddingBottom: `${navigationPaddingTB}px`,
-    }
-    const breadcrumbPaddingTB = 10
-    const breadcrumbStyle = {
-        paddingTop: `${breadcrumbPaddingTB}px`,
-        paddingBottom: `${breadcrumbPaddingTB}px`,
-        top: `${navigationHeight + 60}px`,
-    }
-
-
-    // Listener and callback function for closing the menu if clicked outside
+    // Callback function for closing the menu if clicked outside
     const closeIfClickedOutside = (e) => {
         if (!menuRef.current?.contains(e.target) &&
             !menuToggleRef.current?.contains(e.target)) {
             setIsOpen(false);
         }
     };
-    useEffect(() => {
-        document.addEventListener("mousedown", closeIfClickedOutside);
-    }, [])
+
 
     return (
         <>
@@ -164,12 +167,12 @@ const Navigation = () => {
 
             {/* Breadcrumb */}
             {/* {pathSegments.length > 0 && */}
-                <>
-                    <Breadcrumb refprop={breadcrumbRef} paths={findPathLabels(siteMap, pathSegments)} style={breadcrumbStyle} />
-                    {/* Divisor to block height used by the breadcrumb */}
-                    < div style={{ marginTop: `${breadcrumbHeight}px`, marginBottom: '0px' }}>
-                    </div>
-                </>
+            <>
+                <Breadcrumb refprop={breadcrumbRef} paths={findPathLabels(siteMap, pathSegments)} style={breadcrumbStyle} />
+                {/* Divisor to block height used by the breadcrumb */}
+                < div style={{ marginTop: `${breadcrumbHeight}px`, marginBottom: '0px' }}>
+                </div>
+            </>
             {/* } */}
 
             {/* <div className='bg-green-500'>TESTCONTENT</div> */}
