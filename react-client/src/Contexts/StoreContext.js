@@ -161,6 +161,9 @@ const StoreContextProvider = (props) => {
             (item) => item.mp_id === mp_id && item.pv_id === pv_id
         );
 
+        console.log(mp_id, pv_id);
+        console.log(index);
+        console.log(cartItems[index]);
         let newCartItems = [...cartItems];
         if (cartItems[index].quantity == 1) {
             // Delete the entry from the cart
@@ -189,6 +192,7 @@ const StoreContextProvider = (props) => {
     };
     return (
         <StoreContext.Provider value={contextValue}>
+            {/* {JSON.stringify(cartItems)} */}
             {props.children}
         </StoreContext.Provider>
     );

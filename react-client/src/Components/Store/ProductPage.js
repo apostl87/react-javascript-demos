@@ -31,7 +31,6 @@ const ProductPage = (props) => {
     const doFetch = async () => {
       setLoading(true);
       let data = await fetchProduct(props.productId);
-      console.log(data);
       if (!ignore && data.length === 1) setProduct(data[0]);
       setLoading(false);
     }

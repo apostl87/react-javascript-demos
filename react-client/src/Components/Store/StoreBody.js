@@ -18,10 +18,11 @@ const StoreBody = () => {
     } else if (subpath[0] == "all-categories") {
         content = <StoreAll />
     } else if (subpath[0] == "_c") {
-        const id = subpath[1].split("-")[1].replace("C", "")
+        const id = subpath[1].split("-").at(-1).substring(1)
         content = <StoreCategory key={id} categoryId={id}/>
     } else if (subpath[0] == "_p") {
-        const id = subpath[1].split("-")[1].replace("P", "")
+        const id = subpath[1].split("-").at(-1).substring(1)
+        console.log(id);
         content = <ProductPage productId={id}/>
     } else if (subpath[0] == "cart") {
         content = <Cart />
