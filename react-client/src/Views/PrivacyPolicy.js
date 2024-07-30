@@ -27,7 +27,7 @@ const PrivacyPolicy = () => {
 
     return (
         
-        <div id='privacy-policy' className='mainly-text-contentt'>
+        <div id='privacy-policy' className='mainly-text-content'>
             Privacy Policy
         </div>
         

@@ -12,7 +12,7 @@ const Imprint = () => {
     }
 
     return (
-        <div className='mainly-text-contentt'>
+        <div className='mainly-text-content'>
             {/* <h3 className='text-left'>Contact</h3> */}
             <h4>Responsible for the content on this website</h4>
             Andreas Postl <br />

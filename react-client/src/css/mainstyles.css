@@ -13,18 +13,18 @@ input::-webkit-inner-spin-button { margin-left: 4px; }
   min-height: 100vh;
 }
 
-.mainly-text-contentt {
+.mainly-text-content {
   max-width: 1200px;
   align-self: center;
   text-align: justify;
-  margin: 1rem 100px 2rem 100px;
+  margin: 2rem 50px;
 }
 
-.mainly-text-contentt h3 {
+.mainly-text-content h3 {
   padding-top: 24px;
 }
 
-.mainly-text-contentt h5 {
+.mainly-text-content h5 {
   padding-top: 20px;
   padding-bottom: 6px;
 }
@@ -538,8 +538,17 @@ a:focus {
   color: white;
 }
 
-@media (max-width:400px) {
+@media (max-width:800px) {
+  .mainly-text-content {
+    margin: 2rem 30px;
+  }
+}
+
+@media (max-width:500px) {
   .pagination{
     flex-direction: column;
+  }
+  .mainly-text-content {
+    margin: 2rem 10px;
   }
 }
