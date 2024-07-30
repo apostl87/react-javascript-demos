@@ -1,6 +1,7 @@
 import React, { useContext, useState, useEffect, useMemo } from 'react'
 import { useLocation } from 'react-router-dom'
 import { StoreContext } from '../../Contexts/StoreContext'
+import { MoonLoader } from 'react-spinners';
 import StoreGrid from './StoreGrid'
 import config from '../../config'
 
@@ -39,17 +40,23 @@ const StoreAll = () => {
           )
         })
       }
-      <div className='pb-4'>
-        120 of 240 items shown
-      </div>
-      <button
-        className="rounded-full bg-gray-200 hover:bg-gray-100
+      {loading ?
+        <MoonLoader speedMultiplier={0.3} color='rgb(15 23 42)' />
+        :
+        <>
+          <div className='pb-4'>
+            120 of 240 items shown
+          </div>
+          <button
+            className="rounded-full bg-gray-200 hover:bg-gray-100
                   w-40 max-w-52 h-10 py-2 font-semibold text-black
                   flex justify-center items-center gap-2" // for potentially added icon
-        onClick={doFetch}>
-        {/* <img src={TODO} /> */}
-        Load More
-      </button>
+            onClick={doFetch}>
+            {/* <img src={TODO} /> */}
+            Load More
+          </button>
+        </>
+      }
     </div>
   )
 }
