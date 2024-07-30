@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react'
+import React, { useState, useRef, useEffect, useMemo } from 'react'
 import { useLocation } from 'react-router-dom';
 import UserArea from './UserArea';
 import NavigationBarItem from "./NavigationBarItem";
@@ -47,8 +47,11 @@ const Navigation = () => {
     const location = useLocation();
 
     // Breadcrumb memo
-    const pathSegments = location.pathname.split('/').filter(segment => segment !== "" && segment[0] !== '_');
-    if (pathSegments.length === 0) { pathSegments.push("home") }
+    const pathSegments = useMemo(() => {
+        let res = location.pathname.split('/').filter(segment => segment !== "" && segment[0] !== '_');
+        if (res.length === 0) { res.push("home") }
+        return res;
+    }, [location.pathname]);
 
     // Styles that need to go here instead of the css files due to the resize observer
     const navigationPaddingTB = 6

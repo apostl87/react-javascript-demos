@@ -92,9 +92,14 @@ const ProductPortfolioMerchant = (props) => {
 
     // Loading data
     useEffect(() => {
+        let controller1, controller2
         if (usedUser) {
-            getMerchantProducts();
-            getCountries();
+            controller1 = getMerchantProducts();
+            controller2 = getCountries();
+        }
+        return () => {
+            if (controller1) controller1.abort();
+            if (controller2) controller2.abort();
         }
     }, [usedUser])
 
@@ -170,14 +175,13 @@ const ProductPortfolioMerchant = (props) => {
     function getMerchantProducts() {
         const url = `${api_url}/merchant-products/${usedUser.sub}`
         const controller = new AbortController();
+        const { signal } = controller;
 
         setWaitingForReponse(true);
 
         setTimeout(() => {
             controller.abort("Timeout")
         }, 10000)
-
-        const { signal } = controller;
 
         request.get(url, { signal })
             .then(response => {
@@ -191,6 +195,8 @@ const ProductPortfolioMerchant = (props) => {
             .finally(() => {
                 setWaitingForReponse(false);
             });
+        
+        return controller;
     }
 
     function updateProduct(p_id) {
@@ -272,7 +278,10 @@ const ProductPortfolioMerchant = (props) => {
 
     function getCountries() {
         const url = `${api_url}/countries`;
-        request.get(url)
+        const controller = new AbortController();
+        const {signal} = controller;
+
+        request.get(url, { signal })
             .then(response => {
                 setCountries(response.data);
             })
@@ -280,6 +289,8 @@ const ProductPortfolioMerchant = (props) => {
                 console.error(error);
                 setDatabaseConnectionFailed(true);
             });
+
+        return controller
     }
 
     //// Helper functions

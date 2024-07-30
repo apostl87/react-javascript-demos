@@ -1,37 +1,29 @@
 import React, { useContext, useState, useEffect, useMemo } from 'react'
 import { useLocation } from 'react-router-dom'
 import { StoreContext } from '../../Contexts/StoreContext'
-import { MoonLoader } from 'react-spinners';
-import ProductCard from './ProductCard'
+import StoreGrid from './StoreGrid'
 
 const StoreCategory = (props) => {
-  const { getProductsByCategory, categories, allCategoryVariants, getVariantsByCategory } = useContext(StoreContext);
-  const [products, setProducts] = useState(null)
+  const { fetchProductsByCategory} = useContext(StoreContext);
+  
+  const [products, setProducts] = useState([])
   const [loading, setLoading] = useState(false);
 
-  const category = useMemo(() => categories.find(c => c.pc_id == props.categoryId), [props.categoryId, categories]);
-  const variants = useMemo(() => getVariantsByCategory(allCategoryVariants, props.categoryId), [props.categoryId, allCategoryVariants]);
-  //   {
-  //   try {
-  //     return allCategoryVariants.find(cv => cv.pc_id == props.categoryId)['variants']
-  //   } catch (error) {
-  //     //console.error(error);
-  //     return []
-  //   }
-  // }, [props.categoryId, allCategoryVariants])
+  // Currently not needed
+  // const { categories } = useContext(StoreContext)
+  // const category = useMemo(() => categories && categories.find(c => c.pc_id == props.categoryId), [props.categoryId, categories]);
 
+  // Fetch products for the given category ID
   useEffect(() => {
-    // Testing performance
-    // Fetch products for the given category ID, even though the StoreContext already contains all products
-    setLoading(true);
     let ignore = false;
 
-    const fetchProducts = async () => {
-      let data = await getProductsByCategory(props.categoryId);
+    const doFetch = async () => {
+      setLoading(true);
+      let data = await fetchProductsByCategory(props.categoryId);
       if (!ignore) setProducts(data);
       setLoading(false);
     }
-    fetchProducts();
+    doFetch();
 
     return () => {
       ignore = true
@@ -39,29 +31,7 @@ const StoreCategory = (props) => {
   }, []);
 
   return (
-    <div id="store-category" className="flex justify-center w-full min-h-screen py-5">
-
-      {!products
-        ?
-        <MoonLoader speedMultiplier={0.3} color='rgb(15 23 42)' />
-        :
-        (products.length === 0
-          ?
-          <span>No products to display.</span>
-          :
-          <div id="store-category-items"
-            className='mb-5 grid grid-cols-2 gap-3 px-2
-                      md:grid-cols-3  md:mx-0
-                      lg:grid-cols-4 lg:gap-5 lg:px-0 lg:items-stretch'>
-            {products.map(product => {
-              return (
-                <ProductCard key={product.mp_id} product={product} variants={variants} />
-              )
-            })}
-          </div>
-        )
-      }
-    </div >
+      <StoreGrid products={products} loading={loading} />
   )
 }
 

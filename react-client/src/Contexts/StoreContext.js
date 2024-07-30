@@ -14,9 +14,9 @@ const StoreContextProvider = (props) => {
         return cart;
     };
 
-    const [products, setProducts] = useState([]); // TODO: optimization
-    const [categories, setCategories] = useState([]);
-    const [allCategoryVariants, setAllCategoryVariants] = useState([]);
+    const [products, setProducts] = useState([]); // TODO: please find below (**)
+    const [categories, setCategories] = useState(undefined);
+    const [allVariants, setAllVariants] = useState(undefined);
     const [cartItems, setCartItems] = useState(getCartItems());
 
     useEffect(() => {
@@ -26,17 +26,41 @@ const StoreContextProvider = (props) => {
             .catch(error => { console.error(error); })
         // Get Variants for all Categories
         request.get(`${api_url}/categories/variants`)
-            .then(response => { setAllCategoryVariants(response.data) })
+            .then(response => { setAllVariants(response.data) })
             .catch(error => { console.error(error); })
-        // Get Products
+        // Get Products // (**) TODO: DO NOT FETCH THIS HERE, BUT IMPLEMENT AN ENDPOINT FOR MULTIPLE PRODUCTS
         request.get(`${api_url}/products`)
             .then(response => { setProducts(response.data) })
             .catch(error => { console.error(error); })
     }, [])
 
-    const getProductsByCategory = async (pc_id) => {
-        // Testing performance
-        // Fetch products for the given category ID, even though the StoreContext already contains all products
+
+    const fetchProduct = async (mp_id) => {
+        return request.get(`${api_url}/products/${mp_id}`)
+            .then(response => {
+                return (response.data)
+            })
+            .catch(error => {
+                console.error(error);
+                return (JSON.stringify(error));
+            })
+    }
+
+    const fetchProductBatch = async (limit, offset) => {
+        let url = `${api_url}/products-new`;
+        url += `?limit=${limit}&offset=${offset}`;
+
+        return request.get(url)
+            .then(response => {
+                return (response.data)
+            })
+            .catch(error => {
+                console.error(error);
+                return (JSON.stringify(error));
+            })
+    }
+
+    const fetchProductsByCategory = async (pc_id) => {
         return request.get(`${api_url}/products/category/${pc_id}`)
             .then(response => {
                 return (response.data)
@@ -48,11 +72,15 @@ const StoreContextProvider = (props) => {
     }
 
     const getVariantsByCategory = (allVariants, pc_id) => {
-        try {
-            return allVariants.find(v => v.pc_id == pc_id)['variants']
-        } catch (error) {
-            return []
+        // try {
+        //     return allVariants.find(v => v.pc_id == pc_id)['variants']
+        // } catch (error) {
+        //     return []
+        // }
+        if (allVariants[pc_id]) {
+            return allVariants[pc_id]['variants']
         }
+        return undefined;
     }
 
     const cartItemsDisplay = useMemo(() => {
@@ -61,7 +89,7 @@ const StoreContextProvider = (props) => {
                 return (
                     cartItems.map((cartItem) => {
                         let product = products.find(product => product.mp_id === Number(cartItem.mp_id));
-                        const variants = getVariantsByCategory(allCategoryVariants, product.mp_pc_id);
+                        const variants = getVariantsByCategory(allVariants, product.mp_pc_id);
                         let variant = variants.find(variant => variant.pv_id === Number(cartItem.pv_id));
                         return {
                             ...product,
@@ -74,7 +102,7 @@ const StoreContextProvider = (props) => {
         } else {
             return null;
         }
-    }, [cartItems, products, allCategoryVariants]);
+    }, [cartItems, products, allVariants]);
 
     const getTotalCartPrice = () => {
         let totalPrice = 0;
@@ -156,7 +184,7 @@ const StoreContextProvider = (props) => {
     }
 
     const contextValue = {
-        products, getProductsByCategory, categories, allCategoryVariants, getVariantsByCategory,
+        products, fetchProduct, fetchProductBatch, fetchProductsByCategory, categories, allVariants, getVariantsByCategory,
         cartItems, cartItemsDisplay, getAmountCartItems, getTotalCartPrice, addToCart, removeFromCart, emptyCart,
     };
     return (

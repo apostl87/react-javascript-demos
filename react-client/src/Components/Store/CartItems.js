@@ -71,7 +71,7 @@ const CartItems = () => {
               <h3>{currency} {getTotalCartPrice()}</h3>
             </div>
           </div>
-          <button className="self-end rounded-2xl bg-emerald-200 w-full max-w-52 h-14 py-2 font-semibold">
+          <button className="self-end rounded-2xl bg-emerald-200 hover:bg-emerald-300 w-full max-w-52 h-14 py-2 font-semibold">
             PROCEED TO CHECKOUT
           </button>
         </div>
@@ -84,7 +84,7 @@ const CartItems = () => {
         </div>
         <div className="cartitems-empty-cart">
           <button
-            className="rounded-2xl bg-gray-400 w-full max-w-52 h-12 py-2 font-semibold text-black px-5
+            className="rounded-2xl bg-gray-400 hover:bg-gray-300 w-full max-w-52 h-12 py-2 font-semibold text-black px-5
                       flex items-center gap-2"
             onClick={emptyCart}>
             <img src={deleteIcon} />

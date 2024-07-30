@@ -47,6 +47,7 @@
     margin: 0px 0px;
     gap: 15px;
     text-wrap: nowrap;
+    flex-wrap: wrap;
 }
 .productpage-right-variant{
     padding: 16px 20px;
