@@ -2,6 +2,7 @@ import React, { useContext, useEffect, useState, useRef } from 'react'
 import { StoreContext } from '../../Contexts/StoreContext'
 import CloseButtonGrey from '../../assets/button-close-grey.svg'
 import CloseButtonBlack from '../../assets/button-close-black.svg'
+import { MoonLoader } from 'react-spinners';
 import '../../css/store.css'
 import { Link } from 'react-router-dom'
 
@@ -45,7 +46,7 @@ const StoreMenu = () => {
                         <Link to="all-categories"
                             className='border border-gray-800 my-0 p-1 rounded-md m-4 bg-slate-700 text-white
                                         w-full hover:no-underline hover:text-gray-700 hover:bg-slate-200 text-center'
-                                        onClick={toggleMenu}>
+                            onClick={toggleMenu}>
                             All Categories
                         </Link>
                         <img id="store-menu-close" src={CloseButtonGrey} className='h-10 w-10 cursor-pointer pr-2'
@@ -55,18 +56,24 @@ const StoreMenu = () => {
                         </img>
                     </div>
                     <div id="store-menu-items" className='w-full flex flex-col gap-0 text-center'>
-                        {categories && categories.map((category) => {
-                            return (
-                                <Link to={'_c/' + category.pc_category_name.toLowerCase() + '-C' + category.pc_id}
-                                    className='border-t last-of-type:border-b border-gray-800 my-0 py-2 pl-2 mr-2
+                        {categories
+                            ?
+                            categories.map((category) => {
+                                return (
+                                    <Link to={'_c/' + category.pc_category_name.toLowerCase() + '-C' + category.pc_id}
+                                        className='border-t last-of-type:border-b border-gray-800 my-0 py-2 pl-2 mr-2
                                                 hover:no-underline text-gray-700 hover:text-gray-700 hover:bg-slate-200'
-                                    onClick={toggleMenu}
-                                    key={category.pc_id}
-                                >
-                                    {category.pc_category_name}
-                                </Link>
-                            )
-                        })}
+                                        onClick={toggleMenu}
+                                        key={category.pc_id}
+                                    >
+                                        {category.pc_category_name}
+                                    </Link>
+                                )
+                            })
+                            :
+                            <MoonLoader speedMultiplier={0.3} color='rgb(15 23 42)' />
+
+                        }
                     </div>
                 </div>
                 :
