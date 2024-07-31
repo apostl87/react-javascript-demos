@@ -1,9 +1,29 @@
 import React from 'react'
+import { useEffect } from "react";
+import { useLocation } from "react-router-dom";
 import { useAuth0 } from '@auth0/auth0-react'
 
 export const NoDeveloper = () => {
   return (
     <div className='text-center mt-10'>Your account is not registered as a developer account.</div>
+  )
+}
+
+export default function ScrollToTop() {
+  const { pathname } = useLocation();
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [pathname]);
+
+  return null;
+}
+
+export const NoDatabaseConnection = () => {
+  return (
+    <div className='flex flex-col items-center pt-7 px-5'>
+      <div>Failed to connect to the database. Please try again later.</div>
+    </div>
   )
 }
 
