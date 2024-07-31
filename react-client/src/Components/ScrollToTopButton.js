@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import React from 'react'
 import ScrollToTop from 'react-scroll-to-top'
 
-const MyScrollToTop = () => {
+const ScrollToTopButton = () => {
 
     //// Hide when currently scrolling, only show when not scrolling
 
@@ -44,4 +44,4 @@ const MyScrollToTop = () => {
     )
 }
 
-export default MyScrollToTop
+export default ScrollToTopButton

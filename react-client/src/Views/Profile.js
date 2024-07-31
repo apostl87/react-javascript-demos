@@ -1,5 +1,5 @@
 import { useAuth0 } from "@auth0/auth0-react";
-import { React, useEffect, useState } from "react";
+import { React, useEffect, useState, useRef } from "react";
 import { Tooltip } from "react-tooltip";
 import { Link } from "react-router-dom";
 import $ from 'jquery';
@@ -13,23 +13,29 @@ import * as Utils from '../Utils/generic';
 const Profile = () => {
   const { user, isAuthenticated, isLoading } = useAuth0();
 
-  // Hook for the user data retreived from the management API
+  //// States
+  const [apiSuccess, setApiSuccess] = useState(null);
+
+  // User data retreived from the management API
   const [userData, setUserData] = useState(null);
 
-  // Editing hooks
+  // Editing
   const [editing, setEditing] = useState(false)
   const [editedUserData, setEditedUserData] = useState({})
 
-  // Modal hooks
+  // Modal
   const [changeEmailModalOpen, setChangeEmailModalOpen] = useState(false)
   const [deleteModalOpen, setDeleteModalOpen] = useState(false)
 
-  // Tooltip hook
+  // Tooltip
   const [tooltipEmail2IsOpen, setTooltipEmail2IsOpen] = useState(false);
 
   // Infobox
   const [infoboxMessage, setInfoboxMessage] = useState("")
   const [responseStatusCode, setResponseStatusCode] = useState(-1)
+
+  //// Refs
+  const tooltipTimeoutRef = useRef(null);
 
   // If user data has been updated, update the local state
   useEffect(() => {
@@ -41,19 +47,17 @@ const Profile = () => {
   // Get user data from the management API
   useEffect(() => {
     if (user) {
-      const caller = async () => {
+      const fetchUserData = async () => {
         let response = await getUser(user.sub);
-        setUserData(response.data);
+        if (response.status == 200) {
+          setApiSuccess(true);
+        } else {
+          setUserData(response.data);
+        }
       }
-      caller();
+      fetchUserData();
     }
   }, [user]);
-
-  // Hide tooltip after appearTimeTooltip milliseconds
-  const appearTimeTooltip = 2000;
-  useEffect(() => {
-    if (tooltipEmail2IsOpen) setTimeout(() => setTooltipEmail2IsOpen(false), appearTimeTooltip)
-  }, [tooltipEmail2IsOpen])
 
   // Stop rendering when data from Auth0 has not been loaded yet
   if (isLoading) {
@@ -62,6 +66,14 @@ const Profile = () => {
   // Show minimal information if user is not logged in
   if (!isAuthenticated) {
     return <NotLoggedIn />
+  }
+  // Show minimal information when the API is not available or authentication fails
+  if (!apiSuccess) {
+    return (
+      <div className='p-5 text-center'>
+        The page has been temporarily disabled due to an error while fetching user data from the Auth0 Management API.
+      </div>
+    )
   }
 
   // Wrapper for the updateUser-function from the Auth0 management service
@@ -83,7 +95,7 @@ const Profile = () => {
       }
     }
 
-    // TODO: We could check if any value has changed; if not, 
+    // TODO: deepEqual comparison; if not changed, do not do anything
 
     // API call
     let response = await updateUser(user.sub, data);
@@ -120,6 +132,13 @@ const Profile = () => {
   }
 
   // Callback functions
+  function openTooltip() {
+    setTooltipEmail2IsOpen(true);
+    // Hide tooltip after a delay
+    clearTimeout(tooltipTimeoutRef.current)
+    tooltipTimeoutRef.current = setTimeout(() => setTooltipEmail2IsOpen(false), 2000)
+  }
+
   function handleEditClick() {
     setEditing(true);
     setEditedUserData(userData);
@@ -170,7 +189,7 @@ const Profile = () => {
         inp = $('#profileInput-email2')
         inp.addClass('invalid');
         isInvalid = true;
-        setTooltipEmail2IsOpen(true);
+        openTooltip();
       } else {
         setChangeEmailModalOpen(true);
         return;

@@ -14,26 +14,39 @@ const StoreContextProvider = (props) => {
         return cart;
     };
 
+    const [dbConnection, setDbConnection] = useState(false);
+
     const [products, setProducts] = useState([]); // TODO: please find below (**)
     const [categories, setCategories] = useState(undefined);
     const [allVariants, setAllVariants] = useState(undefined);
     const [cartItems, setCartItems] = useState(getCartItems());
 
     useEffect(() => {
-        // Get Categories
-        request.get(`${api_url}/categories`)
-            .then(response => { setCategories(response.data) })
-            .catch(error => { console.error(error); })
-        // Get Variants for all Categories
-        request.get(`${api_url}/categories/variants`)
-            .then(response => { setAllVariants(response.data) })
-            .catch(error => { console.error(error); })
-        // Get Products // (**) TODO: DO NOT FETCH THIS HERE, BUT IMPLEMENT AN ENDPOINT FOR MULTIPLE PRODUCTS
-        request.get(`${api_url}/products`)
-            .then(response => { setProducts(response.data) })
-            .catch(error => { console.error(error); })
+        request.get(`${api_url}/check-connection`)
+            .then(response => {
+                setDbConnection(true);
+            })
+            .catch(error => {
+                console.error(error);
+            })
     }, [])
 
+    useEffect(() => {
+        if (dbConnection === true) {
+            // Get Categories
+            request.get(`${api_url}/categories`)
+                .then(response => { setCategories(response.data) })
+                .catch(error => { console.error(error); })
+            // Get Variants for all Categories
+            request.get(`${api_url}/categories/variants`)
+                .then(response => { setAllVariants(response.data) })
+                .catch(error => { console.error(error); })
+            // Get Products // (**) TODO: DO NOT FETCH THIS HERE, BUT IMPLEMENT AN ENDPOINT FOR MULTIPLE PRODUCTS
+            request.get(`${api_url}/products`)
+                .then(response => { setProducts(response.data) })
+                .catch(error => { console.error(error); })
+        }
+    }, [dbConnection])
 
     const fetchProduct = async (mp_id) => {
         return request.get(`${api_url}/products/${mp_id}`)
@@ -42,7 +55,8 @@ const StoreContextProvider = (props) => {
             })
             .catch(error => {
                 console.error(error);
-                return (JSON.stringify(error));
+                return null;
+                //return (JSON.stringify(error));
             })
     }
 
@@ -56,7 +70,8 @@ const StoreContextProvider = (props) => {
             })
             .catch(error => {
                 console.error(error);
-                return (JSON.stringify(error));
+                return null;
+                //return (JSON.stringify(error));
             })
     }
 
@@ -67,20 +82,16 @@ const StoreContextProvider = (props) => {
             })
             .catch(error => {
                 console.error(error);
-                return (JSON.stringify(error));
+                return null;
+                //return (JSON.stringify(error));
             })
     }
 
     const getVariantsByCategory = (allVariants, pc_id) => {
-        // try {
-        //     return allVariants.find(v => v.pc_id == pc_id)['variants']
-        // } catch (error) {
-        //     return []
-        // }
         if (allVariants[pc_id]) {
             return allVariants[pc_id]['variants']
         }
-        return undefined;
+        return null;
     }
 
     const cartItemsDisplay = useMemo(() => {
@@ -187,6 +198,7 @@ const StoreContextProvider = (props) => {
     }
 
     const contextValue = {
+        dbConnection,
         products, fetchProduct, fetchProductBatch, fetchProductsByCategory, categories, allVariants, getVariantsByCategory,
         cartItems, cartItemsDisplay, getAmountCartItems, getTotalCartPrice, addToCart, removeFromCart, emptyCart,
     };

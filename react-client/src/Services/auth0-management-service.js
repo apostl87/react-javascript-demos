@@ -4,7 +4,7 @@ import React from 'react';
 // Service for the Auth0 Management API
 
 const domain = process.env.REACT_APP_AUTH0_DOMAIN;
-const audience = "https://" + domain + "/api/v2"
+const audience = "https://" + domain + "/api/v2/"
 const client_id = process.env.REACT_APP_AUTH0_API_M2M_CLIENT_ID;
 const client_secret = process.env.REACT_APP_AUTH0_API_M2M_CLIENT_SECRET;
 
@@ -74,15 +74,13 @@ const axiosRequest = async (config) => {
     }
 
     config.headers.Authorization = `Bearer ${apiToken}`;
-    console.log(config);
 
     let res = await axios.request(config)
         .then((response) => {
-            console.log(response);
             return (response)
         })
         .catch((error) => {
-            console.log(error);
+            console.error(error);
             return (error.response)
         });
 
@@ -106,7 +104,7 @@ const refreshToken = async () => {
             grant_type: 'client_credentials',
             client_id: client_id,
             client_secret: client_secret,
-            audience: audience,
+            audience: audience
         })
     };
 

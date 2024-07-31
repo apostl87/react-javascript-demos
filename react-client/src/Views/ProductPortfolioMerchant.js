@@ -8,7 +8,7 @@ import deepEqual from 'deep-equal';
 import PaginationBar from '../Components/PaginationBar';
 import SearchBar from '../Components/SearchBar';
 import { ModalConfirmCancel } from '../Components/ModalConfirmCancel';
-import { NotLoggedIn } from '../Components/Misc';
+import { NotLoggedIn, NoDatabaseConnection } from '../Components/Misc';
 import NotificationContainer from '../Components/NotificationContainer';
 import ModalCreateProduct from '../Components/ModalCreateProduct';
 import { AdminProductCardEdit, AdminProductCard} from '../Components/AdminProductCard';
@@ -150,9 +150,7 @@ const ProductPortfolioMerchant = (props) => {
     }
     if (databaseConnectionFailed) {
         return (
-            <div className='flex flex-col items-center pt-7 px-5'>
-                <div>Failed to connect to the database. Please try again later.</div>
-            </div>
+            <NoDatabaseConnection />
         )
     }
     if ((!isLoading && !usedUser)) {
@@ -315,19 +313,6 @@ const ProductPortfolioMerchant = (props) => {
         });
         return (products);
     }
-
-    // function findCountryNameById(countries, c_id) {
-    //     if (countries.length > 0) {
-    //         let matchingCountry = countries.filter(country => country.c_id === c_id)[0]
-    //         if (matchingCountry) {
-    //             return matchingCountry.c_name;
-    //         } else {
-    //             return "";
-    //         }
-    //     } else {
-    //         return "Loading...";
-    //     }
-    // }
 
     function filterProducts() {
         if (!isFiltered) {
