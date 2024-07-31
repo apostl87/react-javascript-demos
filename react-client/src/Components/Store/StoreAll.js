@@ -16,12 +16,15 @@ const StoreAll = () => {
   const [numberTotalProducts, setNumberTotalProducts] = useState(0);
 
   //// Display variables
-  const numberLoadedProducts = []
-  let temp = 0
-  for (let index = 0; index < productBatches.length; index++) {
-    temp += productBatches[index].length
-    numberLoadedProducts.push(temp)
-  }
+  const numberLoadedProducts = useMemo(() => {
+    let res = []
+    let temp = 0
+    for (let index = 0; index < productBatches.length; index++) {
+      temp += productBatches[index].length;
+      res.push(temp)
+    }
+    return res
+  }, [productBatches])
 
   useEffect(() => {
     if (productBatches.length === 0) doFetch();
@@ -40,7 +43,6 @@ const StoreAll = () => {
 
   return (
     <div className='flex flex-col items-center pb-5'>
-      {productBatches.length}
       {
         productBatches.map((batch, index) => {
           return (
