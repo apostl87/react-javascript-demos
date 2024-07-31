@@ -1,6 +1,7 @@
 import axios from "axios";
 import React, { useState, useEffect } from "react";
 
+// Token service for the Node/Express API holding the data for the page content
 class TokenService {
     constructor() {
         this.audience = process.env.REACT_APP_AUDIENCE;

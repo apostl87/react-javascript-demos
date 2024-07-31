@@ -12,7 +12,6 @@ const StoreHeader = () => {
             <div>
                 <StoreMenu />
             </div>
-            {/* {JSON.stringify(cartItems)} */}
             <div className='py-1 pr-5'>
                 <Link to="/store/cart"><img src={cart_icon} className="h-8 w-8" alt="cart" /></Link>
                 <div className="store-cart-count">{getAmountCartItems()}</div>

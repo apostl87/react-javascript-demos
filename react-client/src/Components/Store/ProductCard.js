@@ -33,7 +33,7 @@ const ProductCard = (props) => {
             {variants.length > 0 &&
                 <p className='flex gap-2 items-center flex-wrap'>
                     <span className='w-14'>Variant</span>
-                    <select className='h-9 flex-shrink' value={variantId} onChange={(e) => setVariantId(e.target.value)}>
+                    <select className='h-9 flex-shrink' value={variantId} onChange={(e) => setVariantId(Number(e.target.value))}>
                         {variants.map(variant => {
                             return (<option key={variant.pv_id} value={variant.pv_id}>{variant.pv_variant_name}</option>)
                         })}
