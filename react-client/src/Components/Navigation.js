@@ -5,6 +5,7 @@ import NavigationBarItem from "./NavigationBarItem";
 import NavigationMenuItem from "./NavigationMenuItem";
 import Breadcrumb from './Breadcrumb';
 import findPathLabels from '../Utils/findPathLabels';
+import config from '../config';
 import '../css/navigation.css';
 
 // The following array defines the entries of the navigation bar and the menu
@@ -46,12 +47,17 @@ const Navigation = () => {
     const [breadcrumbHeight, setBreadcrumbHeight] = useState(0);
     const location = useLocation();
 
-    // Breadcrumb memo
+    //// Memos
+    // Path Segments and Path Labels (used for breadcrumb and title)
     const pathSegments = useMemo(() => {
         let res = location.pathname.split('/').filter(segment => segment !== "" && segment[0] !== '_');
         if (res.length === 0) { res.push("home") }
         return res;
     }, [location.pathname]);
+
+    const pathLabels = useMemo(() => {
+        return findPathLabels(siteMap, pathSegments);
+    }, [pathSegments])
 
     // Styles that need to go here instead of the css files due to the resize observer
     const navigationPaddingTB = 6
@@ -71,6 +77,7 @@ const Navigation = () => {
     useEffect(() => {
         document.addEventListener("mousedown", closeIfClickedOutside);
     }, [])
+    
     // Resize observer
     useEffect(() => {
         const resizeObserver = new ResizeObserver(onResize);
@@ -82,6 +89,12 @@ const Navigation = () => {
         }
         return () => resizeObserver.disconnect();
     }, [navigationRef, breadcrumbRef])
+
+    // Change title
+    useEffect(() => {
+        let subPage = pathLabels.at(-1).label !== "Home" ? pathLabels.at(-1).label : "";
+        document.title = subPage ? subPage + " - " + config.baseTitle : config.baseTitle;
+    }, [pathLabels]);
 
     //// Callback functions
     // Open/close menu functions
