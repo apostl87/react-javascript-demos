@@ -11,7 +11,7 @@ import { ModalConfirmCancel } from '../Components/ModalConfirmCancel';
 import { NotLoggedIn, NoDatabaseConnection } from '../Components/Misc';
 import NotificationContainer from '../Components/NotificationContainer';
 import ModalCreateProduct from '../Components/ModalCreateProduct';
-import { AdminProductCardEdit, AdminProductCard} from '../Components/AdminProductCard';
+import { AdminProductCardEdit, AdminProductCard } from '../Components/AdminProductCard';
 import request from '../Services/request-service';
 import formatNumeric from '../Utils/formatNumeric';
 import verifyUrlImage from '../Utils/verifyUrlImage';
@@ -66,7 +66,7 @@ const ProductPortfolioMerchant = (props) => {
     const [createModalIsOpen, setCreateModalIsOpen] = useState(false);
     const maxProductsReached = (products.length >= config.maxProductsReached);
 
-    // Notification
+    // Notifications
     const [notifications, setNotifications] = useState([])
 
     // Pagination
@@ -103,10 +103,10 @@ const ProductPortfolioMerchant = (props) => {
         }
     }, [usedUser])
 
-    // Pagination: Go back one page if current page is greater than number of pages (suboptimal effect)
+    // Pagination: Go back to last page if current page is greater than number of pages (suboptimal effect)
     useEffect(() => {
         if (currentPage > nPages) {
-            setCurrentPage(Math.max(currentPage - 1, 1))
+            setCurrentPage(Math.max(nPages, 1))
         }
     }, [filteredProducts]);
 
@@ -125,20 +125,6 @@ const ProductPortfolioMerchant = (props) => {
             return;
         }
     }, [user, publicTestMode]);
-
-    // Dismiss changes
-    // useEffect(() => {
-    //     console.log("called");
-    //     if (unsavedChanges() && !pendingActionOnDismiss()) {
-    //         setDismissModalIsOpen(true)
-    //         setPendingActionOnDismiss(() => () => {
-    //             setEditedProduct({})
-    //             setEditedIndex(-1)
-    //             return true
-    //         })
-    //     }
-    // }, [unsavedChanges()])
-
 
     //// Conditional returns
     if (isLoading || waitingForResponse) {
@@ -192,7 +178,7 @@ const ProductPortfolioMerchant = (props) => {
             .finally(() => {
                 setWaitingForReponse(false);
             });
-        
+
         return controller;
     }
 
@@ -265,7 +251,8 @@ const ProductPortfolioMerchant = (props) => {
         const url = `${api_url}/merchant-products/${usedUser.sub}/init`
         request.post(url) // This is a pseudo POST endpoint; It creates ressources without transmitting a body - The backend carries the rest of the information.
             .then(response => {
-                processProductData(response.data);
+                let newProducts = [...products, ...mapProductData(response.data)];
+                setProducts(newProducts);
                 addNotification(`Added ${response.data.length} products.`);
             })
             .catch(error => {
@@ -276,7 +263,7 @@ const ProductPortfolioMerchant = (props) => {
     function getCountries() {
         const url = `${api_url}/countries`;
         const controller = new AbortController();
-        const {signal} = controller;
+        const { signal } = controller;
 
         request.get(url, { signal })
             .then(response => {
@@ -400,23 +387,28 @@ const ProductPortfolioMerchant = (props) => {
     }
 
     //// Helper functions
+    function startEditingProduct(product) {
+        setEditedIndex(products.indexOf(product));
+        setEditedProduct({ ...product });
+    }
+
+    // Notification
     function addNotification(notification) {
         setNotifications([...notifications, [(notifications.length > 0) ? notifications[notifications.length - 1][0] + 1 : 0, notification]]);
     }
 
     function deleteNotification(index) {
-        setNotifications([...notifications.filter((_, i) => i !== index)])
-    }
-
-    function startEditingProduct(product) {
-        setEditedIndex(products.indexOf(product));
-        setEditedProduct({ ...product });
+        setNotifications([...notifications.filter((n) => n[0] !== index)])
     }
 
 
     return (
         <>
             <div id='portfolio-header' className='w-full pr-5 pl-5 pt-2'>
+                {user.sub === "auth0|667d3f4f494d32facd4a2e9f" &&
+                    <button onClick={() => initProducts()} className='button-standard w-full'>Add more products with test data (for testing purposes)</button>
+                }
+
                 {publicTestMode &&
                     <div className='flex flex-wrap justify-start pt-2 pb-2'>
                         <button type="button" onClick={() => { navigate(".") }}
@@ -498,6 +490,8 @@ const ProductPortfolioMerchant = (props) => {
                 index2={indexLastProduct}
                 nProducts={filteredProducts.length}
                 handleClick={handlePaginationBarClick} />
+
+            <div className='mb-5'></div>
 
             {/* Overlay components */}
 

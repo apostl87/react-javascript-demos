@@ -1,10 +1,25 @@
-import React, { useContext } from 'react'
+import React, { useContext, useState } from 'react'
 import { StoreContext } from '../../Contexts/StoreContext'
 import { MoonLoader } from 'react-spinners';
-import ProductCard from './ProductCard'
+import ProductCard from './ProductCard';
+import NotificationContainer from '../NotificationContainer';
+
 
 const StoreGrid = ({ products, loading }) => {
     const { getVariantsByCategory, allVariants } = useContext(StoreContext);
+
+    // Notifications
+    const [notifications, setNotifications] = useState([])
+
+    // Notification functions
+    function addNotification(notification) {
+        setNotifications([...notifications, [(notifications.length > 0) ? notifications[notifications.length - 1][0] + 1 : 0, notification]]);
+    }
+
+    function deleteNotification(index) {
+        setNotifications([...notifications.filter((_, i) => i !== index)])
+    }
+
 
     return (
         <div id="store-grid" className="flex justify-center w-full min-h-screen pt-5 pb-2">
@@ -27,12 +42,17 @@ const StoreGrid = ({ products, loading }) => {
                                     key={product.mp_id}
                                     product={product}
                                     variants={allVariants ? getVariantsByCategory(allVariants, product.mp_pc_id) : []}
+                                    addNotification={addNotification}
                                 />
                             )
                         })}
                     </div>
                 )
             }
+
+            <NotificationContainer
+                notifications={notifications} deleteNotification={deleteNotification}
+                className='fixed flex flex-col-reverse gap-1 bottom-5 left-5 z-20 w-full' />
         </div >
     )
 }

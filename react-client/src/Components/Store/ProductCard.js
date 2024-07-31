@@ -1,4 +1,4 @@
-import React, { useState, useContext, useEffect } from 'react'
+import React, { useState, useContext, useEffect, useMemo } from 'react'
 import { StoreContext } from '../../Contexts/StoreContext'
 import { Link } from 'react-router-dom'
 import { pathToProduct } from '../../Utils/generic'
@@ -6,10 +6,17 @@ import { pathToProduct } from '../../Utils/generic'
 const ProductCard = (props) => {
     const { addToCart } = useContext(StoreContext)
 
+    // Products and Variants
     let product = props.product
     let variants = props.variants
-
     const [variantId, setVariantId] = useState(undefined)
+    const variantName = useMemo(() => {
+        if (variantId) {
+            return variants.find((v) => v.pv_id == variantId).pv_variant_name
+        } else {
+            return undefined
+        }
+    }, [variantId])
 
     useEffect(() => {
         setVariantId(variants.length > 0 ? variants[0].pv_id : undefined);
@@ -46,7 +53,10 @@ const ProductCard = (props) => {
             </p>
 
             <button className='self-center rounded-2xl bg-emerald-200 hover:bg-emerald-300 w-full py-2 font-semibold'
-                onClick={() => addToCart(product.mp_id, variantId)}>
+                onClick={() => {
+                    addToCart(product.mp_id, variantId);
+                    props.addNotification(`${product.mp_name} (${variantName}) added to cart`);
+                }}>
                 Add to cart
             </button>
         </div >

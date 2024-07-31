@@ -5,19 +5,31 @@ import { getRandomInt } from '../../Utils/generic'
 import { MoonLoader } from 'react-spinners';
 import { pathToProduct } from '../../Utils/generic';
 import { useNavigate } from 'react-router-dom';
+import NotificationContainer from '../NotificationContainer';
+
 
 const ProductPage = (props) => {
   const navigate = useNavigate();
 
   const { fetchProduct, addToCart, allVariants, getVariantsByCategory } = useContext(StoreContext)
 
-  // States
+  //// States
   const [product, setProduct] = useState(undefined);
   const [variantId, setVariantId] = useState(undefined);
   const [loading, setLoading] = useState(false);
+  const [notifications, setNotifications] = useState([])
 
-  // Memos
+  //// Memos
+  // Variants
   const variants = useMemo(() => allVariants && product && getVariantsByCategory(allVariants, product.mp_pc_id), [product, allVariants])
+  const variantName = useMemo(() => {
+    if (variantId) {
+      return variants.find((v) => v.pv_id == variantId).pv_variant_name
+    } else {
+      return undefined
+    }
+  }, [variantId])
+
   // Multiple images for demonstration purposes
   const randomImageUrls = useMemo(() => {
     let urls = []
@@ -60,6 +72,15 @@ const ProductPage = (props) => {
   useEffect(() => {
     setVariantId((variants && variants.length > 0) ? variants[0].pv_id : undefined);
   }, [variants]);
+
+  // Notification functions
+  function addNotification(notification) {
+    setNotifications([...notifications, [(notifications.length > 0) ? notifications[notifications.length - 1][0] + 1 : 0, notification]]);
+  }
+
+  function deleteNotification(index) {
+    setNotifications([...notifications.filter((n) => n[0] !== index)])
+  }
 
   return (
     <div className="productpage">
@@ -119,13 +140,19 @@ const ProductPage = (props) => {
               }
               <div className="productpage-right-price">{product.mp_currency} {product.mp_price}</div>
               <button className='self-end rounded-2xl bg-emerald-200 hover:bg-emerald-300 w-52 py-2 font-semibold'
-                onClick={() => addToCart(product.mp_id, variantId)}
-                on>
+                onClick={() => {
+                  addToCart(product.mp_id, variantId);
+                  addNotification(`${product.mp_name} (${variantName}) added to cart`);
+                }}>
                 ADD TO CART
               </button>
             </div>
           </>
         )}
+
+      <NotificationContainer
+        notifications={notifications} deleteNotification={deleteNotification}
+        className='fixed flex flex-col-reverse gap-1 bottom-5 left-5 z-20 w-full' />
     </div>
   )
 }

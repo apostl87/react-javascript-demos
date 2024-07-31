@@ -41,9 +41,12 @@ const StoreAll = () => {
     setLoading(false);
   }
 
-  return (
-    <div className='flex flex-col items-center pb-5'>
-      {
+  let content
+  if (numberTotalProducts === 0) {
+    content = <div>No products to display.</div>
+  } else {
+    content =
+      <>{
         productBatches.map((batch, index) => {
           return (
             <div key={index} className='flex flex-col items-center'>
@@ -55,24 +58,31 @@ const StoreAll = () => {
           )
         })
       }
-      {loading ?
-        <MoonLoader speedMultiplier={0.3} color='rgb(15 23 42)' />
-        :
-        <>
-          <div className='pb-4'>
-            {numberLoadedProducts.at(-1)} of {numberTotalProducts} items shown
-          </div>
-          {(numberLoadedProducts.at(-1) !== numberTotalProducts) &&
-            <button
-              className="rounded-full bg-gray-200 hover:bg-gray-100
-                  w-40 max-w-52 h-10 py-2 font-semibold text-black
-                  flex justify-center items-center gap-2" // for potentially added icon
-              onClick={doFetch}>
-              Load More
-            </button>
-          }
-        </>
-      }
+        {loading ?
+          <MoonLoader speedMultiplier={0.3} color='rgb(15 23 42)' />
+          :
+          <>
+            <div className='pb-4'>
+              {numberLoadedProducts.at(-1)} of {numberTotalProducts} items shown
+            </div>
+            {(numberLoadedProducts.at(-1) !== numberTotalProducts) &&
+              <button
+                className="rounded-full bg-gray-200 hover:bg-gray-100
+                w-40 max-w-52 h-10 py-2 font-semibold text-black
+                flex justify-center items-center gap-2" // for potentially added icon
+                onClick={doFetch}>
+                Load More
+              </button>
+            }
+          </>
+        }
+      </>
+  }
+
+
+  return (
+    <div className='flex flex-col items-center py-5'>
+      {content}
     </div>
   )
 }

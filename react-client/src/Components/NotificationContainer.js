@@ -4,15 +4,16 @@ const NotificationContainer = ({ notifications, deleteNotification, className })
 
     const handleCloseClick = (index) => {
         let banner = document.getElementById('notification' + index);
+        console.log(index);
         deleteNotification(index);
     }
 
-    // This effect is not optimally implemented, since it is always called when notifications changes
+    // This effect is not optimally implemented, since it is always called when the variable 'notifications' changes
     // (also if a notification is deleted)
     useEffect(() => {
         if (notifications.length > 0) {
             let banner = document.getElementById('notification' + notifications[notifications.length - 1][0]);
-            // Automatically hide after 5 seconds
+            // Automatically hide after a delay
             setTimeout(() => {
                 banner.classList.add('hidden');
             }, 3500);
@@ -25,7 +26,6 @@ const NotificationContainer = ({ notifications, deleteNotification, className })
 
     // non-Tailwind styles
     const styleContainer = {
-        maxWidth: '400px',
     }
     const styleItem = {
         backgroundColor: 'rgba(0, 0, 0, 0.85)',
