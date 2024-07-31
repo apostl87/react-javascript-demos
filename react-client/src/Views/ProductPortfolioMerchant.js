@@ -167,7 +167,6 @@ const ProductPortfolioMerchant = (props) => {
         )
     }
 
-
     //// API calls
 
     function getMerchantProducts() {

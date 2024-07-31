@@ -48,7 +48,7 @@ const StoreLandingPage = () => {
       element1.render(<LandingPageCarousel items={bestsellers} navigateFunc={navigate} />);
     }
     if (element2) {
-      element2.render(<LandingPageCarousel items={newProducts} />);
+      element2.render(<LandingPageCarousel items={newProducts} navigateFunc={navigate} />);
     }
   }, [bestsellers, newProducts])
 
@@ -108,5 +108,3 @@ class LandingPageCarousel extends Component {
     );
   }
 };
-
-// ReactDOM.render(<DemoCarousel />, document.querySelector('#store-landing-page-carousel'));
