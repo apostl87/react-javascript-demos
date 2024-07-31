@@ -9,7 +9,7 @@ export const StoreContext = createContext(null);
 const StoreContextProvider = (props) => {
     const { user } = useAuth0();
 
-    const getCartItems = () => {
+    const initCartItems = () => {
         let cart = JSON.parse(localStorage.getItem("react-demos_cart")) || [];
         return cart;
     };
@@ -19,7 +19,7 @@ const StoreContextProvider = (props) => {
     const [products, setProducts] = useState([]); // TODO: please find below (**)
     const [categories, setCategories] = useState(undefined);
     const [allVariants, setAllVariants] = useState(undefined);
-    const [cartItems, setCartItems] = useState(getCartItems());
+    const [cartItems, setCartItems] = useState(initCartItems());
 
     useEffect(() => {
         request.get(`${api_url}/check-connection`)
@@ -110,6 +110,11 @@ const StoreContextProvider = (props) => {
         return null;
     }
 
+    const emptyCart = () => {
+        setCartItems([]);
+        localStorage.removeItem("react-demos_cart");
+    }
+
     const cartItemsDisplay = useMemo(() => {
         if (products.length > 0) {
             try {
@@ -125,7 +130,11 @@ const StoreContextProvider = (props) => {
                         }
                     })
                 )
-            } catch (error) { }
+            } catch (error) {
+                console.error(error);
+                // Corrupted cart -> Empty the cart
+                emptyCart();
+            }
         } else {
             return null;
         }
@@ -188,9 +197,6 @@ const StoreContextProvider = (props) => {
             (item) => item.mp_id === mp_id && item.pv_id === pv_id
         );
 
-        console.log(mp_id, pv_id);
-        console.log(index);
-        console.log(cartItems[index]);
         let newCartItems = [...cartItems];
         if (cartItems[index].quantity == 1) {
             // Delete the entry from the cart
@@ -208,14 +214,9 @@ const StoreContextProvider = (props) => {
         localStorage.setItem("react-demos_cart", JSON.stringify(newCartItems));
     };
 
-    const emptyCart = () => {
-        setCartItems([]);
-        localStorage.removeItem("react-demos_cart");
-    }
-
     const contextValue = {
         dbConnection,
-        products,fetchProduct, fetchProductBatch, fetchProductsByCategory, fetchBestsellers,
+        products, fetchProduct, fetchProductBatch, fetchProductsByCategory, fetchBestsellers,
         categories, allVariants, getVariantsByCategory,
         cartItems, cartItemsDisplay, getAmountCartItems, getTotalCartPrice, addToCart, removeFromCart, emptyCart,
     };

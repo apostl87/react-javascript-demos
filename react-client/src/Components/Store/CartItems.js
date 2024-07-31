@@ -11,6 +11,7 @@ const CartItems = () => {
   if (!cartItemsDisplay || cartItemsDisplay.length === 0) {
     return (
       <div className="text-center mt-5 min-h-screen">
+        {cartItemsDisplay}
         Your cart is empty.
       </div>
     )

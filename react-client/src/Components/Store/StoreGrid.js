@@ -17,7 +17,7 @@ const StoreGrid = ({ products, loading }) => {
     }
 
     function deleteNotification(index) {
-        setNotifications([...notifications.filter((_, i) => i !== index)])
+        setNotifications([...notifications.filter((n) => n[0] !== index)])
     }
 
 

@@ -4,7 +4,6 @@ const NotificationContainer = ({ notifications, deleteNotification, className })
 
     const handleCloseClick = (index) => {
         let banner = document.getElementById('notification' + index);
-        console.log(index);
         deleteNotification(index);
     }
 
