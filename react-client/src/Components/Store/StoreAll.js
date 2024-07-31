@@ -8,33 +8,46 @@ import config from '../../config'
 const StoreAll = () => {
   const { fetchProductBatch } = useContext(StoreContext)
 
-  const [productBatches, setProductBatches] = useState([])
+  //// States
+  // Loading
   const [loading, setLoading] = useState(false);
+  // Products
+  const [productBatches, setProductBatches] = useState([]);
+  const [numberTotalProducts, setNumberTotalProducts] = useState(0);
+  
+  //// Display variables
+  const numberLoadedProducts = []
+  let temp = 0
+  for (let index = 0; index < productBatches.length; index++) {
+    temp += productBatches[index].length
+    numberLoadedProducts.push(temp)
+  }
 
   useEffect(() => {
     if (productBatches.length === 0) doFetch();
   }, []);
 
-  // Fetch productBatches batch
+  // Fetch product batch
   const doFetch = async () => {
     setLoading(true);
     let data = await fetchProductBatch(config.batchSize, config.batchSize * productBatches.length);
     if (data.length > 0) {
       setProductBatches([...productBatches, data]);
+      setNumberTotalProducts(data[0].total_count);
     }
     setLoading(false);
   }
 
   return (
     <div className='flex flex-col items-center pb-5'>
+      {productBatches.length}
       {
         productBatches.map((batch, index) => {
-          const countProducts = 40 // TODO
           return (
             <div key={index} className='flex flex-col items-center'>
               <StoreGrid products={batch} loading={false} />
               {index < productBatches.length - 1 &&
-                <div>Until here: {countProducts} of 240 items</div>
+                <div>Until here: {numberLoadedProducts[index]} of {numberTotalProducts} items</div>
               }
             </div>
           )
@@ -45,7 +58,7 @@ const StoreAll = () => {
         :
         <>
           <div className='pb-4'>
-            120 of 240 items shown
+            {numberLoadedProducts.at(-1)} of {numberTotalProducts} items shown
           </div>
           <button
             className="rounded-full bg-gray-200 hover:bg-gray-100
