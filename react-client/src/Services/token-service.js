@@ -1,10 +1,14 @@
 import axios from "axios";
-import React, { useState, useEffect } from "react";
+
+const audience = process.env.REACT_APP_AUDIENCE;
+const request_url = "https://" + process.env.REACT_APP_AUTH0_DOMAIN + "/oauth/token";
+const client_id = process.env.REACT_APP_AUTH0_API_M2M_CLIENT_ID;
+const client_secret = process.env.REACT_APP_AUTH0_API_M2M_CLIENT_SECRET;
 
 // Token service for the Node/Express API holding the data for the page content
 class TokenService {
     constructor() {
-        this.audience = process.env.REACT_APP_AUDIENCE;
+        this.audience = audience;
         this.token_varname = this.audience + "_access_token";
     }
 
@@ -13,12 +17,7 @@ class TokenService {
     }
 
     refreshAccessToken = () => {
-        // return ("new access token");
-        const audience = process.env.REACT_APP_AUDIENCE;
-        const request_url = "https://" + process.env.REACT_APP_AUTH0_DOMAIN + "/oauth/token";
-        const client_id = process.env.REACT_APP_AUTH0_API_M2M_CLIENT_ID;
-        const client_secret = process.env.REACT_APP_AUTH0_API_M2M_CLIENT_SECRET;
-
+        
         const options = {
             method: 'POST',
             url: request_url,
@@ -26,6 +25,8 @@ class TokenService {
             data: `{"client_id": "${client_id}", "client_secret": "${client_secret}",
             "audience": "${audience}", "grant_type": "client_credentials"}`
         };
+
+        console.log(options);
 
         return (axios(options)
             .then(response => {
