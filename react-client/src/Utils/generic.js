@@ -43,6 +43,11 @@ function getRandomInt(min, max) {
     return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
+// Should be outsorced to another module
+function pathToProduct(product) {
+    return (product.mp_name.toLowerCase() + '-P' + product.mp_id);
+}
+
 module.exports = {
     hexToRgb,
     rgbToHex,
@@ -51,4 +56,5 @@ module.exports = {
     capitalizeLetters,
     cleanString,
     getRandomInt,
+    pathToProduct
 }

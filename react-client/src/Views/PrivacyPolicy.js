@@ -2,7 +2,7 @@ import React, { useEffect, useState, useRef } from 'react';
 import { createRoot } from 'react-dom/client';
 import { NotLoggedIn } from '../Components/Misc';
 import Markdown from 'markdown-to-jsx'
-import { render } from 'react-dom'
+// import { render } from 'react-dom'
 
 const PrivacyPolicy = () => {
     const MyMarkdown = () => {

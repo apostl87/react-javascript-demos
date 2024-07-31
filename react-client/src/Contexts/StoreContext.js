@@ -87,6 +87,22 @@ const StoreContextProvider = (props) => {
             })
     }
 
+    const fetchBestsellers = async (pc_id) => {
+        let url = `${api_url}/bestsellers`;
+        if (pc_id) {
+            url += `/category/${pc_id}`;
+        }
+        return request.get(url)
+            .then(response => {
+                return (response.data)
+            })
+            .catch(error => {
+                console.error(error);
+                return null;
+                //return (JSON.stringify(error));
+            })
+    }
+
     const getVariantsByCategory = (allVariants, pc_id) => {
         if (allVariants[pc_id]) {
             return allVariants[pc_id]['variants']
@@ -199,7 +215,8 @@ const StoreContextProvider = (props) => {
 
     const contextValue = {
         dbConnection,
-        products, fetchProduct, fetchProductBatch, fetchProductsByCategory, categories, allVariants, getVariantsByCategory,
+        products,fetchProduct, fetchProductBatch, fetchProductsByCategory, fetchBestsellers,
+        categories, allVariants, getVariantsByCategory,
         cartItems, cartItemsDisplay, getAmountCartItems, getTotalCartPrice, addToCart, removeFromCart, emptyCart,
     };
     return (

@@ -3,9 +3,12 @@ import { StoreContext } from '../../Contexts/StoreContext'
 import "../../css/productpage.css"
 import { getRandomInt } from '../../Utils/generic'
 import { MoonLoader } from 'react-spinners';
-import { Carousel } from 'react-responsive-carousel'
+import { pathToProduct } from '../../Utils/generic';
+import { useNavigate } from 'react-router-dom';
 
 const ProductPage = (props) => {
+  const navigate = useNavigate();
+
   const { fetchProduct, addToCart, allVariants, getVariantsByCategory } = useContext(StoreContext)
 
   // States
@@ -40,6 +43,18 @@ const ProductPage = (props) => {
       ignore = true
     }
   }, []);
+
+  // Navigate to the correct path
+  useEffect(() => {
+    if (product) {
+      const intendedPathSegment = pathToProduct(product)
+      let actualPathSegments = window.location.pathname.split('/')
+      if (actualPathSegments.at(-1) !== intendedPathSegment) {
+        let newPath = [...actualPathSegments.slice(0, -1), intendedPathSegment].join("/")
+        navigate(newPath)
+      }
+    }
+  }, [product])
 
   // By default, select first variant
   useEffect(() => {

@@ -538,6 +538,10 @@ a:focus {
   color: white;
 }
 
+.carousel-photo{
+  width: 200px;
+}
+
 @media (max-width:800px) {
   .mainly-text-content {
     margin: 2rem 30px;
