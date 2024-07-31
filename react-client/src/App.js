@@ -2,7 +2,7 @@ import { Routes, Route } from 'react-router-dom';
 import Navigation from './Components/Navigation';
 import { NotFound } from './Components/Misc';
 import Footer from './Components/Footer';
-import MyScrollToTop from './Components/MyScrollToTop';
+import ScrollToTopButton from './Components/ScrollToTopButton';
 import Banner from './Components/Banner';
 import ProductPortfolioMerchant from './Views/ProductPortfolioMerchant';
 import Home from './Views/Home';
@@ -54,7 +54,7 @@ function App() {
 
       <Footer />
 
-      <MyScrollToTop />
+      <ScrollToTopButton />
     </div>
   );
 }
