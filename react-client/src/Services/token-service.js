@@ -9,7 +9,7 @@ const client_secret = process.env.REACT_APP_AUTH0_API_M2M_CLIENT_SECRET;
 class TokenService {
     constructor() {
         this.audience = audience;
-        this.token_varname = this.audience + "_access_token";
+        this.token_varname = "access-token_" + this.audience;
     }
 
     getAccessToken = () => {
@@ -17,7 +17,7 @@ class TokenService {
     }
 
     refreshAccessToken = () => {
-        
+
         const options = {
             method: 'POST',
             url: request_url,

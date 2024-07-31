@@ -8,7 +8,7 @@ const audience = "https://" + domain + "/api/v2/"
 const client_id = process.env.REACT_APP_AUTH0_API_M2M_CLIENT_ID;
 const client_secret = process.env.REACT_APP_AUTH0_API_M2M_CLIENT_SECRET;
 
-let token_varname = 'react-demos_auth0-management-token';
+let token_varname = "access-token_" + audience;
 
 const getApiToken = () => {
     return localStorage.getItem(token_varname)
