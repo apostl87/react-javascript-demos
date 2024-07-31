@@ -14,7 +14,7 @@ const StoreAll = () => {
   // Products
   const [productBatches, setProductBatches] = useState([]);
   const [numberTotalProducts, setNumberTotalProducts] = useState(0);
-  
+
   //// Display variables
   const numberLoadedProducts = []
   let temp = 0
@@ -33,7 +33,7 @@ const StoreAll = () => {
     let data = await fetchProductBatch(config.batchSize, config.batchSize * productBatches.length);
     if (data.length > 0) {
       setProductBatches([...productBatches, data]);
-      setNumberTotalProducts(data[0].total_count);
+      setNumberTotalProducts(Number(data[0].total_count));
     }
     setLoading(false);
   }
@@ -60,14 +60,15 @@ const StoreAll = () => {
           <div className='pb-4'>
             {numberLoadedProducts.at(-1)} of {numberTotalProducts} items shown
           </div>
-          <button
-            className="rounded-full bg-gray-200 hover:bg-gray-100
+          {(numberLoadedProducts.at(-1) !== numberTotalProducts) &&
+            <button
+              className="rounded-full bg-gray-200 hover:bg-gray-100
                   w-40 max-w-52 h-10 py-2 font-semibold text-black
                   flex justify-center items-center gap-2" // for potentially added icon
-            onClick={doFetch}>
-            {/* <img src={TODO} /> */}
-            Load More
-          </button>
+              onClick={doFetch}>
+              Load More
+            </button>
+          }
         </>
       }
     </div>
