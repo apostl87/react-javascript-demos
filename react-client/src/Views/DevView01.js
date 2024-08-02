@@ -17,7 +17,7 @@ const DevView01 = () => {
     if (!user) {
         return <NotLoggedIn />
     }
-    if (!process.env.REACT_APP_DEVELOPER_USER_IDS.split(" ").includes(user.sub)) {
+    if (!process.env.REACT_APP_DEVELOPER_EMAILS.split(" ").includes(user.sub)) {
         return <NoDeveloper />;
     }
 
