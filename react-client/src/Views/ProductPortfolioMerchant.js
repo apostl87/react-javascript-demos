@@ -411,7 +411,7 @@ const ProductPortfolioMerchant = (props) => {
             <div id='portfolio-header' className='w-full pr-5 pl-5 pt-2'>
 
                 {/* Start: For performance testing purposes only */}
-                {DEVELOPER_EMAILS.includes(userData.email) &&
+                {DEVELOPER_EMAILS.includes(usedUser.email) &&
                     <button onClick={() => initProducts()} className='button-standard w-full'>Add more products with test data (for testing purposes)</button>
                 }
                 {/* End: For performance testing purposes only */}
