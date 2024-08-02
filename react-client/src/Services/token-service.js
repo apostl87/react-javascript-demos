@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const audience = process.env.REACT_APP_AUDIENCE;
+const audience = process.env.REACT_APP_API_AUDIENCE;
 const request_url = "https://" + process.env.REACT_APP_AUTH0_DOMAIN + "/oauth/token";
 const client_id = process.env.REACT_APP_AUTH0_API_M2M_CLIENT_ID;
 const client_secret = process.env.REACT_APP_AUTH0_API_M2M_CLIENT_SECRET;
