@@ -20,6 +20,7 @@ import config from '../config';
 
 const api_url = process.env.REACT_APP_BACKEND_API_URL;
 const PUBLIC_TEST_USER = process.env.REACT_APP_PUBLIC_TEST_USER;
+const DEVELOPER_EMAILS = process.env.REACT_APP_DEVELOPER_EMAILS.split(" ");
 
 // Code needs a major overhaul
 // - Refactoring of Components
@@ -86,7 +87,10 @@ const ProductPortfolioMerchant = (props) => {
         if (user || !publicTestMode) {
             return user // Here, usedUser is the logged in used or falsy
         } else if (publicTestMode) {
-            return { 'sub': PUBLIC_TEST_USER } // pseudo user
+            return {
+                'sub': PUBLIC_TEST_USER,
+                'email': "",
+            } // pseudo user
         }
     }, [user, publicTestMode])
 
@@ -405,9 +409,12 @@ const ProductPortfolioMerchant = (props) => {
     return (
         <>
             <div id='portfolio-header' className='w-full pr-5 pl-5 pt-2'>
-                {user.sub === "auth0|667d3f4f494d32facd4a2e9f" &&
+
+                {/* Start: For performance testing purposes only */}
+                {DEVELOPER_EMAILS.includes(userData.email) &&
                     <button onClick={() => initProducts()} className='button-standard w-full'>Add more products with test data (for testing purposes)</button>
                 }
+                {/* End: For performance testing purposes only */}
 
                 {publicTestMode &&
                     <div className='flex flex-wrap justify-start pt-2 pb-2'>
