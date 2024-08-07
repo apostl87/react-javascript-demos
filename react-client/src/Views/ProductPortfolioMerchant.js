@@ -173,6 +173,7 @@ const ProductPortfolioMerchant = (props) => {
         request.get(url, { signal })
             .then(response => {
                 processProductData(response.data);
+                setDatabaseConnectionFailed(false);
                 //console.log(JSON.stringify(response.data));
             })
             .catch(error => {
@@ -272,6 +273,7 @@ const ProductPortfolioMerchant = (props) => {
         request.get(url, { signal })
             .then(response => {
                 setCountries(response.data);
+                setDatabaseConnectionFailed(false);
             })
             .catch(error => {
                 console.error(error);
