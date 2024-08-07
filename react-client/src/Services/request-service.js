@@ -39,33 +39,38 @@ class Request {
 
     async onRequestFailure(err) {
         const { response } = err;
-        if (response.status === 401 && err && err.config && !err.config.__isRetryRequest) {
-            if (this.isRefreshing) {
-                try {
-                    const token = await new Promise((resolve, reject) => {
-                        this.failedRequests.push({ resolve, reject });
-                    });
-                    err.config.headers.Authorization = `Bearer ${token}`;
-                    return this.client(err.config);
+
+        if (response && 'code' in response && response.code == 401) {
+            if (err && err.config && !err.config.__isRetryRequest) {
+                if (this.isRefreshing) {
+                    try {
+                        const token = await new Promise((resolve, reject) => {
+                            this.failedRequests.push({ resolve, reject });
+                        });
+                        err.config.headers.Authorization = `Bearer ${token}`;
+                        return this.client(err.config);
+                    }
+                    catch (e) {
+                        return e;
+                    }
                 }
-                catch (e) {
-                    return e;
-                }
-            }
-            this.isRefreshing = true;
-            err.config.__isRetryRequest = true;
-            return new Promise((resolve, reject) => {
-                this.tokenService.refreshAccessToken().then((token) => {
-                    this.tokenService.setAccessToken(token);
-                    err.config.headers.Authorization = `Bearer ${token}`;
-                    this.isRefreshing = false;
-                    this.processQueue(null, token);
-                    resolve(this.client(err.config));
-                }).catch((e) => {
-                    this.processQueue(e, null);
-                    reject(err.response);
+                this.isRefreshing = true;
+                err.config.__isRetryRequest = true;
+                return new Promise((resolve, reject) => {
+                    this.tokenService.refreshAccessToken()
+                        .then((token) => {
+                            this.tokenService.setAccessToken(token);
+                            err.config.headers.Authorization = `Bearer ${token}`;
+                            this.isRefreshing = false;
+                            this.processQueue(null, token);
+                            resolve(this.client(err.config));
+                        })
+                        .catch((e) => {
+                            this.processQueue(e, null);
+                            reject(err.response);
+                        });
                 });
-            });
+            }
         }
         throw response;
     }
