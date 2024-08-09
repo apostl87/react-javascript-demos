@@ -1,21 +1,15 @@
-node_modules/
-*playwright*
-*/test-results/
-*/tests/
-*/tests-examples/
-*/playwright-report/
-*/blob-report/
-*/playwright/.cache/
-
-.DS_Store
+# custom
 excluded
-devel
+_development
 testdata
 .testdata
 */build
-package-lock.json
 
-_devel-scripts
+# macos
+.DS_Store
+
+# lock file
+package-lock.json
 
 # dependencies
 node_modules
