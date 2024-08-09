@@ -1,3 +1,12 @@
+node_modules/
+*playwright*
+*/test-results/
+*/tests/
+*/tests-examples/
+*/playwright-report/
+*/blob-report/
+*/playwright/.cache/
+
 .DS_Store
 excluded
 devel
